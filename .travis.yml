@@ -3,14 +3,15 @@ language: java
 
 matrix:
    include:
+      #coveralls plugin doesn't work with jdk 11 for some reasons
       - jdk: openjdk8
         env: MAVEN_ARGS="coveralls:report"
-       
+      #sonarcloud requires jdk 11 or newer       
       - jdk: openjdk11
         env: MAVEN_ARGS="sonar:sonar -Dsonar.projectKey=Predictabowl_APT-Project-Aldinucci"
 
-#sonarcloud requires jdk 11 or newer
-#coveralls requires jdk 8 is the project is set to it
+
+
 
 addons:
    sonarcloud:
