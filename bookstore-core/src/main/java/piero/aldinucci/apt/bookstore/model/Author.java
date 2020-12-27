@@ -9,7 +9,6 @@ public class Author {
 	private Set<Book> books;
 	
 	public Author(Long id, String name, Set<Book> books) {
-		super();
 		this.id = id;
 		this.name = name;
 		this.books = books;
