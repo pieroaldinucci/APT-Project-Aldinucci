@@ -11,6 +11,9 @@
 		<maven.compiler.source>1.8</maven.compiler.source>
 		<maven.compiler.target>1.8</maven.compiler.target>
 		<assertj-core-version>3.18.1</assertj-core-version>
+		<hibernate-core-version>5.4.27.Final</hibernate-core-version>
+		<postgresql-version>42.2.18</postgresql-version>
+		<log4j.version>2.14.0</log4j.version>
 	</properties>
 
 	<dependencies>
@@ -26,7 +29,28 @@
 			<version>${assertj-core-version}</version>
 			<scope>test</scope>
 		</dependency>
+		<dependency>
+			<groupId>org.hibernate</groupId>
+			<artifactId>hibernate-core</artifactId>
+			<version>${hibernate-core-version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.postgresql</groupId>
+			<artifactId>postgresql</artifactId>
+			<version>${postgresql-version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.logging.log4j</groupId>
+			<artifactId>log4j-api</artifactId>
+			<version>${log4j.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.logging.log4j</groupId>
+			<artifactId>log4j-core</artifactId>
+			<version>${log4j.version}</version>
+		</dependency>
 	</dependencies>
+
 
 	<build>
 		<plugins>
@@ -49,7 +73,6 @@
 						<configuration>
 							<sources>
 								<source>src/it/java</source>
-								<!-- <source>src/e2e/java</source> -->
 							</sources>
 						</configuration>
 					</execution>
