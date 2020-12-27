@@ -1,7 +1,9 @@
 dist: bionic
 language: java
-#jdk: openjdk11
-jdk: openjdk8
+jdk: openjdk11
+
+#sonarcloud requires jdk 11 or newer
+#coveralls requires jdk 8 is the project is set to it
 
 addons:
    sonarcloud:
