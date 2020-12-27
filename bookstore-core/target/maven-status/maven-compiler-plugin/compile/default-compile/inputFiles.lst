@@ -1,2 +1,6 @@
 /home/findus/Programmazione/git/APT-Project-Aldinucci/bookstore-core/src/main/java/piero/aldinucci/apt/bookstore/model/Book.java
+/home/findus/Programmazione/git/APT-Project-Aldinucci/bookstore-core/src/main/java/piero/aldinucci/apt/bookstore/repositories/AuthorRepository.java
+/home/findus/Programmazione/git/APT-Project-Aldinucci/bookstore-core/src/main/java/piero/aldinucci/apt/bookstore/transaction/TransactionCode.java
 /home/findus/Programmazione/git/APT-Project-Aldinucci/bookstore-core/src/main/java/piero/aldinucci/apt/bookstore/model/Author.java
+/home/findus/Programmazione/git/APT-Project-Aldinucci/bookstore-core/src/main/java/piero/aldinucci/apt/bookstore/repositories/BookRepository.java
+/home/findus/Programmazione/git/APT-Project-Aldinucci/bookstore-core/src/main/java/piero/aldinucci/apt/bookstore/transaction/TransactionManager.java
