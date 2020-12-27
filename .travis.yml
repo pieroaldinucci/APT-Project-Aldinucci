@@ -1,0 +1,24 @@
+dist: bionic
+language: java
+jdk: openjdk11
+
+addons:
+   sonarcloud:
+      organization: "predictabowl"
+      token: $SONAR_TOKEN
+
+services:
+   - docker
+
+#skip installation step
+install: true
+
+cache:
+   directories:
+      - $HOME/.m2
+      - $HOME/.sonar/cache 
+      
+      
+script:
+   #- ./travis-build
+   - mvn -f bookstore-core/pom.xml clean verify
