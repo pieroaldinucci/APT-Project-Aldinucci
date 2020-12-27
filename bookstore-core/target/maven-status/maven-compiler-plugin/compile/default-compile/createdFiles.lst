@@ -1,6 +1,0 @@
-piero/aldinucci/apt/bookstore/repositories/BookRepository.class
-piero/aldinucci/apt/bookstore/repositories/AuthorRepository.class
-piero/aldinucci/apt/bookstore/model/Author.class
-piero/aldinucci/apt/bookstore/transaction/TransactionManager.class
-piero/aldinucci/apt/bookstore/model/Book.class
-piero/aldinucci/apt/bookstore/transaction/TransactionCode.class
