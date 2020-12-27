@@ -7,8 +7,8 @@ addons:
       organization: "predictabowl"
       token: $SONAR_TOKEN
 
-services:
-   - docker
+#services:
+#   - docker
 
 #skip installation step
 install: true
@@ -21,4 +21,4 @@ cache:
       
 script:
    #- ./travis-build
-   - mvn -f bookstore-core/pom.xml clean verify
+   - mvn -f bookstore-core/pom.xml clean verify sonar:sonar -Dsonar.projectKey=Predictabowl_APT-Project-Aldinucci
