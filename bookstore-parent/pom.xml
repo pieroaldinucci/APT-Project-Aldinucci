@@ -11,12 +11,20 @@
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<maven.compiler.source>1.8</maven.compiler.source>
 		<maven.compiler.target>1.8</maven.compiler.target>
+		<jdk9-or-more>false</jdk9-or-more>
 	</properties>
-	
+
 	<modules>
 		<module>../bookstore-core</module>
 		<module>../bookstore-mvc</module>
 	</modules>
+
+	<dependencies>
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+		</dependency>
+	</dependencies>
 
 	<dependencyManagement>
 		<dependencies>
@@ -43,10 +51,28 @@
 				<artifactId>hibernate-core</artifactId>
 				<version>5.4.27.Final</version>
 			</dependency>
+			<dependency>
+				<groupId>org.assertj</groupId>
+				<artifactId>assertj-core</artifactId>
+				<version>3.18.1</version>
+				<scope>test</scope>
+			</dependency>
 		</dependencies>
 	</dependencyManagement>
 
 	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.sonarsource.scanner.maven</groupId>
+				<artifactId>sonar-maven-plugin</artifactId>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-failsafe-plugin</artifactId>
+			</plugin>
+		</plugins>
+
+
 		<pluginManagement>
 			<plugins>
 				<plugin>
@@ -80,8 +106,8 @@
 					<executions>
 						<execution>
 							<goals>
-								<goal>prepare-agent</goal>
-								<goal>report</goal>
+								<goal>prepare-agent</goal> <!-- Initialize -->
+								<goal>report</goal> <!-- verify -->
 							</goals>
 						</execution>
 					</executions>
@@ -107,4 +133,46 @@
 			</plugins>
 		</pluginManagement>
 	</build>
+
+
+	<profiles>
+		<profile>
+			<id>jdk9+</id>
+			<properties>
+				<jdk9-or-more>true</jdk9-or-more>
+			</properties>
+			<activation>
+				<jdk>[1.9,)</jdk>
+			</activation>
+		</profile>
+		<profile>
+			<id>jacoco</id>
+			<build>
+				<plugins>
+					<plugin>
+						<groupId>org.jacoco</groupId>
+						<artifactId>jacoco-maven-plugin</artifactId>
+					</plugin>
+					<plugin>
+						<groupId>org.eluder.coveralls</groupId>
+						<artifactId>coveralls-maven-plugin</artifactId>
+						<configuration>
+							<skip>${jdk9-or-more}</skip>
+						</configuration>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+		<profile>
+			<id>mutation-test</id>
+			<build>
+				<plugins>
+					<plugin>
+						<groupId>org.pitest</groupId>
+						<artifactId>pitest-maven</artifactId>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+	</profiles>
 </project>
