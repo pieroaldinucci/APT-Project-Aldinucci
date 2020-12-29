@@ -32,20 +32,18 @@ public class BookstoreControllerImpl implements BookstoreController {
 
 	@Override
 	public void newBook(Book book) {
-		// TODO Auto-generated method stub
-
+		bookView.bookAdded(manager.newBook(book));
 	}
 
 	@Override
 	public void newAuthor(Author author) {
-		// TODO Auto-generated method stub
-
+		authorView.authorAdded(manager.newAuthor(author));
 	}
 
 	@Override
 	public void deleteBook(Book book) {
-		// TODO Auto-generated method stub
-
+		manager.delete(book);
+		bookView.bookRemoved(book);
 	}
 
 	@Override

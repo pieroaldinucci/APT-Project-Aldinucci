@@ -5,10 +5,12 @@ import static org.mockito.Mockito.*;
 import static org.mockito.MockitoAnnotations.*;
 
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.mockito.InOrder;
 import org.mockito.Mock;
 
 import piero.aldinucci.apt.bookstore.model.Author;
@@ -54,6 +56,41 @@ public class BookstoreControllerImplTest {
 		controller.allBooks();
 		
 		verify(bookView).showAllBooks(books);
+	}
+	
+	@Test
+	public void test_newAuthor() {
+		Author author = new Author(null, "An Author", new HashSet<>());
+		Author authorAdded = new Author(2L, "An Author", new HashSet<>());
+		when(manager.newAuthor(isA(Author.class))).thenReturn(authorAdded);
+		
+		controller.newAuthor(author);
+		
+		verify(manager).newAuthor(author);
+		verify(authorView).authorAdded(authorAdded);
+	}
+	
+	@Test
+	public void test_newBook() {
+		Book bookToAdd = new Book(null,"A book",new HashSet<>());
+		Book bookAdded = new Book(1L,"A book",new HashSet<>());
+		when(manager.newBook(isA(Book.class))).thenReturn(bookAdded);
+		
+		controller.newBook(bookToAdd);
+		
+		verify(manager).newBook(bookToAdd);
+		verify(bookView).bookAdded(bookAdded);
+	}
+	
+	@Test
+	public void test_deleteBook_successful() {
+		Book book = new Book(1L, "test book", new HashSet<>());
+		
+		controller.deleteBook(book);
+		
+		InOrder inOrder = inOrder(manager,bookView);
+		inOrder.verify(manager).delete(book);
+		inOrder.verify(bookView).bookRemoved(book);
 	}
 
 }
