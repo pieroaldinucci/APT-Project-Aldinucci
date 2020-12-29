@@ -41,38 +41,52 @@
 			<plugin>
 				<groupId>org.codehaus.mojo</groupId>
 				<artifactId>build-helper-maven-plugin</artifactId>
-				<version>3.2.0</version>
+			</plugin>
+			<plugin>
+				<groupId>io.fabric8</groupId>
+				<artifactId>docker-maven-plugin</artifactId>
+				<configuration>
+					<showLogs>true</showLogs>
+					<images>
+						<image>
+							<alias>app-postgres</alias>
+							<name>postgres:13.1</name>
+							<run>
+								<ports>
+									<port>5432:5432</port>
+								</ports>
+								<env>
+									<POSTGRES_USER>testUser</POSTGRES_USER>
+									<POSTGRES_PASSWORD>secret</POSTGRES_PASSWORD>
+									<POSTGRES_DB>projectAPTTestDb</POSTGRES_DB>
+								</env>
+								<wait>
+									<log>(?s)database system is ready to accept connections</log>
+									<time>15000</time>
+								</wait>
+							</run>
+						</image>
+					</images>
+				</configuration>
 				<executions>
 					<execution>
-						<id>add-test-source</id>
-						<phase>generate-test-sources</phase>
+						<id>docker:start</id>
+						<phase>pre-integration-test</phase>
 						<goals>
-							<goal>add-test-source</goal>
+							<goal>start</goal>
 						</goals>
-						<configuration>
-							<sources>
-								<source>src/it/java</source>
-							</sources>
-						</configuration>
 					</execution>
 					<execution>
-						<id>add-test-resource</id>
-						<phase>generate-test-resources</phase>
+						<id>docker:stop</id>
+						<phase>post-integration-test</phase>
 						<goals>
-							<goal>add-test-resource</goal>
+							<goal>stop</goal>
 						</goals>
-						<configuration>
-							<resources>
-								<resource>
-									<directory>src/it/resources</directory>
-								</resource>
-							</resources>
-						</configuration>
 					</execution>
 				</executions>
 			</plugin>
 		</plugins>
-		
+
 		<pluginManagement>
 			<plugins>
 				<plugin>
