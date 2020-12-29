@@ -14,13 +14,17 @@ import piero.aldinucci.apt.bookstore.view.AuthorView;
 
 import javax.swing.JButton;
 import javax.swing.JList;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
+import javax.swing.ListSelectionModel;
 
 public class AuthorSwingView extends JPanel implements AuthorView{
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-	private JTextField textField;
+	private JTextField nameTextField;
+	private JButton btnAddAuthor;
 
 	/**
 	 * Create the panel.
@@ -65,6 +69,7 @@ public class AuthorSwingView extends JPanel implements AuthorView{
 
 	private void createList() {
 		JList list = new JList();
+		list.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		list.setName("AuthorList");
 		GridBagConstraints gbc_list = new GridBagConstraints();
 		gbc_list.insets = new Insets(0, 0, 5, 5);
@@ -75,26 +80,32 @@ public class AuthorSwingView extends JPanel implements AuthorView{
 	}
 
 	private void createAddButton() {
-		JButton btnAdd = new JButton("Add");
-		btnAdd.setEnabled(false);
-		btnAdd.setName("AddAuthor");
+		btnAddAuthor = new JButton("Add");
+		btnAddAuthor.setEnabled(false);
+		btnAddAuthor.setName("AddAuthor");
 		GridBagConstraints gbc_btnAdd = new GridBagConstraints();
 		gbc_btnAdd.insets = new Insets(0, 0, 5, 5);
 		gbc_btnAdd.gridx = 1;
 		gbc_btnAdd.gridy = 1;
-		add(btnAdd, gbc_btnAdd);
+		add(btnAddAuthor, gbc_btnAdd);
 	}
 
 	private void createTextField() {
-		textField = new JTextField();
-		textField.setName("NameTextField");
+		nameTextField = new JTextField();
+		nameTextField.addKeyListener(new KeyAdapter() {
+			@Override
+			public void keyReleased(KeyEvent e) {
+				btnAddAuthor.setEnabled(!nameTextField.getText().trim().isEmpty());
+			}
+		});
+		nameTextField.setName("NameTextField");
 		GridBagConstraints gbc_textField = new GridBagConstraints();
 		gbc_textField.insets = new Insets(0, 0, 5, 5);
 		gbc_textField.fill = GridBagConstraints.HORIZONTAL;
 		gbc_textField.gridx = 1;
 		gbc_textField.gridy = 0;
-		add(textField, gbc_textField);
-		textField.setColumns(10);
+		add(nameTextField, gbc_textField);
+		nameTextField.setColumns(10);
 	}
 
 	private void createNameLabel() {
