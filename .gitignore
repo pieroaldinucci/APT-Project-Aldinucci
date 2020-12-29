@@ -1,5 +1,5 @@
 target/
 bookstore-core/target/
 bookstore-mvc/target/
-/bookstore-mvc/failed-gui-tests/
+bookstore-mvc/failed-gui-tests/
 *.class
