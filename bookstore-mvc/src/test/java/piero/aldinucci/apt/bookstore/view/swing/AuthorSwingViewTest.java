@@ -175,4 +175,19 @@ public class AuthorSwingViewTest extends AssertJSwingJUnitTestCase {
 		assertThat(author.getValue()).usingRecursiveComparison().isEqualTo(new Author(null, "Mario", new HashSet<Book>()));
 		verifyNoMoreInteractions(controller);
 	}
+	
+	@Test
+	public void test_clicking_delete_button_should_delegate_to_controller() {
+		Author testAuthor = new Author(2L, "test", null);
+		Author testAuthor2 = new Author(3L, "test2", null);
+		GuiActionRunner.execute(() -> {
+			authorView.getAuthorListModel().addElement(testAuthor);
+			authorView.getAuthorListModel().addElement(testAuthor2);
+		});
+		authorPanel.list(AUTHOR_LIST).selectItem(0);
+		authorPanel.button(DELETE_AUTHOR_BUTTON).click();
+		
+		verify(controller).deleteAuthor(testAuthor);
+		verifyNoMoreInteractions(controller);
+	}
 }

@@ -5,6 +5,7 @@ import java.awt.GridBagLayout;
 import javax.swing.JLabel;
 import java.awt.GridBagConstraints;
 import java.awt.Insets;
+import java.util.HashSet;
 import java.util.List;
 
 import javax.swing.JTextField;
@@ -21,19 +22,21 @@ import java.awt.event.KeyEvent;
 import javax.swing.ListSelectionModel;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.event.ListSelectionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.ActionEvent;
 
-public class AuthorSwingView extends JPanel implements AuthorView{
+public class AuthorSwingView extends JPanel implements AuthorView {
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-	
+
 	private BookstoreController controller;
 	private JTextField nameTextField;
 	private JButton btnAddAuthor;
 	private DefaultListModel<Author> authorListModel;
 
-	private JList authorList;
+	private JList<Author> authorList;
 
 	private JButton btnDeleteAuthor;
 
@@ -44,12 +47,12 @@ public class AuthorSwingView extends JPanel implements AuthorView{
 	 */
 	public AuthorSwingView() {
 		GridBagLayout gridBagLayout = new GridBagLayout();
-		gridBagLayout.columnWidths = new int[] {20, 200, 30, 20};
-		gridBagLayout.rowHeights = new int[] {27, 20, 90, 30, 21, 0};
-		gridBagLayout.columnWeights = new double[]{0.0, 1.0, 0.0, Double.MIN_VALUE};
-		gridBagLayout.rowWeights = new double[]{0.0, 0.0, 1.0, 0.0, 0.0, Double.MIN_VALUE};
+		gridBagLayout.columnWidths = new int[] { 20, 200, 30, 20 };
+		gridBagLayout.rowHeights = new int[] { 27, 20, 90, 30, 21, 0 };
+		gridBagLayout.columnWeights = new double[] { 0.0, 1.0, 0.0, Double.MIN_VALUE };
+		gridBagLayout.rowWeights = new double[] { 0.0, 0.0, 1.0, 0.0, 0.0, Double.MIN_VALUE };
 		setLayout(gridBagLayout);
-		
+
 		createNameLabel();
 		createTextField();
 		createAddButton();
@@ -71,6 +74,11 @@ public class AuthorSwingView extends JPanel implements AuthorView{
 
 	private void createDeleteButton() {
 		btnDeleteAuthor = new JButton("Delete");
+		btnDeleteAuthor.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				controller.deleteAuthor(authorList.getSelectedValue());
+			}
+		});
 		btnDeleteAuthor.setEnabled(false);
 		btnDeleteAuthor.setName("DeleteAuthor");
 		GridBagConstraints gbc_btnDelete = new GridBagConstraints();
@@ -100,6 +108,11 @@ public class AuthorSwingView extends JPanel implements AuthorView{
 
 	private void createAddButton() {
 		btnAddAuthor = new JButton("Add");
+		btnAddAuthor.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				controller.newAuthor(new Author(null, nameTextField.getText(), new HashSet<>()));
+			}
+		});
 		btnAddAuthor.setEnabled(false);
 		btnAddAuthor.setName("AddAuthor");
 		GridBagConstraints gbc_btnAdd = new GridBagConstraints();
@@ -141,14 +154,14 @@ public class AuthorSwingView extends JPanel implements AuthorView{
 	public void showAllAuthors(List<Author> authors) {
 		authorListModel.clear();
 		authors.stream().forEach(a -> authorListModel.addElement(a));
-		
+
 	}
 
 	@Override
 	public void authorAdded(Author author) {
 		authorListModel.addElement(author);
 		clearErrorLabel();
-		
+
 	}
 
 	@Override
@@ -159,14 +172,14 @@ public class AuthorSwingView extends JPanel implements AuthorView{
 
 	@Override
 	public void showError(String message, Author author) {
-		errorLabel.setText(message+": "+author);
-		
+		errorLabel.setText(message + ": " + author);
+
 	}
 
 	DefaultListModel<Author> getAuthorListModel() {
 		return authorListModel;
 	}
-	
+
 	private void clearErrorLabel() {
 		errorLabel.setText("");
 	}
