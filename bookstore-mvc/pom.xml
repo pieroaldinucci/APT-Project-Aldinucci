@@ -16,6 +16,10 @@
 			<artifactId>bookstore-core</artifactId>
 			<version>${project.version}</version>
 		</dependency>
+		<dependency>
+			<groupId>org.assertj</groupId>
+			<artifactId>assertj-swing-junit</artifactId>
+		</dependency>
 	</dependencies>
 
 	<build>
