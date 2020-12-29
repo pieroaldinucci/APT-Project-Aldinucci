@@ -8,19 +8,25 @@ import piero.aldinucci.apt.bookstore.view.BookView;
 
 public class BookstoreControllerImpl implements BookstoreController {
 
+	private AuthorView authorView;
+	private BookView bookView;
+	private BookstoreManager manager;
+
 	public BookstoreControllerImpl(AuthorView authorView, BookView bookView, BookstoreManager manager) {
-		// TODO Auto-generated constructor stub
+		this.authorView = authorView;
+		this.bookView = bookView;
+		this.manager = manager;
 	}
 
 	@Override
 	public void allAuthors() {
-		// TODO Auto-generated method stub
+		authorView.showAllAuthors(manager.getAllAuthors());
 
 	}
 
 	@Override
 	public void allBooks() {
-		// TODO Auto-generated method stub
+		bookView.showAllBooks(manager.getAllBooks());
 
 	}
 
