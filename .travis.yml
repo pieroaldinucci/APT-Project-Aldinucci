@@ -18,8 +18,8 @@ addons:
       organization: "predictabowl"
       token: $SONAR_TOKEN
 
-#services:
-#   - docker
+services:
+   - docker
 
 #skip installation step
 install: true
