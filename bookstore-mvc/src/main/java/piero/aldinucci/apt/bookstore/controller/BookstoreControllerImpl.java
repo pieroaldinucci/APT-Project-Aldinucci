@@ -1,5 +1,9 @@
 package piero.aldinucci.apt.bookstore.controller;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
+import piero.aldinucci.apt.bookstore.exceptions.BookstorePersistenceException;
 import piero.aldinucci.apt.bookstore.model.Author;
 import piero.aldinucci.apt.bookstore.model.Book;
 import piero.aldinucci.apt.bookstore.service.BookstoreManager;
@@ -11,6 +15,7 @@ public class BookstoreControllerImpl implements BookstoreController {
 	private AuthorView authorView;
 	private BookView bookView;
 	private BookstoreManager manager;
+	private static final Logger LOGGER = LogManager.getLogger();
 
 	public BookstoreControllerImpl(AuthorView authorView, BookView bookView, BookstoreManager manager) {
 		this.authorView = authorView;
@@ -42,20 +47,29 @@ public class BookstoreControllerImpl implements BookstoreController {
 
 	@Override
 	public void deleteBook(Book book) {
-		manager.delete(book);
-		bookView.bookRemoved(book);
+		try {
+			manager.delete(book);
+			bookView.bookRemoved(book);
+		} catch (BookstorePersistenceException e) {
+			LOGGER.error("Controller: Error while deleting book",e);
+			bookView.showError("Error while deleting book", book);
+		}
 	}
 
 	@Override
 	public void deleteAuthor(Author author) {
-		// TODO Auto-generated method stub
-
+		try {
+			manager.delete(author);
+			authorView.authorRemoved(author);
+		} catch (BookstorePersistenceException e) {
+			LOGGER.error("Controller: Error while deleting author",e);
+			authorView.showError("Error while deleting author", author);
+		}
 	}
 
 	@Override
 	public void composeBook() {
-		// TODO Auto-generated method stub
-
+		bookView.showCreateBook(manager.getAllAuthors());
 	}
 
 }

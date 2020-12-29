@@ -13,6 +13,7 @@ import org.junit.Test;
 import org.mockito.InOrder;
 import org.mockito.Mock;
 
+import piero.aldinucci.apt.bookstore.exceptions.BookstorePersistenceException;
 import piero.aldinucci.apt.bookstore.model.Author;
 import piero.aldinucci.apt.bookstore.model.Book;
 import piero.aldinucci.apt.bookstore.service.BookstoreManager;
@@ -91,6 +92,56 @@ public class BookstoreControllerImplTest {
 		InOrder inOrder = inOrder(manager,bookView);
 		inOrder.verify(manager).delete(book);
 		inOrder.verify(bookView).bookRemoved(book);
+	}
+	
+	@Test
+	public void test_deleteBook_when_book_doesnt_exist() {
+		Book book = new Book(1L, "test book", new HashSet<>());
+		doThrow(BookstorePersistenceException.class)
+			.when(manager).delete(isA(Book.class));
+		
+		assertThatCode(() -> controller.deleteBook(book))
+			.doesNotThrowAnyException();
+		
+		verify(manager).delete(book);
+		verify(bookView).showError("Error while deleting book", book);
+		verifyNoMoreInteractions(manager);
+	}
+	
+	@Test
+	public void test_deleteAuthor() {
+		Author author = new Author(3L, "test author", new HashSet<>());
+		
+		controller.deleteAuthor(author);
+		
+		InOrder inOrder = inOrder(manager,authorView);
+		inOrder.verify(manager).delete(author);
+		inOrder.verify(authorView).authorRemoved(author);
+	}
+	
+	@Test
+	public void test_deleteAuthor_when_author_doesnt_exists() {
+		doThrow(BookstorePersistenceException.class)
+			.when(manager).delete(isA(Author.class));
+		Author author = new Author(3L, "not existant", null);
+		
+		assertThatCode(() -> controller.deleteAuthor(author))
+			.doesNotThrowAnyException();
+		
+		InOrder inOrder = inOrder(manager,authorView);
+		inOrder.verify(manager).delete(author);
+		inOrder.verify(authorView).showError("Error while deleting author", author);
+		verifyNoMoreInteractions(manager);
+	}
+	
+	@Test
+	public void test_composeBook() {
+		List<Author> authors = Arrays.asList(new Author(3L,"test name",new HashSet<Book>()));
+		when(manager.getAllAuthors()).thenReturn(authors);
+		
+		controller.composeBook();
+		
+		verify(bookView).showCreateBook(authors);
 	}
 
 }
