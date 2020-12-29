@@ -3,6 +3,7 @@ package piero.aldinucci.apt.bookstore.model;
 import java.util.Set;
 
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.ManyToMany;
@@ -16,7 +17,7 @@ public class Author {
 	
 	private String name;
 	
-	@ManyToMany
+	@ManyToMany(fetch = FetchType.EAGER)
 	private Set<Book> books;
 	
 	public Author() {}
