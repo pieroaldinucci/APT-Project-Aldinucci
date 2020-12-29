@@ -1,6 +1,9 @@
 package piero.aldinucci.apt.bookstore.view.swing;
 
 import static org.assertj.core.api.Assertions.*;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoMoreInteractions;
+import static org.mockito.MockitoAnnotations.*;
 
 import java.util.Arrays;
 import java.util.HashSet;
@@ -19,7 +22,10 @@ import org.assertj.swing.junit.runner.GUITestRunner;
 import org.assertj.swing.junit.testcase.AssertJSwingJUnitTestCase;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.ArgumentCaptor;
+import org.mockito.Mock;
 
+import piero.aldinucci.apt.bookstore.controller.BookstoreController;
 import piero.aldinucci.apt.bookstore.model.Author;
 import piero.aldinucci.apt.bookstore.model.Book;
 
@@ -34,12 +40,18 @@ public class AuthorSwingViewTest extends AssertJSwingJUnitTestCase {
 	private JPanelFixture authorPanel;
 	private AuthorSwingView authorView;
 	private JFrame frame;
+	
+	@Mock
+	BookstoreController controller;
 
 	@Override
 	protected void onSetUp() throws Exception {
+		openMocks(this);
+		
 		GuiActionRunner.execute(() -> {
 			frame = new JFrame();
 			authorView = new AuthorSwingView();
+			authorView.setController(controller);
 			frame.add(authorView);
 			return frame;
 		});
@@ -124,5 +136,43 @@ public class AuthorSwingViewTest extends AssertJSwingJUnitTestCase {
 		
 		assertThat(authorView.getAuthorListModel().toArray()).containsExactly(testAuthor);
 		assertThat(authorPanel.label(ERROR_LABEL).text()).isEmpty();
+	}
+	
+	@Test
+	@GUITest
+	public void test_authorRemoved_should_update_the_list_and_clear_error() {
+		Author testAuthor = new Author(1L, "Isaac", null);
+		Author testAuthor2 = new Author(4L, "Arthur", null);
+		GuiActionRunner.execute(() -> {
+			authorView.getAuthorListModel().addElement(testAuthor);
+			authorView.getAuthorListModel().addElement(testAuthor2);			
+		});
+		
+		GuiActionRunner.execute(() -> authorView.authorRemoved(testAuthor));
+		
+		assertThat(authorView.getAuthorListModel().toArray()).containsExactly(testAuthor2);
+		assertThat(authorPanel.label("ErrorLabel").text()).isEmpty();
+	}
+	
+	@Test
+	@GUITest
+	public void text_showError_should_update_error_label() {
+		Author testAuthor = new Author(2L, "test", new HashSet<Book>());
+		testAuthor.getBooks().add(new Book(3L, "A book", null));
+		
+		GuiActionRunner.execute(() -> authorView.showError("This is an Error Message!", testAuthor));
+		
+		authorPanel.label("ErrorLabel").requireText("This is an Error Message!: "+testAuthor);
+	}
+	
+	@Test
+	public void test_clicking_add_button_should_delegate_to_controller() {
+		authorPanel.textBox(NAME_TEXT_FIELD).enterText("Mario");
+		authorPanel.button(ADD_AUTHOR_BUTTON).click();
+		
+		ArgumentCaptor<Author> author = ArgumentCaptor.forClass(Author.class);
+		verify(controller).newAuthor(author.capture());
+		assertThat(author.getValue()).usingRecursiveComparison().isEqualTo(new Author(null, "Mario", new HashSet<Book>()));
+		verifyNoMoreInteractions(controller);
 	}
 }

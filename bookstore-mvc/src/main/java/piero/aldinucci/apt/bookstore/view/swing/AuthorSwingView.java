@@ -9,6 +9,7 @@ import java.util.List;
 
 import javax.swing.JTextField;
 
+import piero.aldinucci.apt.bookstore.controller.BookstoreController;
 import piero.aldinucci.apt.bookstore.model.Author;
 import piero.aldinucci.apt.bookstore.view.AuthorView;
 
@@ -27,6 +28,7 @@ public class AuthorSwingView extends JPanel implements AuthorView{
 	 */
 	private static final long serialVersionUID = 1L;
 	
+	private BookstoreController controller;
 	private JTextField nameTextField;
 	private JButton btnAddAuthor;
 	private DefaultListModel<Author> authorListModel;
@@ -34,6 +36,8 @@ public class AuthorSwingView extends JPanel implements AuthorView{
 	private JList authorList;
 
 	private JButton btnDeleteAuthor;
+
+	private JLabel errorLabel;
 
 	/**
 	 * Create the panel.
@@ -56,13 +60,13 @@ public class AuthorSwingView extends JPanel implements AuthorView{
 	}
 
 	private void createErrorLabel() {
-		JLabel label = new JLabel(" ");
-		label.setName("ErrorLabel");
+		errorLabel = new JLabel(" ");
+		errorLabel.setName("ErrorLabel");
 		GridBagConstraints gbc_label = new GridBagConstraints();
 		gbc_label.insets = new Insets(0, 0, 0, 5);
 		gbc_label.gridx = 1;
 		gbc_label.gridy = 4;
-		add(label, gbc_label);
+		add(errorLabel, gbc_label);
 	}
 
 	private void createDeleteButton() {
@@ -142,24 +146,33 @@ public class AuthorSwingView extends JPanel implements AuthorView{
 
 	@Override
 	public void authorAdded(Author author) {
-		// TODO Auto-generated method stub
+		authorListModel.addElement(author);
+		clearErrorLabel();
 		
 	}
 
 	@Override
 	public void authorRemoved(Author author) {
-		// TODO Auto-generated method stub
-		
+		authorListModel.removeElement(author);
+		clearErrorLabel();
 	}
 
 	@Override
 	public void showError(String message, Author author) {
-		// TODO Auto-generated method stub
+		errorLabel.setText(message+": "+author);
 		
 	}
 
 	DefaultListModel<Author> getAuthorListModel() {
 		return authorListModel;
+	}
+	
+	private void clearErrorLabel() {
+		errorLabel.setText("");
+	}
+
+	public void setController(BookstoreController controller) {
+		this.controller = controller;
 	}
 
 }
