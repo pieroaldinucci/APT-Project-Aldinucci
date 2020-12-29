@@ -2,10 +2,21 @@ package piero.aldinucci.apt.bookstore.model;
 
 import java.util.Set;
 
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+import javax.persistence.ManyToMany;
+
+@Entity
 public class Book {
 	
+	@Id
+	@GeneratedValue
 	private Long id;
+	
 	private String title;
+	
+	@ManyToMany
 	private Set<Author> authors;
 	
 	public Book(Long id, String title, Set<Author> authors) {
