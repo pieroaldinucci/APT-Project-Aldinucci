@@ -10,13 +10,6 @@
 	</parent>
 	<artifactId>bookstore-mvc</artifactId>
 
-	<properties>
-		<sonar.issue.ignore.multicriteria>e1</sonar.issue.ignore.multicriteria>
-		<!-- Rule: Add at least one assertion. Reason: Assertions are made by Assertj.swing --> 
-		<sonar.issue.ignore.multicriteria.e1.ruleKey>java:S2699</sonar.issue.ignore.multicriteria.e1.ruleKey>
-		<sonar.issue.ignore.multicriteria.e1.resourceKey>**/AuthorSwingViewTest.java</sonar.issue.ignore.multicriteria.e1.resourceKey>
-	</properties>
-
 	<dependencies>
 		<dependency>
 			<groupId>${project.groupId}</groupId>
