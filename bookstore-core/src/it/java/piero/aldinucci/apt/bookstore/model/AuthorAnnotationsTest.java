@@ -1,6 +1,7 @@
 package piero.aldinucci.apt.bookstore.model;
 
-import static org.assertj.core.api.Assertions.*;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatCode;
 
 import java.util.HashSet;
 
@@ -9,9 +10,7 @@ import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 
 import org.junit.After;
-import org.junit.AfterClass;
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 
 public class AuthorAnnotationsTest {
@@ -50,7 +49,9 @@ public class AuthorAnnotationsTest {
 		Author retrievedAuthor = entityManager.find(Author.class, author.getId());
 		entityManager.close();
 		
-		assertThat(retrievedAuthor).usingRecursiveComparison().isEqualTo(author);
+		assertThatCode(() -> {
+			assertThat(retrievedAuthor).usingRecursiveComparison().isEqualTo(author);
+		}).doesNotThrowAnyException();
 	}
 
 }

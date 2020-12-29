@@ -19,6 +19,8 @@ public class Author {
 	@ManyToMany
 	private Set<Book> books;
 	
+	public Author() {}
+	
 	public Author(Long id, String name, Set<Book> books) {
 		this.id = id;
 		this.name = name;
