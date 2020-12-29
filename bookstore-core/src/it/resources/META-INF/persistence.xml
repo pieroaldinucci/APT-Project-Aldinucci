@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<persistence version="2.2"
+     xmlns="http://xmlns.jcp.org/xml/ns/persistence"
+     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+     xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/persistence
+     http://xmlns.jcp.org/xml/ns/persistence/persistence_2_2.xsd">
+
+
+	<persistence-unit
+		name="apt.project.bookstore"
+		transaction-type="RESOURCE_LOCAL">
+
+		<description>test version of the persistence unit.</description>
+		
+		<!--  if persistence.xml isn't the the main folder it cannot found the entity
+			so we have to tell him where to find it -->
+		<class>piero.aldinucci.apt.bookstore.model.Book</class>
+		<class>piero.aldinucci.apt.bookstore.model.Author</class>
+		
+		<properties>
+
+			<property name="javax.persistence.schema-generation.database.action" value="drop-and-create"/>
+
+			<property name="javax.persistence.schema-generation.create-database-schemas" value="true"/>
+<!-- 	
+			<property name="javax.persistence.schema-generation.create-source" value="script"/>
+			<property name="javax.persistence.schema-generation.create-script-source" value="META-INF/create.sql"/>
+
+		    <property name="javax.persistence.schema-generation.drop-source" value="script"/>
+      		<property name="javax.persistence.schema-generation.drop-script-source" value="META-INF/drop.sql"/>
+ -->
+
+<!--       		<property name="javax.persistence.schema-generation.create-source" value="script-then-metadata"/> -->
+<!--       		<property name="javax.persistence.schema-generation.drop-source" value="metadata-then-script"/> -->
+<!--       		<property name="javax.persistence.schema-generation.create-script-source" value="META-INF/create.sql"/> -->
+<!--       		<property name="javax.persistence.schema-generation.drop-script-source" value="META-INF/drop.sql"/>      		 -->
+<!-- 
+      		<property name="javax.persistence.schema-generation.scripts.action" value="drop-and-create"/>
+      		<property name="javax.persistence.schema-generation.scripts.create-target" value="target/jpa/sql/create-schema.sql"/>
+ -->
+
+			<property name="javax.persistence.jdbc.url" value="jdbc:postgresql://localhost:5432/projectAPTTestDb" />
+			<property name="javax.persistence.jdbc.user" value="testUser" />
+			<property name="javax.persistence.jdbc.password" value="secret" />
+			<property name="javax.persistence.jdbc.driver" value="org.postgresql.Driver" />
+
+			<property name="hibernate.dialect" value="org.hibernate.dialect.PostgreSQL95Dialect"/>
+
+<!-- 			<property name="hibernate.default_schema" value="testschema"/> -->
+
+			<property name="hibernate.show_sql" value="false" /> <!-- show SQL logs -->
+			<property name="hibernate.format_sql" value="true" /><!--  format the SQL to make it readable -->
+			<!-- 
+			<property name="hibernate.generate.statistics" value="true"/>
+			-->
+			
+<!-- 
+			this is redundant because we're using the persistence style properties
+			<property name="hibernate.hbm2ddl.auto" value="create-drop" />
+ -->
+			 <!-- create / create-drop / update -->
+		</properties>
+
+	</persistence-unit>
+</persistence>
