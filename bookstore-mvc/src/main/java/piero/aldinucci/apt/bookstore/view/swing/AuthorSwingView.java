@@ -12,27 +12,36 @@ import javax.swing.JTextField;
 import piero.aldinucci.apt.bookstore.model.Author;
 import piero.aldinucci.apt.bookstore.view.AuthorView;
 
+import javax.swing.DefaultListModel;
 import javax.swing.JButton;
 import javax.swing.JList;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import javax.swing.ListSelectionModel;
+import javax.swing.event.ListSelectionListener;
+import javax.swing.event.ListSelectionEvent;
 
 public class AuthorSwingView extends JPanel implements AuthorView{
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
+	
 	private JTextField nameTextField;
 	private JButton btnAddAuthor;
+	private DefaultListModel<Author> authorListModel;
+
+	private JList authorList;
+
+	private JButton btnDeleteAuthor;
 
 	/**
 	 * Create the panel.
 	 */
 	public AuthorSwingView() {
 		GridBagLayout gridBagLayout = new GridBagLayout();
-		gridBagLayout.columnWidths = new int[]{0, 0, 0, 0};
-		gridBagLayout.rowHeights = new int[]{27, 0, 0, 0, 21, 0};
+		gridBagLayout.columnWidths = new int[] {20, 200, 30, 20};
+		gridBagLayout.rowHeights = new int[] {27, 20, 90, 30, 21, 0};
 		gridBagLayout.columnWeights = new double[]{0.0, 1.0, 0.0, Double.MIN_VALUE};
 		gridBagLayout.rowWeights = new double[]{0.0, 0.0, 1.0, 0.0, 0.0, Double.MIN_VALUE};
 		setLayout(gridBagLayout);
@@ -57,26 +66,32 @@ public class AuthorSwingView extends JPanel implements AuthorView{
 	}
 
 	private void createDeleteButton() {
-		JButton btnDelete = new JButton("Delete");
-		btnDelete.setEnabled(false);
-		btnDelete.setName("DeleteAuthor");
+		btnDeleteAuthor = new JButton("Delete");
+		btnDeleteAuthor.setEnabled(false);
+		btnDeleteAuthor.setName("DeleteAuthor");
 		GridBagConstraints gbc_btnDelete = new GridBagConstraints();
 		gbc_btnDelete.insets = new Insets(0, 0, 5, 5);
 		gbc_btnDelete.gridx = 1;
 		gbc_btnDelete.gridy = 3;
-		add(btnDelete, gbc_btnDelete);
+		add(btnDeleteAuthor, gbc_btnDelete);
 	}
 
 	private void createList() {
-		JList list = new JList();
-		list.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-		list.setName("AuthorList");
+		authorListModel = new DefaultListModel<>();
+		authorList = new JList<>(authorListModel);
+		authorList.addListSelectionListener(new ListSelectionListener() {
+			public void valueChanged(ListSelectionEvent e) {
+				btnDeleteAuthor.setEnabled(authorList.getSelectedIndex() != -1);
+			}
+		});
+		authorList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+		authorList.setName("AuthorList");
 		GridBagConstraints gbc_list = new GridBagConstraints();
 		gbc_list.insets = new Insets(0, 0, 5, 5);
 		gbc_list.fill = GridBagConstraints.BOTH;
 		gbc_list.gridx = 1;
 		gbc_list.gridy = 2;
-		add(list, gbc_list);
+		add(authorList, gbc_list);
 	}
 
 	private void createAddButton() {
@@ -120,7 +135,8 @@ public class AuthorSwingView extends JPanel implements AuthorView{
 
 	@Override
 	public void showAllAuthors(List<Author> authors) {
-		// TODO Auto-generated method stub
+		authorListModel.clear();
+		authors.stream().forEach(a -> authorListModel.addElement(a));
 		
 	}
 
@@ -140,6 +156,10 @@ public class AuthorSwingView extends JPanel implements AuthorView{
 	public void showError(String message, Author author) {
 		// TODO Auto-generated method stub
 		
+	}
+
+	DefaultListModel<Author> getAuthorListModel() {
+		return authorListModel;
 	}
 
 }
