@@ -1,0 +1,4 @@
+target/
+bookstore-core/target/
+bookstore-mvc/target/
+*.class

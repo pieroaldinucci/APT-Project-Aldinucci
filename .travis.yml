@@ -1,6 +1,17 @@
 dist: bionic
 language: java
-jdk: openjdk11
+
+matrix:
+   include:
+      #coveralls plugin doesn't work with jdk 11 for some reasons
+      - jdk: openjdk8
+        env: MAVEN_ARGS="coveralls:report"
+      #sonarcloud requires jdk 11 or newer       
+      - jdk: openjdk11
+        env: MAVEN_ARGS="sonar:sonar -Dsonar.projectKey=Predictabowl_APT-Project-Aldinucci"
+
+
+
 
 addons:
    sonarcloud:
@@ -15,10 +26,13 @@ install: true
 
 cache:
    directories:
+      - .autoconf
       - $HOME/.m2
-      - $HOME/.sonar/cache 
+      - $HOME/.sonar/cache
       
       
 script:
    #- ./travis-build
-   - mvn -f bookstore-core/pom.xml clean verify sonar:sonar -Dsonar.projectKey=Predictabowl_APT-Project-Aldinucci
+#   - mvn -f bookstore-core/pom.xml clean verify org.pitest:pitest-maven:mutationCoverage $MAVEN_ARGS
+#   - mvn -f bookstore-core/pom.xml clean verify -Pjacoco $MAVEN_ARGS
+    - mvn -f bookstore-core/pom.xml test
