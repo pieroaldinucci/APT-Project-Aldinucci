@@ -19,6 +19,7 @@ import piero.aldinucci.apt.bookstore.controller.BookstoreController;
 import piero.aldinucci.apt.bookstore.model.Author;
 import piero.aldinucci.apt.bookstore.model.Book;
 import piero.aldinucci.apt.bookstore.view.BookView;
+import javax.swing.ListSelectionModel;
 
 public class BookSwingView extends JPanel implements BookView {
 
@@ -98,6 +99,7 @@ public class BookSwingView extends JPanel implements BookView {
 	private void createList() {
 		bookModelList = new DefaultListModel<>();
 		bookJList = new JList<>();
+		bookJList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		bookJList.addListSelectionListener(e -> btnDelete.setEnabled(!bookJList.isSelectionEmpty()));
 		bookJList.setModel(getBookModelList());
 		bookJList.setName("BookJList");
