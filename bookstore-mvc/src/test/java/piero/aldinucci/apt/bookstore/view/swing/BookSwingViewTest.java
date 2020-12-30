@@ -41,6 +41,9 @@ public class BookSwingViewTest extends AssertJSwingJUnitTestCase {
 
 	@Mock
 	private BookstoreController controller;
+	
+	@Mock
+	private NewBookDialog newBookDialog;
 
 	@Override
 	protected void onSetUp() throws Exception {
@@ -48,7 +51,7 @@ public class BookSwingViewTest extends AssertJSwingJUnitTestCase {
 
 		GuiActionRunner.execute(() -> {
 			frame = new JFrame();
-			bookView = new BookSwingView();
+			bookView = new BookSwingView(newBookDialog);
 			bookView.setController(controller);
 			frame.add(bookView);
 			return bookView;

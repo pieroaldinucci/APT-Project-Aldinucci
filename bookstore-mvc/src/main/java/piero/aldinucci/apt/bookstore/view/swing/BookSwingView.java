@@ -40,10 +40,13 @@ public class BookSwingView extends JPanel implements BookView {
 
 	private JLabel errorLabel;
 
+	private NewBookDialog newBookDialog;
+
 	/**
 	 * Create the panel.
 	 */
-	public BookSwingView() {
+	public BookSwingView(NewBookDialog newBookDialog) {
+		this.newBookDialog = newBookDialog;
 		GridBagLayout gridBagLayout = new GridBagLayout();
 		gridBagLayout.columnWidths = new int[] { 30, 150, 150, 30, 0 };
 		gridBagLayout.rowHeights = new int[] { 30, 100, 30, 30, 0 };
