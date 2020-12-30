@@ -11,6 +11,8 @@ import java.awt.GridBagLayout;
 import javax.swing.JList;
 import java.awt.GridBagConstraints;
 import java.awt.Insets;
+
+import javax.swing.DefaultListModel;
 import javax.swing.JButton;
 import java.awt.event.ActionListener;
 import java.util.List;
@@ -25,6 +27,8 @@ public class BookSwingView extends JPanel implements BookView{
 	private static final long serialVersionUID = 1L;
 	
 	private transient BookstoreController controller;
+
+	private DefaultListModel<Book> bookModelList;
 
 	/**
 	 * Create the panel.
@@ -45,17 +49,20 @@ public class BookSwingView extends JPanel implements BookView{
 	}
 
 	private void createErrorLabel() {
-		JLabel lblNewLabel = new JLabel("");
+		JLabel errorLabel = new JLabel("");
+		errorLabel.setName("ErrorLabel");
 		GridBagConstraints gbc_lblNewLabel = new GridBagConstraints();
 		gbc_lblNewLabel.gridwidth = 2;
 		gbc_lblNewLabel.insets = new Insets(0, 0, 0, 5);
 		gbc_lblNewLabel.gridx = 1;
 		gbc_lblNewLabel.gridy = 3;
-		add(lblNewLabel, gbc_lblNewLabel);
+		add(errorLabel, gbc_lblNewLabel);
 	}
 
 	private void createDeleteButton() {
 		JButton btnDelete = new JButton("Delete Book");
+		btnDelete.setEnabled(false);
+		btnDelete.setName("DeleteBook");
 		GridBagConstraints gbc_btnDelete = new GridBagConstraints();
 		gbc_btnDelete.insets = new Insets(0, 0, 5, 5);
 		gbc_btnDelete.gridx = 2;
@@ -65,6 +72,7 @@ public class BookSwingView extends JPanel implements BookView{
 
 	private void createNewButton() {
 		JButton btnNewButton = new JButton("New Book");
+		btnNewButton.setName("NewBook");
 		btnNewButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 			}
@@ -77,14 +85,17 @@ public class BookSwingView extends JPanel implements BookView{
 	}
 
 	private void createList() {
-		JList list = new JList();
+		bookModelList = new DefaultListModel<>();
+		JList<Book> bookJList = new JList();
+		bookJList.setModel(getBookModelList());
+		bookJList.setName("BookJList");
 		GridBagConstraints gbc_list = new GridBagConstraints();
 		gbc_list.gridwidth = 2;
 		gbc_list.insets = new Insets(0, 0, 5, 5);
 		gbc_list.fill = GridBagConstraints.BOTH;
 		gbc_list.gridx = 1;
 		gbc_list.gridy = 1;
-		add(list, gbc_list);
+		add(bookJList, gbc_list);
 	}
 
 	@Override
@@ -119,6 +130,10 @@ public class BookSwingView extends JPanel implements BookView{
 
 	public void setController(BookstoreController controller) {
 		this.controller = controller;
+	}
+
+	DefaultListModel<Book> getBookModelList() {
+		return bookModelList;
 	}
 
 }
