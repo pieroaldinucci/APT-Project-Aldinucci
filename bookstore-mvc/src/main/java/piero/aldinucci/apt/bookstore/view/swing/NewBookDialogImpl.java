@@ -20,6 +20,8 @@ import javax.swing.JTextField;
 import java.awt.Insets;
 import javax.swing.JList;
 import javax.swing.ListSelectionModel;
+import java.awt.event.ActionListener;
+import java.awt.event.ActionEvent;
 
 public class NewBookDialogImpl extends NewBookDialog {
 
@@ -34,6 +36,14 @@ public class NewBookDialogImpl extends NewBookDialog {
 	private DefaultListModel<Author> modelAvailableAuthors;
 	private DefaultListModel<Author> modelBookAuthors;
 
+	private JButton addAuthorButton;
+
+	private JButton removeAuthorButton;
+
+	private JList<Author> availableAuthors;
+
+	private JList<Author> bookAuthors;
+
 	/**
 	 * Create the dialog.
 	 */
@@ -46,12 +56,12 @@ public class NewBookDialogImpl extends NewBookDialog {
 		contentPanel.setBorder(new EmptyBorder(5, 5, 5, 5));
 		getContentPane().add(contentPanel, BorderLayout.CENTER);
 		GridBagLayout gblcontentPanel = new GridBagLayout();
-		gblcontentPanel.columnWidths = new int[] {30, 100, 30, 100, 0};
-		gblcontentPanel.rowHeights = new int[] {30, 30, 30, 0, 0};
+		gblcontentPanel.columnWidths = new int[] { 30, 100, 30, 100, 0 };
+		gblcontentPanel.rowHeights = new int[] { 30, 30, 30, 0, 0 };
 		gblcontentPanel.columnWeights = new double[] { 0.0, 1.0, 0.0, 1.0, Double.MIN_VALUE };
 		gblcontentPanel.rowWeights = new double[] { 0.0, 0.0, 0.0, 1.0, Double.MIN_VALUE };
 		contentPanel.setLayout(gblcontentPanel);
-		
+
 		createTextField();
 		createBookAuthorsList();
 		createAddAuthorButton();
@@ -80,14 +90,21 @@ public class NewBookDialogImpl extends NewBookDialog {
 	}
 
 	private void createRemoveAuthorButton() {
-		JButton button = new JButton(">");
-		button.setEnabled(false);
-		button.setName("buttonRemoveAuthor");
+		removeAuthorButton = new JButton(">");
+		removeAuthorButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				Author author = bookAuthors.getSelectedValue();
+				modelBookAuthors.removeElement(author);
+				modelAvailableAuthors.addElement(author);
+			}
+		});
+		removeAuthorButton.setEnabled(false);
+		removeAuthorButton.setName("buttonRemoveAuthor");
 		GridBagConstraints gbcbutton = new GridBagConstraints();
 		gbcbutton.insets = new Insets(0, 0, 5, 5);
 		gbcbutton.gridx = 2;
 		gbcbutton.gridy = 2;
-		contentPanel.add(button, gbcbutton);
+		contentPanel.add(removeAuthorButton, gbcbutton);
 	}
 
 	private void createDescriptionLabels() {
@@ -118,8 +135,10 @@ public class NewBookDialogImpl extends NewBookDialog {
 
 	private void createAvailableAuthorsList() {
 		modelAvailableAuthors = new DefaultListModel<>();
-		JList<Author> availableAuthors = new JList<>();
-		availableAuthors.setModel(modelAvailableAuthors);;
+		availableAuthors = new JList<>();
+		availableAuthors
+				.addListSelectionListener(e -> addAuthorButton.setEnabled(!availableAuthors.isSelectionEmpty()));
+		availableAuthors.setModel(modelAvailableAuthors);
 		availableAuthors.setName("AvailableAuthors");
 		availableAuthors.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		GridBagConstraints gbcavailableAuthors = new GridBagConstraints();
@@ -131,19 +150,27 @@ public class NewBookDialogImpl extends NewBookDialog {
 	}
 
 	private void createAddAuthorButton() {
-		JButton button = new JButton("<");
-		button.setName("buttonAddAuthor");
-		button.setEnabled(false);
+		addAuthorButton = new JButton("<");
+		addAuthorButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				Author author = availableAuthors.getSelectedValue();
+				modelAvailableAuthors.removeElement(author);
+				modelBookAuthors.addElement(author);
+			}
+		});
+		addAuthorButton.setName("buttonAddAuthor");
+		addAuthorButton.setEnabled(false);
 		GridBagConstraints gbcbutton = new GridBagConstraints();
 		gbcbutton.insets = new Insets(0, 0, 5, 5);
 		gbcbutton.gridx = 2;
 		gbcbutton.gridy = 1;
-		contentPanel.add(button, gbcbutton);
+		contentPanel.add(addAuthorButton, gbcbutton);
 	}
 
 	private void createBookAuthorsList() {
 		modelBookAuthors = new DefaultListModel<>();
-		JList<Author> bookAuthors = new JList<>();
+		bookAuthors = new JList<>();
+		bookAuthors.addListSelectionListener(e -> removeAuthorButton.setEnabled(!bookAuthors.isSelectionEmpty()));
 		bookAuthors.setModel(modelBookAuthors);
 		bookAuthors.setName("BookAuthors");
 		bookAuthors.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);

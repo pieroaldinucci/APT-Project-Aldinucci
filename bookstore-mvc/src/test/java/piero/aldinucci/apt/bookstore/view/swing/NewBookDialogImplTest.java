@@ -10,6 +10,8 @@ import org.assertj.swing.core.matcher.JButtonMatcher;
 import org.assertj.swing.core.matcher.JLabelMatcher;
 import org.assertj.swing.edt.GuiActionRunner;
 import org.assertj.swing.fixture.DialogFixture;
+import org.assertj.swing.fixture.JButtonFixture;
+import org.assertj.swing.fixture.JListFixture;
 import org.assertj.swing.junit.runner.GUITestRunner;
 import org.assertj.swing.junit.testcase.AssertJSwingJUnitTestCase;
 import org.junit.After;
@@ -110,24 +112,117 @@ public class NewBookDialogImplTest extends AssertJSwingJUnitTestCase {
 
 		assertThat(bookDialog.getModelAvailableAuthors().toArray()).containsExactly(author2);
 	}
-	
+
 	@Test
 	public void test_pressing_cancel_button_will_not_return_value_and_Dialog_will_hide_and_clear() {
 		GuiActionRunner.execute(() -> {
 			bookDialog.getModelAvailableAuthors().addElement(new Author(2L, "database author", new HashSet<>()));
 			bookDialog.getModelBookAuthors().addElement(new Author(5L, "book author", new HashSet<>()));
 		});
-		
+
 		dialogFixture.textBox(TITLE_TEXT_FIELD).enterText("Title");
 		dialogFixture.button(JButtonMatcher.withText("Cancel")).click();
-		
+
 		dialogFixture.requireNotVisible();
 		assertThat(bookDialog.getReturnValue()).isEmpty();
-		
+
 		dialogFixture.show();
-		
+
 		dialogFixture.textBox(TITLE_TEXT_FIELD).requireEmpty();
 		dialogFixture.list(AUTHOR_JLIST).requireItemCount(0);
 		dialogFixture.list(BOOK_AUTHOR_JLIST).requireItemCount(0);
+	}
+
+	@Test
+	@GUITest
+	public void test_buttonAddAuthor_should_be_disabled_when_no_Existing_author_is_selected() {
+		GuiActionRunner.execute(() -> bookDialog.getModelAvailableAuthors()
+				.addElement(new Author(2L, "author name", new HashSet<Book>())));
+		JListFixture list = dialogFixture.list(AUTHOR_JLIST);
+		JButtonFixture button = dialogFixture.button(BUTTON_ADD_AUTHOR);
+		list.selectItem(0);
+
+		button.requireEnabled();
+
+		list.clearSelection();
+
+		button.requireDisabled();
+	}
+
+	@Test
+	@GUITest
+	public void test_buttonRemoveAuthor_should_be_disabled_when_no_Book_author_is_selected() {
+		GuiActionRunner.execute(() -> {
+			bookDialog.getModelBookAuthors().addElement(new Author(2L, "author name", new HashSet<Book>()));
+		});
+		JListFixture list = dialogFixture.list(BOOK_AUTHOR_JLIST);
+		JButtonFixture button = dialogFixture.button(BUTTON_REMOVE_AUTHOR);
+		list.selectItem(0);
+
+		button.requireEnabled();
+
+		list.clearSelection();
+
+		button.requireDisabled();
+	}
+
+	@Test
+	@GUITest
+	public void test_buttonAddAuthor_should_move_selected_author_from_right_to_left() {
+		Author author = new Author(2L, "author name", new HashSet<Book>());
+		Author author2 = new Author(3L, "another name", new HashSet<Book>());
+		Author author3 = new Author(8L, "test name", new HashSet<Book>());
+		GuiActionRunner.execute(() -> {
+			bookDialog.getModelBookAuthors().addElement(author);
+			bookDialog.getModelAvailableAuthors().addElement(author3);
+			bookDialog.getModelAvailableAuthors().addElement(author2);
+		});
+
+		dialogFixture.list(AUTHOR_JLIST).selectItem(1);
+		dialogFixture.button(BUTTON_ADD_AUTHOR).click();
+
+		assertThat(bookDialog.getModelBookAuthors().toArray()).containsExactlyInAnyOrder(author, author2);
+		assertThat(bookDialog.getModelAvailableAuthors().toArray()).containsExactly(author3);
+	}
+
+	@Test
+	@GUITest
+	public void test_buttonRemoveAuthor_should_move_selected_author_from_left_to_right() {
+		Author author = new Author(2L, "author name", new HashSet<Book>());
+		Author author2 = new Author(3L, "another name", new HashSet<Book>());
+		Author author3 = new Author(8L, "test name", new HashSet<Book>());
+		GuiActionRunner.execute(() -> {
+			bookDialog.getModelBookAuthors().addElement(author);
+			bookDialog.getModelBookAuthors().addElement(author2);
+			bookDialog.getModelAvailableAuthors().addElement(author3);
+		});
+
+		dialogFixture.list(BOOK_AUTHOR_JLIST).selectItem(0);
+		dialogFixture.button(BUTTON_REMOVE_AUTHOR).click();
+
+		assertThat(bookDialog.getModelBookAuthors().toArray()).containsExactly(author2);
+		// right now we don't require any sorting
+		assertThat(bookDialog.getModelAvailableAuthors().toArray()).containsExactlyInAnyOrder(author, author3);
+	}
+
+	@Test
+	@GUITest
+	public void test_OKbutton_should_create_a_book_with_multiple_authors() {
+		Author author = new Author(2L, "author name", new HashSet<Book>());
+		Author author2 = new Author(5L, "another name", new HashSet<Book>());
+		HashSet<Author> authors = new HashSet<>();
+		authors.add(author);
+		authors.add(author2);
+		GuiActionRunner.execute(() -> {
+			bookDialog.getModelBookAuthors().addElement(author);
+			bookDialog.getModelBookAuthors().addElement(author2);
+		});
+
+		dialogFixture.textBox(TITLE_TEXT_FIELD).enterText("Book!");
+		dialogFixture.button(JButtonMatcher.withText("OK")).click();
+
+		assertThat(bookDialog.getReturnValue()).isNotEmpty();
+		assertThat(bookDialog.getReturnValue().get()).usingRecursiveComparison()
+				.isEqualTo(new Book(null, "Book title", authors));
 	}
 }
