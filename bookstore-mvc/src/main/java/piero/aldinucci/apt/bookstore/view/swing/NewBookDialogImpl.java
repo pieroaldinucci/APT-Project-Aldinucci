@@ -5,6 +5,7 @@ import java.awt.FlowLayout;
 import java.util.List;
 import java.util.Optional;
 
+import javax.swing.DefaultListModel;
 import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JPanel;
@@ -19,6 +20,8 @@ import javax.swing.JTextField;
 import java.awt.Insets;
 import javax.swing.JList;
 import javax.swing.ListSelectionModel;
+import java.awt.event.ActionListener;
+import java.awt.event.ActionEvent;
 
 public class NewBookDialogImpl extends NewBookDialog {
 
@@ -30,18 +33,8 @@ public class NewBookDialogImpl extends NewBookDialog {
 	private final JPanel contentPanel = new JPanel();
 	private JTextField textField;
 
-	/**
-	 * Launch the application.
-	 */
-	public static void main(String[] args) {
-		try {
-			NewBookDialogImpl dialog = new NewBookDialogImpl();
-			dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
-			dialog.setVisible(true);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-	}
+	private DefaultListModel<Author> modelAvailableAuthors;
+	private DefaultListModel<Author> modelBookAuthors;
 
 	/**
 	 * Create the dialog.
@@ -55,8 +48,8 @@ public class NewBookDialogImpl extends NewBookDialog {
 		contentPanel.setBorder(new EmptyBorder(5, 5, 5, 5));
 		getContentPane().add(contentPanel, BorderLayout.CENTER);
 		GridBagLayout gblcontentPanel = new GridBagLayout();
-		gblcontentPanel.columnWidths = new int[] { 0, 0, 0, 0, 0 };
-		gblcontentPanel.rowHeights = new int[] { 0, 29, 25, 0, 0 };
+		gblcontentPanel.columnWidths = new int[] {30, 100, 30, 100, 0};
+		gblcontentPanel.rowHeights = new int[] {30, 30, 30, 0, 0};
 		gblcontentPanel.columnWeights = new double[] { 0.0, 1.0, 0.0, 1.0, Double.MIN_VALUE };
 		gblcontentPanel.rowWeights = new double[] { 0.0, 0.0, 0.0, 1.0, Double.MIN_VALUE };
 		contentPanel.setLayout(gblcontentPanel);
@@ -81,6 +74,11 @@ public class NewBookDialogImpl extends NewBookDialog {
 			}
 			{
 				JButton cancelButton = new JButton("Cancel");
+				cancelButton.addActionListener(new ActionListener() {
+					public void actionPerformed(ActionEvent e) {
+						setVisible(false);
+					}
+				});
 				cancelButton.setActionCommand("Cancel");
 				buttonPane.add(cancelButton);
 			}
@@ -107,7 +105,7 @@ public class NewBookDialogImpl extends NewBookDialog {
 		gbclblTitle.gridy = 0;
 		contentPanel.add(lblTitle, gbclblTitle);
 
-		JLabel lblBook = new JLabel("Book");
+		JLabel lblBook = new JLabel("Book's");
 		GridBagConstraints gbclblBook = new GridBagConstraints();
 		gbclblBook.anchor = GridBagConstraints.SOUTH;
 		gbclblBook.insets = new Insets(0, 0, 5, 5);
@@ -125,7 +123,9 @@ public class NewBookDialogImpl extends NewBookDialog {
 	}
 
 	private void createAvailableAuthorsList() {
-		JList<Book> availableAuthors = new JList<>();
+		modelAvailableAuthors = new DefaultListModel<>();
+		JList<Author> availableAuthors = new JList<>();
+		availableAuthors.setModel(modelAvailableAuthors);;
 		availableAuthors.setName("AvailableAuthors");
 		availableAuthors.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		GridBagConstraints gbcavailableAuthors = new GridBagConstraints();
@@ -148,7 +148,9 @@ public class NewBookDialogImpl extends NewBookDialog {
 	}
 
 	private void createBookAuthorsList() {
-		JList<Book> bookAuthors = new JList<>();
+		modelBookAuthors = new DefaultListModel<>();
+		JList<Author> bookAuthors = new JList<>();
+		bookAuthors.setModel(modelBookAuthors);
 		bookAuthors.setName("BookAuthors");
 		bookAuthors.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		GridBagConstraints gbcbookAuthors = new GridBagConstraints();
@@ -175,14 +177,22 @@ public class NewBookDialogImpl extends NewBookDialog {
 
 	@Override
 	public Optional<Book> getReturnValue() {
-		// TODO Auto-generated method stub
-		return null;
+		return Optional.empty();
 	}
 
 	@Override
 	public void setAuthorList(List<Author> authors) {
-		// TODO Auto-generated method stub
-
+		modelAvailableAuthors.clear();
+		authors.stream().forEach(a -> modelAvailableAuthors.addElement(a));
 	}
 
+	DefaultListModel<Author> getModelAvailableAuthors() {
+		return modelAvailableAuthors;
+	}
+
+	DefaultListModel<Author> getModelBookAuthors() {
+		return modelBookAuthors;
+	}
+
+	
 }
