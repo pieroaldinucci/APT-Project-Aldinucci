@@ -9,13 +9,17 @@ import piero.aldinucci.apt.bookstore.view.BookView;
 
 import java.awt.GridBagLayout;
 import javax.swing.JList;
+
+import java.awt.Component;
 import java.awt.GridBagConstraints;
 import java.awt.Insets;
 
+import javax.swing.DefaultListCellRenderer;
 import javax.swing.DefaultListModel;
 import javax.swing.JButton;
 import java.awt.event.ActionListener;
 import java.util.List;
+import java.util.stream.Collectors;
 import java.awt.event.ActionEvent;
 import javax.swing.JLabel;
 
@@ -83,16 +87,12 @@ public class BookSwingView extends JPanel implements BookView {
 	private void createNewButton() {
 		JButton btnNewButton = new JButton("New Book");
 		btnNewButton.setName("NewBook");
-		btnNewButton.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				controller.composeBook();
-			}
-		});
-		GridBagConstraints gbc_btnNewButton = new GridBagConstraints();
-		gbc_btnNewButton.insets = new Insets(0, 0, 5, 5);
-		gbc_btnNewButton.gridx = 1;
-		gbc_btnNewButton.gridy = 2;
-		add(btnNewButton, gbc_btnNewButton);
+		btnNewButton.addActionListener(e -> controller.composeBook());
+		GridBagConstraints gbcbtnNewButton = new GridBagConstraints();
+		gbcbtnNewButton.insets = new Insets(0, 0, 5, 5);
+		gbcbtnNewButton.gridx = 1;
+		gbcbtnNewButton.gridy = 2;
+		add(btnNewButton, gbcbtnNewButton);
 	}
 
 	private void createList() {
@@ -107,7 +107,23 @@ public class BookSwingView extends JPanel implements BookView {
 		gbclist.fill = GridBagConstraints.BOTH;
 		gbclist.gridx = 1;
 		gbclist.gridy = 1;
+
+		bookJList.setCellRenderer(new DefaultListCellRenderer() {
+			private static final long serialVersionUID = 1L;
+
+			@Override
+			public Component getListCellRendererComponent(JList<?> list, Object value, int index, boolean isSelected,
+					boolean cellHasFocus) {
+				return super.getListCellRendererComponent(list, getDisplayString((Book) value), index, isSelected,
+						cellHasFocus);
+			}
+		});
 		add(bookJList, gbclist);
+	}
+
+	private String getDisplayString(Book book) {
+		return book.toString()+"; Authors: "+book.getAuthors().stream()
+				.map(Author::getName).collect(Collectors.joining(" - "));
 	}
 
 	@Override
