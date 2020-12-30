@@ -25,15 +25,16 @@ public class BookstoreControllerImpl implements BookstoreController {
 
 	@Override
 	public void allAuthors() {
-		authorView.showAllAuthors(manager.getAllAuthors());
+		showAllAuthors();
 
 	}
 
 	@Override
 	public void allBooks() {
-		bookView.showAllBooks(manager.getAllBooks());
+		showAllBooks();
 
 	}
+
 
 	@Override
 	public void newBook(Book book) {
@@ -53,6 +54,7 @@ public class BookstoreControllerImpl implements BookstoreController {
 		} catch (BookstorePersistenceException e) {
 			LOGGER.error("Controller: Error while deleting book",e);
 			bookView.showError("Error while deleting book", book);
+			showAllBooks();
 		}
 	}
 
@@ -64,12 +66,22 @@ public class BookstoreControllerImpl implements BookstoreController {
 		} catch (BookstorePersistenceException e) {
 			LOGGER.error("Controller: Error while deleting author",e);
 			authorView.showError("Error while deleting author", author);
+			showAllAuthors();
 		}
 	}
+
 
 	@Override
 	public void composeBook() {
 		bookView.showCreateBook(manager.getAllAuthors());
 	}
 
+	private void showAllAuthors() {
+		authorView.showAllAuthors(manager.getAllAuthors());
+	}
+	
+	private void showAllBooks() {
+		bookView.showAllBooks(manager.getAllBooks());
+	}
+	
 }

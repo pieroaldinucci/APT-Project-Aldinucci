@@ -8,6 +8,7 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 
+import org.assertj.core.util.Lists;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.InOrder;
@@ -99,12 +100,16 @@ public class BookstoreControllerImplTest {
 		Book book = new Book(1L, "test book", new HashSet<>());
 		doThrow(BookstorePersistenceException.class)
 			.when(manager).delete(isA(Book.class));
+		List<Book> books = Arrays.asList(new Book(4L,"title",new HashSet<>()));
+		when(manager.getAllBooks()).thenReturn(books);
 		
 		assertThatCode(() -> controller.deleteBook(book))
 			.doesNotThrowAnyException();
 		
 		verify(manager).delete(book);
 		verify(bookView).showError("Error while deleting book", book);
+		verify(manager).getAllBooks();
+		verify(bookView).showAllBooks(books);
 		verifyNoMoreInteractions(manager);
 	}
 	
@@ -123,6 +128,8 @@ public class BookstoreControllerImplTest {
 	public void test_deleteAuthor_when_author_doesnt_exists() {
 		doThrow(BookstorePersistenceException.class)
 			.when(manager).delete(isA(Author.class));
+		List<Author> authors = Arrays.asList(new Author(1L,"author",new HashSet<>()));
+		when(manager.getAllAuthors()).thenReturn(authors);
 		Author author = new Author(3L, "not existant", null);
 		
 		assertThatCode(() -> controller.deleteAuthor(author))
@@ -131,6 +138,8 @@ public class BookstoreControllerImplTest {
 		InOrder inOrder = inOrder(manager,authorView);
 		inOrder.verify(manager).delete(author);
 		inOrder.verify(authorView).showError("Error while deleting author", author);
+		inOrder.verify(manager).getAllAuthors();
+		inOrder.verify(authorView).showAllAuthors(authors);
 		verifyNoMoreInteractions(manager);
 	}
 	
