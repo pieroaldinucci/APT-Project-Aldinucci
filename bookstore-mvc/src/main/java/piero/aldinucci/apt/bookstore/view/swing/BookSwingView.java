@@ -38,6 +38,8 @@ public class BookSwingView extends JPanel implements BookView {
 
 	private JList<Book> bookJList;
 
+	private JLabel errorLabel;
+
 	/**
 	 * Create the panel.
 	 */
@@ -57,7 +59,7 @@ public class BookSwingView extends JPanel implements BookView {
 	}
 
 	private void createErrorLabel() {
-		JLabel errorLabel = new JLabel("");
+		errorLabel = new JLabel("");
 		errorLabel.setName("ErrorLabel");
 		GridBagConstraints gbclblNewLabel = new GridBagConstraints();
 		gbclblNewLabel.gridwidth = 2;
@@ -128,26 +130,26 @@ public class BookSwingView extends JPanel implements BookView {
 
 	@Override
 	public void showAllBooks(List<Book> books) {
-		// TODO Auto-generated method stub
-
+		bookModelList.clear();
+		books.stream().forEach(b -> bookModelList.addElement(b));
 	}
 
 	@Override
 	public void bookAdded(Book book) {
-		// TODO Auto-generated method stub
-
+		bookModelList.addElement(book);
+		clearErrorLabel();
 	}
+
 
 	@Override
 	public void bookRemoved(Book book) {
-		// TODO Auto-generated method stub
-
+		bookModelList.removeElement(book);
+		clearErrorLabel();
 	}
 
 	@Override
 	public void showError(String message, Book book) {
-		// TODO Auto-generated method stub
-
+		errorLabel.setText(message+": "+book);
 	}
 
 	@Override
@@ -164,4 +166,7 @@ public class BookSwingView extends JPanel implements BookView {
 		return bookModelList;
 	}
 
+	private void clearErrorLabel() {
+		errorLabel.setText(" ");
+	}
 }

@@ -5,8 +5,10 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.MockitoAnnotations.*;
 
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
+import java.util.List;
 
 import javax.swing.DefaultListModel;
 import javax.swing.JFrame;
@@ -106,6 +108,18 @@ public class BookSwingViewTest extends AssertJSwingJUnitTestCase {
 
 	@Test
 	@GUITest
+	public void test_showError() {
+		Book book = new Book(3L, "Heavy book", new HashSet<Author>());
+		
+		GuiActionRunner.execute(() -> {
+			bookView.showError("A random error occured on", book);
+		});
+		
+		bookPanel.label(ERROR_LABEL).requireText("A random error occured on: "+book);
+	}
+	
+	@Test
+	@GUITest
 	public void test_books_with_authors_should_be_shown_correctly_on_screen() {
 		Author author1 = new Author(3L, "first author", new HashSet<Book>());
 		Author author2 = new Author(9L, "second author", new HashSet<Book>());
@@ -138,4 +152,39 @@ public class BookSwingViewTest extends AssertJSwingJUnitTestCase {
 		assertThat(bookView.getBookModelList().toArray()).containsExactly(book);
 		bookPanel.label(ERROR_LABEL).requireText(" ");
 	}
+	
+	@Test
+	@GUITest
+	public void test_showAllBooks_should_replace_the_Jlist_content() {
+		Book book1 = new Book(2L, "second Book", new HashSet<Author>());
+		Book book2 = new Book(5L, "fifth book", new HashSet<Author>());
+		
+		GuiActionRunner.execute(() -> bookView.showAllBooks(Arrays.asList(book1,book2)));
+		
+		assertThat(bookView.getBookModelList().toArray()).containsExactly(book1,book2);
+		
+		Book book3 = new Book(3L,"third book",new HashSet<Author>());
+		
+		GuiActionRunner.execute(() -> bookView.showAllBooks(Arrays.asList(book3,book2)));			
+		
+		assertThat(bookView.getBookModelList().toArray()).containsExactly(book3,book2);
+	}
+	
+	@Test
+	@GUITest
+	public void test_bookRemoved_successful_should_also_clear_error_label() {
+		Book book1 = new Book(2L, "second Book", new HashSet<Author>());
+		Book book2 = new Book(5L, "fifth book", new HashSet<Author>());
+		DefaultListModel<Book> model = bookView.getBookModelList();
+		GuiActionRunner.execute(() -> {
+			model.addElement(book1);
+			model.addElement(book2);
+		});
+		
+		GuiActionRunner.execute(() -> bookView.bookRemoved(book1));
+		
+		assertThat(model.toArray()).containsExactly(book2);
+		bookPanel.label(ERROR_LABEL).requireText(" ");
+	}
+	
 }
