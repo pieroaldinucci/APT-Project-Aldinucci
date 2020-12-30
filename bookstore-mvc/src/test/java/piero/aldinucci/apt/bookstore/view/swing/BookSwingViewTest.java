@@ -2,17 +2,21 @@ package piero.aldinucci.apt.bookstore.view.swing;
 
 import static org.assertj.core.api.Assertions.*;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
+import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.*;
 
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Optional;
 
 import javax.swing.DefaultListModel;
 import javax.swing.JFrame;
 
+import org.assertj.core.util.Lists;
 import org.assertj.swing.annotation.GUITest;
 import org.assertj.swing.edt.GuiActionRunner;
 import org.assertj.swing.fixture.FrameFixture;
@@ -22,6 +26,7 @@ import org.assertj.swing.junit.runner.GUITestRunner;
 import org.assertj.swing.junit.testcase.AssertJSwingJUnitTestCase;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 
 import piero.aldinucci.apt.bookstore.controller.BookstoreController;
@@ -188,6 +193,35 @@ public class BookSwingViewTest extends AssertJSwingJUnitTestCase {
 		
 		assertThat(model.toArray()).containsExactly(book2);
 		bookPanel.label(ERROR_LABEL).requireText(" ");
+	}
+	
+	@Test
+	public void test_createBookView_should_delegate_to_dialog_and_controller_if_book_was_composed() {
+		Author author1 = new Author(1L, "Mario", null);
+		Author author2 = new Author(3L, "Luigi", null);
+		List<Author> authorList = Arrays.asList(author1, author2); 
+		Book book = new Book(4L, "new book", new HashSet<Author>());
+		when(newBookDialog.getReturnValue()).thenReturn(Optional.of(book));
+		ArgumentCaptor<Book> bookCaptor = ArgumentCaptor.forClass(Book.class);
+		
+		bookView.showCreateBook(authorList);
+		
+		verify(newBookDialog).setAuthorList(authorList);
+		verify(newBookDialog).setVisible(true); //Is this correct? This method is not defined in this project 
+		verify(controller).newBook(bookCaptor.capture());
+		assertThat(bookCaptor.getValue()).isSameAs(book);
+		verifyNoMoreInteractions(controller);
+	}
+	
+	@Test
+	public void test_createBookView_should_not_call_controller_if_no_Book_is_Returned() {
+		when(newBookDialog.getReturnValue()).thenReturn(Optional.empty());
+		
+		bookView.showCreateBook(Lists.emptyList());
+		
+		verify(newBookDialog).setAuthorList(Lists.emptyList());
+		verify(newBookDialog).setVisible(true);
+		verifyNoInteractions(controller);
 	}
 	
 }

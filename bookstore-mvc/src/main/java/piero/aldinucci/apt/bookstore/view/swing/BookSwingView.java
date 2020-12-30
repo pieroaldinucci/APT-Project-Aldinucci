@@ -1,27 +1,24 @@
 package piero.aldinucci.apt.bookstore.view.swing;
 
+import java.awt.Component;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.Insets;
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
+
+import javax.swing.DefaultListCellRenderer;
+import javax.swing.DefaultListModel;
+import javax.swing.JButton;
+import javax.swing.JLabel;
+import javax.swing.JList;
 import javax.swing.JPanel;
 
 import piero.aldinucci.apt.bookstore.controller.BookstoreController;
 import piero.aldinucci.apt.bookstore.model.Author;
 import piero.aldinucci.apt.bookstore.model.Book;
 import piero.aldinucci.apt.bookstore.view.BookView;
-
-import java.awt.GridBagLayout;
-import javax.swing.JList;
-
-import java.awt.Component;
-import java.awt.GridBagConstraints;
-import java.awt.Insets;
-
-import javax.swing.DefaultListCellRenderer;
-import javax.swing.DefaultListModel;
-import javax.swing.JButton;
-import java.awt.event.ActionListener;
-import java.util.List;
-import java.util.stream.Collectors;
-import java.awt.event.ActionEvent;
-import javax.swing.JLabel;
 
 public class BookSwingView extends JPanel implements BookView {
 
@@ -74,11 +71,9 @@ public class BookSwingView extends JPanel implements BookView {
 
 	private void createDeleteButton() {
 		btnDelete = new JButton("Delete Book");
-		btnDelete.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				Book book = bookJList.getSelectedValue();
-				controller.deleteBook(book);
-			}
+		btnDelete.addActionListener(e -> {
+			Book book = bookJList.getSelectedValue();
+			controller.deleteBook(book);
 		});
 		btnDelete.setEnabled(false);
 		btnDelete.setName("DeleteBook");
@@ -157,8 +152,12 @@ public class BookSwingView extends JPanel implements BookView {
 
 	@Override
 	public void showCreateBook(List<Author> authors) {
-		// TODO Auto-generated method stub
-
+		newBookDialog.setAuthorList(authors);
+		newBookDialog.setVisible(true);
+		
+		Optional<Book> newBook = newBookDialog.getReturnValue();
+		if (newBook.isPresent())
+			controller.newBook(newBook.get());
 	}
 
 	public void setController(BookstoreController controller) {
