@@ -20,8 +20,6 @@ import javax.swing.JTextField;
 import java.awt.Insets;
 import javax.swing.JList;
 import javax.swing.ListSelectionModel;
-import java.awt.event.ActionListener;
-import java.awt.event.ActionEvent;
 
 public class NewBookDialogImpl extends NewBookDialog {
 
@@ -74,11 +72,7 @@ public class NewBookDialogImpl extends NewBookDialog {
 			}
 			{
 				JButton cancelButton = new JButton("Cancel");
-				cancelButton.addActionListener(new ActionListener() {
-					public void actionPerformed(ActionEvent e) {
-						setVisible(false);
-					}
-				});
+				cancelButton.addActionListener(e -> clearAndHide());
 				cancelButton.setActionCommand("Cancel");
 				buttonPane.add(cancelButton);
 			}
@@ -194,5 +188,11 @@ public class NewBookDialogImpl extends NewBookDialog {
 		return modelBookAuthors;
 	}
 
-	
+	private void clearAndHide() {
+		textField.setText(null);
+		modelAvailableAuthors.clear();
+		modelBookAuthors.clear();
+		setVisible(false);
+	}
+
 }
