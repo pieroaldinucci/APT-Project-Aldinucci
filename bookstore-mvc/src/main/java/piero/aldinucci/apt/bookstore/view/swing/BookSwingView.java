@@ -19,28 +19,32 @@ import java.util.List;
 import java.awt.event.ActionEvent;
 import javax.swing.JLabel;
 
-public class BookSwingView extends JPanel implements BookView{
+public class BookSwingView extends JPanel implements BookView {
 
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-	
+
 	private transient BookstoreController controller;
 
 	private DefaultListModel<Book> bookModelList;
+
+	private JButton btnDelete;
+
+	private JList<Book> bookJList;
 
 	/**
 	 * Create the panel.
 	 */
 	public BookSwingView() {
 		GridBagLayout gridBagLayout = new GridBagLayout();
-		gridBagLayout.columnWidths = new int[] {30, 150, 150, 30, 0};
-		gridBagLayout.rowHeights = new int[] {30, 100, 30, 30, 0};
-		gridBagLayout.columnWeights = new double[]{0.0, 1.0, 1.0, 0.0, Double.MIN_VALUE};
-		gridBagLayout.rowWeights = new double[]{0.0, 1.0, 0.0, 0.0, Double.MIN_VALUE};
+		gridBagLayout.columnWidths = new int[] { 30, 150, 150, 30, 0 };
+		gridBagLayout.rowHeights = new int[] { 30, 100, 30, 30, 0 };
+		gridBagLayout.columnWeights = new double[] { 0.0, 1.0, 1.0, 0.0, Double.MIN_VALUE };
+		gridBagLayout.rowWeights = new double[] { 0.0, 1.0, 0.0, 0.0, Double.MIN_VALUE };
 		setLayout(gridBagLayout);
-		
+
 		createList();
 		createNewButton();
 		createDeleteButton();
@@ -51,23 +55,29 @@ public class BookSwingView extends JPanel implements BookView{
 	private void createErrorLabel() {
 		JLabel errorLabel = new JLabel("");
 		errorLabel.setName("ErrorLabel");
-		GridBagConstraints gbc_lblNewLabel = new GridBagConstraints();
-		gbc_lblNewLabel.gridwidth = 2;
-		gbc_lblNewLabel.insets = new Insets(0, 0, 0, 5);
-		gbc_lblNewLabel.gridx = 1;
-		gbc_lblNewLabel.gridy = 3;
-		add(errorLabel, gbc_lblNewLabel);
+		GridBagConstraints gbclblNewLabel = new GridBagConstraints();
+		gbclblNewLabel.gridwidth = 2;
+		gbclblNewLabel.insets = new Insets(0, 0, 0, 5);
+		gbclblNewLabel.gridx = 1;
+		gbclblNewLabel.gridy = 3;
+		add(errorLabel, gbclblNewLabel);
 	}
 
 	private void createDeleteButton() {
-		JButton btnDelete = new JButton("Delete Book");
+		btnDelete = new JButton("Delete Book");
+		btnDelete.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				Book book = bookJList.getSelectedValue();
+				controller.deleteBook(book);
+			}
+		});
 		btnDelete.setEnabled(false);
 		btnDelete.setName("DeleteBook");
-		GridBagConstraints gbc_btnDelete = new GridBagConstraints();
-		gbc_btnDelete.insets = new Insets(0, 0, 5, 5);
-		gbc_btnDelete.gridx = 2;
-		gbc_btnDelete.gridy = 2;
-		add(btnDelete, gbc_btnDelete);
+		GridBagConstraints gbcbtnDelete = new GridBagConstraints();
+		gbcbtnDelete.insets = new Insets(0, 0, 5, 5);
+		gbcbtnDelete.gridx = 2;
+		gbcbtnDelete.gridy = 2;
+		add(btnDelete, gbcbtnDelete);
 	}
 
 	private void createNewButton() {
@@ -75,6 +85,7 @@ public class BookSwingView extends JPanel implements BookView{
 		btnNewButton.setName("NewBook");
 		btnNewButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+				controller.composeBook();
 			}
 		});
 		GridBagConstraints gbc_btnNewButton = new GridBagConstraints();
@@ -86,46 +97,47 @@ public class BookSwingView extends JPanel implements BookView{
 
 	private void createList() {
 		bookModelList = new DefaultListModel<>();
-		JList<Book> bookJList = new JList();
+		bookJList = new JList<>();
+		bookJList.addListSelectionListener(e -> btnDelete.setEnabled(!bookJList.isSelectionEmpty()));
 		bookJList.setModel(getBookModelList());
 		bookJList.setName("BookJList");
-		GridBagConstraints gbc_list = new GridBagConstraints();
-		gbc_list.gridwidth = 2;
-		gbc_list.insets = new Insets(0, 0, 5, 5);
-		gbc_list.fill = GridBagConstraints.BOTH;
-		gbc_list.gridx = 1;
-		gbc_list.gridy = 1;
-		add(bookJList, gbc_list);
+		GridBagConstraints gbclist = new GridBagConstraints();
+		gbclist.gridwidth = 2;
+		gbclist.insets = new Insets(0, 0, 5, 5);
+		gbclist.fill = GridBagConstraints.BOTH;
+		gbclist.gridx = 1;
+		gbclist.gridy = 1;
+		add(bookJList, gbclist);
 	}
 
 	@Override
 	public void showAllBooks(List<Book> books) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
 	public void bookAdded(Book book) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
 	public void bookRemoved(Book book) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
 	public void showError(String message, Book book) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
 	public void showCreateBook(List<Author> authors) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	public void setController(BookstoreController controller) {

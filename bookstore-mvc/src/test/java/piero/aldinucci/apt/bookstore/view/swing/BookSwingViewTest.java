@@ -1,10 +1,13 @@
 package piero.aldinucci.apt.bookstore.view.swing;
 
 import static org.assertj.core.api.Assertions.*;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.MockitoAnnotations.*;
 
 import java.util.HashSet;
 
+import javax.swing.DefaultListModel;
 import javax.swing.JFrame;
 
 import org.assertj.swing.annotation.GUITest;
@@ -19,6 +22,7 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 
 import piero.aldinucci.apt.bookstore.controller.BookstoreController;
+import piero.aldinucci.apt.bookstore.model.Author;
 import piero.aldinucci.apt.bookstore.model.Book;
 
 @RunWith(GUITestRunner.class)
@@ -52,6 +56,7 @@ public class BookSwingViewTest extends AssertJSwingJUnitTestCase{
 	}
 
 	@Test
+	@GUITest
 	public void test_components() {
 		bookPanel.list(BOOK_J_LIST).requireNoSelection();
 		bookPanel.button(NEW_BOOK_BUTTON).requireEnabled();
@@ -71,5 +76,49 @@ public class BookSwingViewTest extends AssertJSwingJUnitTestCase{
 		bookPanel.button(DELETE_BOOK_BUTTON).requireEnabled();
 		bookList.clearSelection();
 		bookPanel.button(DELETE_BOOK_BUTTON).requireDisabled();
+	}
+	
+	@Test
+	public void test_deleteBook_button_should_delegate_to_controller(){
+		DefaultListModel<Book> bookListModel = bookView.getBookModelList();
+		Book book1 = new Book(2L, "Test Title", new HashSet<>());
+		Book book2 = new Book(5L, "Some book", new HashSet<>());
+		GuiActionRunner.execute(() -> {
+			bookListModel.addElement(book1);
+			bookListModel.addElement(book2);
+		});
+		
+		bookPanel.list(BOOK_J_LIST).selectItem(1);
+		bookPanel.button(DELETE_BOOK_BUTTON).click();
+		
+		verify(controller).deleteBook(book2);
+		verifyNoMoreInteractions(controller);
+	}
+	
+	@Test
+	public void test_newBook_button_should_delegate_to_controller() {
+		bookPanel.button(NEW_BOOK_BUTTON).click();
+		
+		verify(controller).composeBook();
+		verifyNoMoreInteractions(controller);
+	}
+	
+	@Test
+	@GUITest
+	public void test_books_with_authors_should_be_shown_correctly_on_screen() {
+		Author author1 = new Author(3L, "first author", new HashSet<Book>());
+		Author author2 = new Author(9L, "second author", new HashSet<Book>());
+		HashSet<Author> authors = new HashSet<>();
+		authors.add(author1);
+		authors.add(author2);
+		Book book = new Book(2L, "A weird book",authors);
+		author1.getBooks().add(book);
+		author2.getBooks().add(book);
+		
+		GuiActionRunner.execute(() -> {
+			bookView.getBookModelList().addElement(book);			
+		});
+		
+		assertThat(bookPanel.list(BOOK_J_LIST).contents()).containsExactly(book.toString()+"; Authors: first author - second author");
 	}
 }
