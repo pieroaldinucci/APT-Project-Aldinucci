@@ -38,13 +38,10 @@ public class BookSwingView extends JPanel implements BookView {
 
 	private JLabel errorLabel;
 
-	private NewBookDialog newBookDialog;
-
 	/**
 	 * Create the panel.
 	 */
-	public BookSwingView(NewBookDialog newBookDialog) {
-		this.newBookDialog = newBookDialog;
+	public BookSwingView() {
 		GridBagLayout gridBagLayout = new GridBagLayout();
 		gridBagLayout.columnWidths = new int[] { 30, 150, 150, 30, 0 };
 		gridBagLayout.rowHeights = new int[] { 30, 100, 30, 30, 0 };
@@ -152,15 +149,15 @@ public class BookSwingView extends JPanel implements BookView {
 		errorLabel.setText(message+": "+book);
 	}
 
-	@Override
-	public void showCreateBook(List<Author> authors) {
-		newBookDialog.setAuthorList(authors);
-		newBookDialog.setVisible(true);
-		
-		Optional<Book> newBook = newBookDialog.getReturnValue();
-		if (newBook.isPresent())
-			controller.newBook(newBook.get());
-	}
+//	@Override
+//	public void showCreateBook(List<Author> authors) {
+//		newBookDialog.setAuthorList(authors);
+//		newBookDialog.setVisible(true);
+//		
+//		Optional<Book> newBook = newBookDialog.getReturnValue();
+//		if (newBook.isPresent())
+//			controller.newBook(newBook.get());
+//	}
 
 	public void setController(BookstoreController controller) {
 		this.controller = controller;

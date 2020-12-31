@@ -10,5 +10,4 @@ public interface BookView {
 	public void bookAdded(Book book);
 	public void bookRemoved(Book book);
 	public void showError(String message, Book book);
-	public void showCreateBook(List<Author> authors);
 }

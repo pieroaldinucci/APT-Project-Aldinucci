@@ -13,6 +13,8 @@ import javax.swing.border.EmptyBorder;
 
 import piero.aldinucci.apt.bookstore.model.Author;
 import piero.aldinucci.apt.bookstore.model.Book;
+import piero.aldinucci.apt.bookstore.view.ComposeBookView;
+
 import java.awt.GridBagLayout;
 import javax.swing.JLabel;
 import java.awt.GridBagConstraints;
@@ -23,7 +25,7 @@ import javax.swing.ListSelectionModel;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 
-public class NewBookDialogImpl extends NewBookDialog {
+public class ComposeBookSwingView extends JDialog implements ComposeBookView {
 
 	/**
 	 * 
@@ -47,7 +49,7 @@ public class NewBookDialogImpl extends NewBookDialog {
 	/**
 	 * Create the dialog.
 	 */
-	public NewBookDialogImpl() {
+	public ComposeBookSwingView() {
 		setDefaultCloseOperation(JDialog.DO_NOTHING_ON_CLOSE);
 		setModalityType(ModalityType.APPLICATION_MODAL);
 		setModal(true);
@@ -196,17 +198,6 @@ public class NewBookDialogImpl extends NewBookDialog {
 		textField.setColumns(10);
 	}
 
-	@Override
-	public Optional<Book> getReturnValue() {
-		return Optional.empty();
-	}
-
-	@Override
-	public void setAuthorList(List<Author> authors) {
-		modelAvailableAuthors.clear();
-		authors.stream().forEach(a -> modelAvailableAuthors.addElement(a));
-	}
-
 	DefaultListModel<Author> getModelAvailableAuthors() {
 		return modelAvailableAuthors;
 	}
@@ -220,6 +211,22 @@ public class NewBookDialogImpl extends NewBookDialog {
 		modelAvailableAuthors.clear();
 		modelBookAuthors.clear();
 		setVisible(false);
+	}
+
+	@Override
+	public Optional<Book> getBook() {
+		return Optional.empty();
+	}
+
+	@Override
+	public void showAuthorList(List<Author> authors) {
+		modelAvailableAuthors.clear();
+		authors.stream().forEach(a -> modelAvailableAuthors.addElement(a));
+	}
+
+	@Override
+	public void setViewVisible(boolean visible) {
+		// TODO Auto-generated method stub
 	}
 
 }
