@@ -74,14 +74,15 @@ public class ComposeBookSwingView extends JDialog implements ComposeBookView {
 		createAvailableAuthorsList();
 		createDescriptionLabels();
 		createRemoveAuthorButton();
+		createExitButtonPane();
+	}
 
-		{
-			JPanel buttonPane = new JPanel();
-			buttonPane.setLayout(new FlowLayout(FlowLayout.RIGHT));
-			getContentPane().add(buttonPane, BorderLayout.SOUTH);
-			createOKButton(buttonPane);
-			createCancelButton(buttonPane);
-		}
+	private void createExitButtonPane() {
+		JPanel buttonPane = new JPanel();
+		buttonPane.setLayout(new FlowLayout(FlowLayout.RIGHT));
+		getContentPane().add(buttonPane, BorderLayout.SOUTH);
+		createOKButton(buttonPane);
+		createCancelButton(buttonPane);
 	}
 
 	private void createCancelButton(JPanel buttonPane) {
