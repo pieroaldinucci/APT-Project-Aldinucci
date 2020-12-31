@@ -1,14 +1,11 @@
 package piero.aldinucci.apt.bookstore.view.swing;
 
-import java.awt.BorderLayout;
-import java.awt.Component;
-import java.awt.EventQueue;
+import java.awt.GridLayout;
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;
-import javax.swing.border.EmptyBorder;
 import javax.swing.JTabbedPane;
-import java.awt.GridLayout;
+import javax.swing.border.EmptyBorder;
 
 public class BookstoreSwingFrame extends JFrame {
 
@@ -48,9 +45,7 @@ public class BookstoreSwingFrame extends JFrame {
 		JTabbedPane tabbedPane = new JTabbedPane(JTabbedPane.TOP);
 		contentPane.add(tabbedPane);
 		tabbedPane.setName("MainPane");
-		
-		tabbedPane.addTab("Authors", null, authorPanel, null);
-		
+		tabbedPane.addTab("Authors", null, authorPanel, null);		
 		tabbedPane.addTab("Books", null, bookPanel, null);
 	}
 

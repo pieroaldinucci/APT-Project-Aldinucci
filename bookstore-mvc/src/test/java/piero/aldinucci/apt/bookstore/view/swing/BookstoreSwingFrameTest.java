@@ -2,6 +2,7 @@ package piero.aldinucci.apt.bookstore.view.swing;
 
 import javax.swing.JPanel;
 
+import org.assertj.swing.annotation.GUITest;
 import org.assertj.swing.edt.GuiActionRunner;
 import org.assertj.swing.fixture.FrameFixture;
 import org.assertj.swing.fixture.JTabbedPaneFixture;
@@ -34,13 +35,14 @@ public class BookstoreSwingFrameTest extends AssertJSwingJUnitTestCase {
 	}
 
 	@Test
+	@GUITest
 	public void test_Components() {
 		JTabbedPaneFixture tabbedPane = window.tabbedPane("MainPane");
 		tabbedPane.requireTabTitles("Authors", "Books");
 
 		window.panel("authorPanel").requireVisible();
 
-		tabbedPane.selectTab(1);
+		tabbedPane.selectTab("Books");
 
 		window.panel("bookPanel").requireVisible();
 	}
