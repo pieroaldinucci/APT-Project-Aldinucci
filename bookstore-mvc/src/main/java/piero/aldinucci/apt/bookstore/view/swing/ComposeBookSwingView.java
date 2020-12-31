@@ -2,6 +2,8 @@ package piero.aldinucci.apt.bookstore.view.swing;
 
 import java.awt.BorderLayout;
 import java.awt.FlowLayout;
+import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 
@@ -24,6 +26,8 @@ import javax.swing.JList;
 import javax.swing.ListSelectionModel;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 
 public class ComposeBookSwingView extends JDialog implements ComposeBookView {
 
@@ -37,14 +41,14 @@ public class ComposeBookSwingView extends JDialog implements ComposeBookView {
 
 	private DefaultListModel<Author> modelAvailableAuthors;
 	private DefaultListModel<Author> modelBookAuthors;
-
 	private JButton addAuthorButton;
-
 	private JButton removeAuthorButton;
-
 	private JList<Author> availableAuthors;
-
 	private JList<Author> bookAuthors;
+
+	private transient Optional<Book> createdBook;
+
+	private JButton okButton;
 
 	/**
 	 * Create the dialog.
@@ -75,20 +79,33 @@ public class ComposeBookSwingView extends JDialog implements ComposeBookView {
 			JPanel buttonPane = new JPanel();
 			buttonPane.setLayout(new FlowLayout(FlowLayout.RIGHT));
 			getContentPane().add(buttonPane, BorderLayout.SOUTH);
-			{
-				JButton okButton = new JButton("OK");
-				okButton.setEnabled(false);
-				okButton.setActionCommand("OK");
-				buttonPane.add(okButton);
-				getRootPane().setDefaultButton(okButton);
-			}
-			{
-				JButton cancelButton = new JButton("Cancel");
-				cancelButton.addActionListener(e -> clearAndHide());
-				cancelButton.setActionCommand("Cancel");
-				buttonPane.add(cancelButton);
-			}
+			createOKButton(buttonPane);
+			createCancelButton(buttonPane);
 		}
+	}
+
+	private void createCancelButton(JPanel buttonPane) {
+		JButton cancelButton = new JButton("Cancel");
+		cancelButton.addActionListener(e -> {
+			createdBook = Optional.empty();
+			setVisible(false);
+		});
+		cancelButton.setActionCommand("Cancel");
+		buttonPane.add(cancelButton);
+	}
+
+	private void createOKButton(JPanel buttonPane) {
+		okButton = new JButton("OK");
+		okButton.addActionListener(e -> {
+			Book book = new Book(null, textField.getText(), new HashSet<>());
+			Arrays.stream(modelBookAuthors.toArray()).forEach(a -> book.getAuthors().add((Author) a));
+			createdBook = Optional.of(book);
+			setVisible(false);
+		});
+		okButton.setEnabled(false);
+		okButton.setActionCommand("OK");
+		buttonPane.add(okButton);
+		getRootPane().setDefaultButton(okButton);
 	}
 
 	private void createRemoveAuthorButton() {
@@ -187,6 +204,12 @@ public class ComposeBookSwingView extends JDialog implements ComposeBookView {
 
 	private void createTextField() {
 		textField = new JTextField();
+		textField.addKeyListener(new KeyAdapter() {
+			@Override
+			public void keyReleased(KeyEvent e) {
+				okButton.setEnabled(!textField.getText().trim().isEmpty());
+			}
+		});
 		textField.setName("titleTextField");
 		GridBagConstraints gbctextField = new GridBagConstraints();
 		gbctextField.gridwidth = 3;
@@ -206,27 +229,18 @@ public class ComposeBookSwingView extends JDialog implements ComposeBookView {
 		return modelBookAuthors;
 	}
 
-	private void clearAndHide() {
-		textField.setText(null);
-		modelAvailableAuthors.clear();
-		modelBookAuthors.clear();
-		setVisible(false);
-	}
-
 	@Override
 	public Optional<Book> getBook() {
-		return Optional.empty();
+		return createdBook;
 	}
 
 	@Override
 	public void showAuthorList(List<Author> authors) {
+		textField.setText(null);
 		modelAvailableAuthors.clear();
+		modelBookAuthors.clear();
 		authors.stream().forEach(a -> modelAvailableAuthors.addElement(a));
-	}
-
-	@Override
-	public void setViewVisible(boolean visible) {
-		// TODO Auto-generated method stub
+		setVisible(true);
 	}
 
 }

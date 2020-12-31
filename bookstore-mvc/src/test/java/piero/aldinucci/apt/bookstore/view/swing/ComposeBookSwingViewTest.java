@@ -4,7 +4,11 @@ import static org.assertj.core.api.Assertions.*;
 
 import java.util.Arrays;
 import java.util.HashSet;
+import java.util.Optional;
 
+import javax.swing.JDialog;
+
+import org.assertj.core.util.Lists;
 import org.assertj.swing.annotation.GUITest;
 import org.assertj.swing.core.matcher.JButtonMatcher;
 import org.assertj.swing.core.matcher.JLabelMatcher;
@@ -48,7 +52,7 @@ public class ComposeBookSwingViewTest extends AssertJSwingJUnitTestCase {
 
 	@Test
 	@GUITest
-	public void test_components() {
+	public void test_swing_components() {
 		dialogFixture.requireModal();
 		dialogFixture.button(JButtonMatcher.withText("OK")).requireDisabled();
 		dialogFixture.button(JButtonMatcher.withText("Cancel"));
@@ -60,6 +64,11 @@ public class ComposeBookSwingViewTest extends AssertJSwingJUnitTestCase {
 		assertThat(dialogFixture.list(BOOK_AUTHOR_JLIST).contents()).isEmpty();
 		dialogFixture.button(BUTTON_ADD_AUTHOR).requireDisabled();
 		dialogFixture.button(BUTTON_REMOVE_AUTHOR).requireDisabled();
+	}
+	
+	@Test
+	public void test_variables_initial_state() {
+		assertThat(composeBookView.getBook()).isNull();
 	}
 
 	@Test
@@ -100,37 +109,59 @@ public class ComposeBookSwingViewTest extends AssertJSwingJUnitTestCase {
 
 	@Test
 	@GUITest
-	public void test_setAuthorList_should_clear_and_update_the_available_authors_list() {
+	public void test_showAuthorList_should_make_the_dialog_visible() {
+		composeBookView.setModal(false);
+		composeBookView.setVisible(false);
+		dialogFixture.requireNotVisible();
+		
+		GuiActionRunner.execute(() -> composeBookView.showAuthorList(Lists.emptyList()));
+		
+		dialogFixture.requireVisible();
+	}
+	
+	@Test
+	@GUITest
+	public void test_showAuthorList_should_clear_and_update_the_available_authors_list() {
+		assertThat(composeBookView.getBook()).isNull();
+		
+		GuiActionRunner.execute(() -> {
+			composeBookView.getModelBookAuthors().addElement(new Author(5L,"Isaac",new HashSet<>()));
+			composeBookView.getModelBookAuthors().addElement(new Author(3L,"Clarke",new HashSet<>()));
+		});
 		Author author1 = new Author(2L, "test name", null);
 		Author author2 = new Author(3L, "another name", null);
 
 		GuiActionRunner.execute(() -> composeBookView.showAuthorList(Arrays.asList(author1, author2)));
 
+		assertThat(composeBookView.getModelBookAuthors().toArray()).isEmpty();
 		assertThat(composeBookView.getModelAvailableAuthors().toArray()).containsExactly(author1, author2);
-
-		GuiActionRunner.execute(() -> composeBookView.showAuthorList(Arrays.asList(author2)));
-
-		assertThat(composeBookView.getModelAvailableAuthors().toArray()).containsExactly(author2);
+	}
+	
+	@Test
+	@GUITest
+	public void test_writing_title_should_enable_or_disable_OK_button() {
+		dialogFixture.textBox(TITLE_TEXT_FIELD).enterText("A title");
+		dialogFixture.button(JButtonMatcher.withText("OK")).requireEnabled();
+		
+		dialogFixture.textBox(TITLE_TEXT_FIELD).deleteText();
+		dialogFixture.button(JButtonMatcher.withText("OK")).requireDisabled();
+		
+		dialogFixture.textBox(TITLE_TEXT_FIELD).enterText("   ");
+		dialogFixture.button(JButtonMatcher.withText("OK")).requireDisabled();
 	}
 
 	@Test
-	public void test_pressing_cancel_button_will_not_return_value_and_Dialog_will_hide_and_clear() {
+	public void test_pressing_cancel_button_will_return_empty_optional_and_hide_Dialog() {
 		GuiActionRunner.execute(() -> {
 			composeBookView.getModelAvailableAuthors().addElement(new Author(2L, "database author", new HashSet<>()));
 			composeBookView.getModelBookAuthors().addElement(new Author(5L, "book author", new HashSet<>()));
 		});
-
+		
 		dialogFixture.textBox(TITLE_TEXT_FIELD).enterText("Title");
 		dialogFixture.button(JButtonMatcher.withText("Cancel")).click();
 
 		dialogFixture.requireNotVisible();
 		assertThat(composeBookView.getBook()).isEmpty();
-
-		dialogFixture.show();
-
-		dialogFixture.textBox(TITLE_TEXT_FIELD).requireEmpty();
-		dialogFixture.list(AUTHOR_JLIST).requireItemCount(0);
-		dialogFixture.list(BOOK_AUTHOR_JLIST).requireItemCount(0);
 	}
 
 	@Test
@@ -205,24 +236,26 @@ public class ComposeBookSwingViewTest extends AssertJSwingJUnitTestCase {
 		assertThat(composeBookView.getModelAvailableAuthors().toArray()).containsExactlyInAnyOrder(author, author3);
 	}
 
-//	@Test
-//	@GUITest
-//	public void test_OKbutton_should_create_a_book_with_multiple_authors() {
-//		Author author = new Author(2L, "author name", new HashSet<Book>());
-//		Author author2 = new Author(5L, "another name", new HashSet<Book>());
-//		HashSet<Author> authors = new HashSet<>();
-//		authors.add(author);
-//		authors.add(author2);
-//		GuiActionRunner.execute(() -> {
-//			bookDialog.getModelBookAuthors().addElement(author);
-//			bookDialog.getModelBookAuthors().addElement(author2);
-//		});
-//
-//		dialogFixture.textBox(TITLE_TEXT_FIELD).enterText("Book!");
-//		dialogFixture.button(JButtonMatcher.withText("OK")).click();
-//
-//		assertThat(bookDialog.getReturnValue()).isNotEmpty();
-//		assertThat(bookDialog.getReturnValue().get()).usingRecursiveComparison()
-//				.isEqualTo(new Book(null, "Book title", authors));
-//	}
+	@Test
+	@GUITest
+	public void test_OKbutton_should_hide_dialog_and_create_a_book_with_multiple_authors() {
+		Author author = new Author(2L, "author name", new HashSet<Book>());
+		Author author2 = new Author(5L, "another name", new HashSet<Book>());
+		HashSet<Author> authors = new HashSet<>();
+		authors.add(author);
+		authors.add(author2);
+		GuiActionRunner.execute(() -> {
+			composeBookView.getModelBookAuthors().addElement(author);
+			composeBookView.getModelBookAuthors().addElement(author2);
+		});
+
+		dialogFixture.textBox(TITLE_TEXT_FIELD).enterText("Book!");
+		dialogFixture.button(JButtonMatcher.withText("OK")).click();
+
+		assertThat(composeBookView.getBook()).isNotEmpty();
+		assertThat(composeBookView.getBook().get()).usingRecursiveComparison()
+				.isEqualTo(new Book(null, "Book!", authors));
+		dialogFixture.requireNotVisible();
+	}
+
 }

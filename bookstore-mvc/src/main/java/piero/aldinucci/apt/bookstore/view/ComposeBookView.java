@@ -10,5 +10,4 @@ public interface ComposeBookView {
 	
 	public Optional<Book> getBook();
 	public void showAuthorList(List<Author> authors);
-	public void setViewVisible (boolean visible);
 }

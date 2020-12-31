@@ -2,7 +2,6 @@ package piero.aldinucci.apt.bookstore.view;
 
 import java.util.List;
 
-import piero.aldinucci.apt.bookstore.model.Author;
 import piero.aldinucci.apt.bookstore.model.Book;
 
 public interface BookView {
