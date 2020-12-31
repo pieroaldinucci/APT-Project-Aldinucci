@@ -65,11 +65,6 @@ public class ComposeBookSwingViewTest extends AssertJSwingJUnitTestCase {
 		dialogFixture.button(BUTTON_ADD_AUTHOR).requireDisabled();
 		dialogFixture.button(BUTTON_REMOVE_AUTHOR).requireDisabled();
 	}
-	
-	@Test
-	public void test_variables_initial_state() {
-		assertThat(composeBookView.getBook()).isNull();
-	}
 
 	@Test
 	@GUITest
@@ -152,6 +147,8 @@ public class ComposeBookSwingViewTest extends AssertJSwingJUnitTestCase {
 
 	@Test
 	public void test_pressing_cancel_button_will_return_empty_optional_and_hide_Dialog() {
+		assertThat(composeBookView.getBook()).isNull();
+		
 		GuiActionRunner.execute(() -> {
 			composeBookView.getModelAvailableAuthors().addElement(new Author(2L, "database author", new HashSet<>()));
 			composeBookView.getModelBookAuthors().addElement(new Author(5L, "book author", new HashSet<>()));
@@ -239,6 +236,8 @@ public class ComposeBookSwingViewTest extends AssertJSwingJUnitTestCase {
 	@Test
 	@GUITest
 	public void test_OKbutton_should_hide_dialog_and_create_a_book_with_multiple_authors() {
+		assertThat(composeBookView.getBook()).isNull();
+		
 		Author author = new Author(2L, "author name", new HashSet<Book>());
 		Author author2 = new Author(5L, "another name", new HashSet<Book>());
 		HashSet<Author> authors = new HashSet<>();
