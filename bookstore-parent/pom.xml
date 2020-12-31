@@ -12,6 +12,11 @@
 		<maven.compiler.source>1.8</maven.compiler.source>
 		<maven.compiler.target>1.8</maven.compiler.target>
 		<jdk9-or-more>false</jdk9-or-more>
+		
+		<sonar.issue.ignore.multicriteria>e1</sonar.issue.ignore.multicriteria>
+		<!-- Rule: Add at least one assertion. Reason: Assertions are made by Assertj.swing --> 
+		<sonar.issue.ignore.multicriteria.e1.ruleKey>java:S2699</sonar.issue.ignore.multicriteria.e1.ruleKey>
+		<sonar.issue.ignore.multicriteria.e1.resourceKey>**/AuthorSwingViewTest.java</sonar.issue.ignore.multicriteria.e1.resourceKey>
 	</properties>
 
 	<modules>
@@ -229,5 +234,6 @@
 				</plugins>
 			</build>
 		</profile>
+		
 	</profiles>
 </project>
