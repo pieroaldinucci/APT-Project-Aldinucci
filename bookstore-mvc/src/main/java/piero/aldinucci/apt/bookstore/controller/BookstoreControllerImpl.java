@@ -1,5 +1,7 @@
 package piero.aldinucci.apt.bookstore.controller;
 
+import java.util.Optional;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -9,17 +11,20 @@ import piero.aldinucci.apt.bookstore.model.Book;
 import piero.aldinucci.apt.bookstore.service.BookstoreManager;
 import piero.aldinucci.apt.bookstore.view.AuthorView;
 import piero.aldinucci.apt.bookstore.view.BookView;
+import piero.aldinucci.apt.bookstore.view.ComposeBookView;
 
 public class BookstoreControllerImpl implements BookstoreController {
 
 	private AuthorView authorView;
 	private BookView bookView;
 	private BookstoreManager manager;
+	private ComposeBookView composeBookView;
 	private static final Logger LOGGER = LogManager.getLogger();
 
-	public BookstoreControllerImpl(AuthorView authorView, BookView bookView, BookstoreManager manager) {
+	public BookstoreControllerImpl(AuthorView authorView, BookView bookView, ComposeBookView composeBookView, BookstoreManager manager) {
 		this.authorView = authorView;
 		this.bookView = bookView;
+		this.composeBookView = composeBookView;
 		this.manager = manager;
 	}
 
@@ -36,10 +41,10 @@ public class BookstoreControllerImpl implements BookstoreController {
 	}
 
 
-	@Override
-	public void newBook(Book book) {
-		bookView.bookAdded(manager.newBook(book));
-	}
+//	@Override
+//	public void newBook(Book book) {
+//		bookView.bookAdded(manager.newBook(book));
+//	}
 
 	@Override
 	public void newAuthor(Author author) {
@@ -73,9 +78,16 @@ public class BookstoreControllerImpl implements BookstoreController {
 
 	@Override
 	public void composeBook() {
-		bookView.showCreateBook(manager.getAllAuthors());
+		composeBookView.showAuthorList(manager.getAllAuthors());
 	}
 
+	@Override
+	public void saveComposedBook() {
+		Optional<Book> optionalBook = composeBookView.getBook();
+		if (optionalBook.isPresent())
+			bookView.bookAdded(manager.newBook(optionalBook.get()));
+	}
+	
 	private void showAllAuthors() {
 		authorView.showAllAuthors(manager.getAllAuthors());
 	}
@@ -83,5 +95,5 @@ public class BookstoreControllerImpl implements BookstoreController {
 	private void showAllBooks() {
 		bookView.showAllBooks(manager.getAllBooks());
 	}
-	
+
 }

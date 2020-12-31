@@ -7,6 +7,7 @@ import static org.mockito.MockitoAnnotations.*;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Optional;
 
 import org.assertj.core.util.Lists;
 import org.junit.Before;
@@ -20,6 +21,7 @@ import piero.aldinucci.apt.bookstore.model.Book;
 import piero.aldinucci.apt.bookstore.service.BookstoreManager;
 import piero.aldinucci.apt.bookstore.view.AuthorView;
 import piero.aldinucci.apt.bookstore.view.BookView;
+import piero.aldinucci.apt.bookstore.view.ComposeBookView;
 
 public class BookstoreControllerImplTest {
 	
@@ -32,12 +34,15 @@ public class BookstoreControllerImplTest {
 	@Mock
 	BookstoreManager manager;
 	
+	@Mock
+	ComposeBookView composeBookView;
+	
 	public BookstoreControllerImpl controller;
 	
 	@Before
 	public void setUp() {
 		openMocks(this);
-		controller = new BookstoreControllerImpl(authorView, bookView, manager); 
+		controller = new BookstoreControllerImpl(authorView, bookView, composeBookView, manager); 
 	}
 	
 	@Test
@@ -72,17 +77,17 @@ public class BookstoreControllerImplTest {
 		verify(authorView).authorAdded(authorAdded);
 	}
 	
-	@Test
-	public void test_newBook() {
-		Book bookToAdd = new Book(null,"A book",new HashSet<>());
-		Book bookAdded = new Book(1L,"A book",new HashSet<>());
-		when(manager.newBook(isA(Book.class))).thenReturn(bookAdded);
-		
-		controller.newBook(bookToAdd);
-		
-		verify(manager).newBook(bookToAdd);
-		verify(bookView).bookAdded(bookAdded);
-	}
+//	@Test
+//	public void test_newBook() {
+//		Book bookToAdd = new Book(null,"A book",new HashSet<>());
+//		Book bookAdded = new Book(1L,"A book",new HashSet<>());
+//		when(manager.newBook(isA(Book.class))).thenReturn(bookAdded);
+//		
+//		controller.newBook(bookToAdd);
+//		
+//		verify(manager).newBook(bookToAdd);
+//		verify(bookView).bookAdded(bookAdded);
+//	}
 	
 	@Test
 	public void test_deleteBook_successful() {
@@ -143,14 +148,38 @@ public class BookstoreControllerImplTest {
 		verifyNoMoreInteractions(manager);
 	}
 	
+
 	@Test
-	public void test_composeBook() {
+	public void test_ComposeBook() {
 		List<Author> authors = Arrays.asList(new Author(3L,"test name",new HashSet<Book>()));
 		when(manager.getAllAuthors()).thenReturn(authors);
 		
 		controller.composeBook();
 		
-		verify(bookView).showCreateBook(authors);
+		verify(composeBookView).showAuthorList(authors);
+	}
+	
+	@Test
+	public void test_saveComposedBook_when_book_is_not_composed() {
+		when(composeBookView.getBook()).thenReturn(Optional.empty());
+		
+		controller.saveComposedBook();
+		
+		verifyNoInteractions(manager);
+		verifyNoInteractions(bookView);
+	}
+	
+	@Test
+	public void test_saveComposedBook_when_book_is_composed_succesfully() {
+		Book bookToAdd = new Book(null,"A book",new HashSet<>());
+		Book bookAdded = new Book(1L,"A book",new HashSet<>());
+		when(composeBookView.getBook()).thenReturn(Optional.of(bookToAdd));
+		when(manager.newBook(isA(Book.class))).thenReturn(bookAdded);
+		
+		controller.saveComposedBook();
+		
+		verify(manager).newBook(bookToAdd);
+		verify(bookView).bookAdded(bookAdded);
 	}
 
 }
