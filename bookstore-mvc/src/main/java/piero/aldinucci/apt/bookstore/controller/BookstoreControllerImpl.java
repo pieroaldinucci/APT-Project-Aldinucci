@@ -40,12 +40,6 @@ public class BookstoreControllerImpl implements BookstoreController {
 
 	}
 
-
-//	@Override
-//	public void newBook(Book book) {
-//		bookView.bookAdded(manager.newBook(book));
-//	}
-
 	@Override
 	public void newAuthor(Author author) {
 		authorView.authorAdded(manager.newAuthor(author));

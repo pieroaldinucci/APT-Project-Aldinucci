@@ -77,18 +77,6 @@ public class BookstoreControllerImplTest {
 		verify(authorView).authorAdded(authorAdded);
 	}
 	
-//	@Test
-//	public void test_newBook() {
-//		Book bookToAdd = new Book(null,"A book",new HashSet<>());
-//		Book bookAdded = new Book(1L,"A book",new HashSet<>());
-//		when(manager.newBook(isA(Book.class))).thenReturn(bookAdded);
-//		
-//		controller.newBook(bookToAdd);
-//		
-//		verify(manager).newBook(bookToAdd);
-//		verify(bookView).bookAdded(bookAdded);
-//	}
-	
 	@Test
 	public void test_deleteBook_successful() {
 		Book book = new Book(1L, "test book", new HashSet<>());
