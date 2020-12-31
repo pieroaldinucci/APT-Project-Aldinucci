@@ -16,6 +16,11 @@
 			<AppenderRef ref="Console" />
 		</Root>
 		
+		<Logger name="org.hibernate" level="error" additivity="false">
+            <AppenderRef ref="Console-Appender"/>
+        </Logger>
+		
+		<!-- 
 		<Logger name="org.hibernate" level="info" additivity="false">
 			<AppenderRef ref="Console" />
 		</Logger>
@@ -28,6 +33,7 @@
 		<Logger name="org.hibernate.stat" level="debug" additivity="false">
 			<AppenderRef ref="Console" />
 		</Logger>
+		 -->
 
 		<!-- <Root level="error"> <AppenderRef ref="Console-Appender" /> </Root> -->
 	</Loggers>

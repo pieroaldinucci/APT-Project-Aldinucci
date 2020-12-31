@@ -11,11 +11,5 @@
 		<Root level="error">
 			<AppenderRef ref="Console-Appender" />
 		</Root>
-<!-- 		<Root level="info"> -->
-<!--             <AppenderRef ref="Console-Appender"/> -->
-<!--         </Root> -->
-        <Logger name="org.hibernate" level="error" additivity="false">
-            <AppenderRef ref="Console-Appender"/>
-        </Logger>
 	</Loggers>
 </Configuration>
