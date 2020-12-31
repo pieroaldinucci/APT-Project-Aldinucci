@@ -13,7 +13,7 @@
 		<maven.compiler.target>1.8</maven.compiler.target>
 		<jdk9-or-more>false</jdk9-or-more>
 		<sonar.issue.ignore.multicriteria>e1,e2</sonar.issue.ignore.multicriteria>
-		<!-- Rule: inheritance depth larger than 5-->
+		<!-- Rule: inheritance depth larger than 5 -->
 		<sonar.issue.ignore.multicriteria.e1.ruleKey>java:S110</sonar.issue.ignore.multicriteria.e1.ruleKey>
 		<sonar.issue.ignore.multicriteria.e1.resourceKey>**/*.java</sonar.issue.ignore.multicriteria.e1.resourceKey>
 		<!-- Rule: no assertions, because assertj-swing is used instead -->
@@ -236,6 +236,29 @@
 				</plugins>
 			</build>
 		</profile>
-		
+		<profile>
+			<id>no-core-tests</id>
+			<build>
+				<plugins>
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-failsafe-plugin</artifactId>
+						<configuration>
+							<excludes>
+								<exclude>**/AuthorAnnotationsIT.java</exclude>
+								<exclude>**/BookAnnotationsIT.java</exclude>
+							</excludes>
+						</configuration>
+					</plugin>
+					<plugin>
+						<groupId>io.fabric8</groupId>
+						<artifactId>docker-maven-plugin</artifactId>
+						<configuration>
+							<skip>true</skip>
+						</configuration>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
 	</profiles>
 </project>
