@@ -19,10 +19,6 @@
 		<!-- Rule: no assertions, because assertj-swing is used instead -->
 		<sonar.issue.ignore.multicriteria.e2.ruleKey>java:S2699</sonar.issue.ignore.multicriteria.e2.ruleKey>
 		<sonar.issue.ignore.multicriteria.e2.resourceKey>**/*.java</sonar.issue.ignore.multicriteria.e2.resourceKey>
-		<sonar.junit.reportPaths>
-			${project.build.directory}/surefire-reports,
-			${project.build.directory}/failsafe-reports
-		</sonar.junit.reportPaths>
 	</properties>
 
 	<modules>
@@ -240,5 +236,6 @@
 				</plugins>
 			</build>
 		</profile>
+		
 	</profiles>
 </project>
