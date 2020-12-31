@@ -19,6 +19,7 @@ addons:
 
 services:
    - docker
+   - xvfb
 
 #skip installation step
 install: true
