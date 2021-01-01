@@ -4,8 +4,13 @@ import java.util.List;
 
 import piero.aldinucci.apt.bookstore.model.Author;
 import piero.aldinucci.apt.bookstore.model.Book;
+import piero.aldinucci.apt.bookstore.transaction.TransactionManager;
 
 public class BookstoreManagerImpl implements BookstoreManager {
+
+	public BookstoreManagerImpl(TransactionManager transactionManager) {
+		// TODO Auto-generated constructor stub
+	}
 
 	@Override
 	public Book newBook(Book book) {
