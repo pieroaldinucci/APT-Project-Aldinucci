@@ -1,24 +1,23 @@
 package piero.aldinucci.apt.bookstore.service;
 
-import static org.assertj.core.api.Assertions.*;
-import static org.mockito.Mockito.spy;
-import static org.mockito.Mockito.times;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.mockito.AdditionalAnswers.answer;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.ArgumentMatchers.isA;
+import static org.mockito.Mockito.inOrder;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
-import static org.mockito.MockitoAnnotations.*;
-import static org.mockito.Mockito.inOrder;
+import static org.mockito.MockitoAnnotations.openMocks;
 
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Optional;
-import java.util.Set;
-
-import static org.mockito.ArgumentMatchers.*;
-import static org.mockito.AdditionalAnswers.*;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -228,6 +227,119 @@ public class BookstoreManagerImplTest {
 		verify(authorRepository).findById(1L);
 		verifyNoMoreInteractions(authorRepository);
 		verifyNoInteractions(bookRepository);
+	}
+	
+	/**
+	 * This is needed because the equals method only consider the id.
+	 */
+	@Test
+	public void test_update_author_should_update_the_correct_object_considering_all_fields() {
+		Author oldAuthor = new Author(3L, "old name", new HashSet<> ());
+		Author updatedAuthor = new Author(3L, "Updated name", new HashSet<>());
+		when(authorRepository.findById(anyLong())).thenReturn(Optional.of(oldAuthor));
+		ArgumentCaptor<Author> capturedAuthor = ArgumentCaptor.forClass(Author.class);
+		
+		bookstoreManager.update(updatedAuthor);
+		
+		verify(authorRepository).update(capturedAuthor.capture());
+		assertThat(capturedAuthor.getAllValues().get(0)).usingRecursiveComparison()
+			.isEqualTo(updatedAuthor);
+	}
+	
+	/**
+	 * Again, is possible to check if Sets are updated before the repository itself is
+	 * updated? (we should not assume that we're using a persistency unit)
+	 */
+	@Test
+	public void test_update_author_should_cascade_to_its_books() {
+		Author authorToUpdate = new Author(3L, "author to update",new LinkedHashSet<>());
+		Author updatedAuthor = new Author(3L, "Updated name", new LinkedHashSet<>());
+		Book book1 = new Book(3L, "test book 1", new HashSet<>(Arrays.asList(authorToUpdate)));
+		Book book2 = new Book(5L, "test book 2", new HashSet<>(Arrays.asList(authorToUpdate)));
+		Book book3 = new Book(11L, "test book 3", new HashSet<>());
+		authorToUpdate.getBooks().add(book1);
+		authorToUpdate.getBooks().add(book2);
+		updatedAuthor.getBooks().add(book2);
+		updatedAuthor.getBooks().add(book3);
+		when(authorRepository.findById(anyLong())).thenReturn(Optional.of(authorToUpdate));
+		
+		bookstoreManager.update(updatedAuthor);
+		
+		assertThat(book1.getAuthors()).isEmpty();
+		assertThat(book2.getAuthors().size()).isEqualTo(1);
+		assertThat(book2.getAuthors().iterator().next()).usingRecursiveComparison().isEqualTo(updatedAuthor);
+		assertThat(book3.getAuthors().size()).isEqualTo(1);
+		assertThat(book3.getAuthors().iterator().next()).usingRecursiveComparison().isEqualTo(updatedAuthor);		
+		InOrder inOrder = inOrder(authorRepository,bookRepository);
+		inOrder.verify(authorRepository).findById(3L);
+		inOrder.verify(bookRepository).update(book1);
+		inOrder.verify(bookRepository).update(book2);
+		inOrder.verify(bookRepository).update(book3);
+		inOrder.verify(authorRepository).update(updatedAuthor);
+		verifyNoMoreInteractions(authorRepository);
+		verifyNoMoreInteractions(bookRepository);
+	}
+	
+	
+	@Test
+	public void test_update_book_should_throw_if_not_present() {
+		when(bookRepository.findById(anyLong())).thenReturn(Optional.empty());
+		Book book = new Book(3L, "not existant", null);
+		
+		assertThatThrownBy(() -> bookstoreManager.update(book))
+			.isExactlyInstanceOf(BookstorePersistenceException.class)
+			.hasMessage("Cannot find book to update with id: 3");
+		
+		verify(bookRepository).findById(3L);
+		verifyNoMoreInteractions(bookRepository);
+		verifyNoInteractions(authorRepository);
+	}
+	
+	/**
+	 * This is needed because the equals method only consider the id.
+	 */
+	@Test
+	public void test_update_book_should_update_the_correct_object_considering_all_fields() {
+		Book oldBook = new Book(3L, "old title", new HashSet<> ());
+		Book updatedBook = new Book(3L, "Updated title", new HashSet<>());
+		when(bookRepository.findById(anyLong())).thenReturn(Optional.of(oldBook));
+		ArgumentCaptor<Book> capturedBook = ArgumentCaptor.forClass(Book.class);
+		
+		bookstoreManager.update(updatedBook);
+		
+		verify(bookRepository).update(capturedBook.capture());
+		assertThat(capturedBook.getAllValues().get(0)).usingRecursiveComparison()
+			.isEqualTo(updatedBook);
+	}
+	
+	@Test
+	public void test_update_book_should_cascade_to_its_authors() {
+		Book bookToUpdate = new Book(3L, "book to update",new LinkedHashSet<>());
+		Book updatedBook = new Book(3L, "Updated title", new LinkedHashSet<>());
+		Author author1 = new Author(3L, "test author 1", new HashSet<>(Arrays.asList(bookToUpdate)));
+		Author author2 = new Author(5L, "test author 2", new HashSet<>(Arrays.asList(bookToUpdate)));
+		Author author3 = new Author(11L, "test author 3", new HashSet<>());
+		bookToUpdate.getAuthors().add(author1);
+		bookToUpdate.getAuthors().add(author2);
+		updatedBook.getAuthors().add(author2);
+		updatedBook.getAuthors().add(author3);
+		when(bookRepository.findById(anyLong())).thenReturn(Optional.of(bookToUpdate));
+		
+		bookstoreManager.update(updatedBook);
+		
+		assertThat(author1.getBooks()).isEmpty();
+		assertThat(author2.getBooks().size()).isEqualTo(1);
+		assertThat(author2.getBooks().iterator().next()).usingRecursiveComparison().isEqualTo(updatedBook);
+		assertThat(author3.getBooks().size()).isEqualTo(1);
+		assertThat(author3.getBooks().iterator().next()).usingRecursiveComparison().isEqualTo(updatedBook);		
+		InOrder inOrder = inOrder(authorRepository,bookRepository);
+		inOrder.verify(bookRepository).findById(3L);
+		inOrder.verify(authorRepository).update(author1);
+		inOrder.verify(authorRepository).update(author2);
+		inOrder.verify(authorRepository).update(author3);
+		inOrder.verify(bookRepository).update(updatedBook);
+		verifyNoMoreInteractions(bookRepository);
+		verifyNoMoreInteractions(authorRepository);
 	}
 
 }
