@@ -38,8 +38,10 @@ public class BookstoreManagerImpl implements BookstoreManager {
 
 	@Override
 	public void delete(Author author) {
-		throw new BookstorePersistenceException();
-
+		transactionManager.doInTransaction((authorR,bookR) -> {
+			return authorR.findById(author.getId())
+					.orElseThrow(() -> new BookstorePersistenceException("Could not find author with id: "+author.getId()));
+		});
 	}
 
 	@Override
