@@ -1,6 +1,7 @@
 package piero.aldinucci.apt.bookstore.service;
 
 import java.util.List;
+import java.util.Optional;
 
 import piero.aldinucci.apt.bookstore.exceptions.BookstorePersistenceException;
 import piero.aldinucci.apt.bookstore.model.Author;
@@ -38,15 +39,28 @@ public class BookstoreManagerImpl implements BookstoreManager {
 
 	@Override
 	public void delete(Author author) {
-		transactionManager.doInTransaction((authorR,bookR) -> {
-			return authorR.findById(author.getId())
-					.orElseThrow(() -> new BookstorePersistenceException("Could not find author with id: "+author.getId()));
+		transactionManager.doInTransaction((authorR, bookR) -> {
+			Author toDelete = authorR.findById(author.getId()).orElseThrow(
+					() -> new BookstorePersistenceException("Could not find author with id: " + author.getId()));
+			toDelete.getBooks().stream().forEach(b -> {
+				b.getAuthors().remove(toDelete);
+				bookR.update(b);
+			});
+			return authorR.delete(toDelete.getId());
 		});
 	}
 
 	@Override
 	public void delete(Book book) {
-		// TODO Auto-generated method stub
+		transactionManager.doInTransaction((authorR, bookR) -> {
+			Book toDelete = bookR.findById(book.getId()).orElseThrow(
+					() -> new BookstorePersistenceException("Could not find book with id: " + book.getId()));
+			toDelete.getAuthors().stream().forEach(a -> {
+				a.getBooks().remove(toDelete);
+				authorR.update(a);
+			});
+			return bookR.delete(toDelete.getId());
+		});
 
 	}
 
@@ -62,7 +76,11 @@ public class BookstoreManagerImpl implements BookstoreManager {
 
 	@Override
 	public void update(Author author) {
-		// TODO Auto-generated method stub
+		transactionManager.doInTransaction((authorR, bookR) -> {
+			Author toUpdate = authorR.findById(author.getId()).orElseThrow(() -> 
+					new BookstorePersistenceException("Cannot find author to update with id: " + author.getId()));
+			return toUpdate;
+		});
 
 	}
 

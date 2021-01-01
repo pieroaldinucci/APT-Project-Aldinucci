@@ -2,11 +2,13 @@ package piero.aldinucci.apt.bookstore.service;
 
 import static org.assertj.core.api.Assertions.*;
 import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.*;
+import static org.mockito.Mockito.inOrder;
 
 import java.util.Arrays;
 import java.util.HashSet;
@@ -20,9 +22,9 @@ import static org.mockito.AdditionalAnswers.*;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.mockito.ArgumentCaptor;
 import org.mockito.InOrder;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 
 import piero.aldinucci.apt.bookstore.exceptions.BookstorePersistenceException;
 import piero.aldinucci.apt.bookstore.model.Author;
@@ -98,7 +100,7 @@ public class BookstoreManagerImplTest {
 
 		assertThat(bookstoreManager.newBook(book)).isSameAs(returnedBook);
 
-		InOrder inOrder = Mockito.inOrder(authorRepository, bookRepository);
+		InOrder inOrder = inOrder(authorRepository, bookRepository);
 		inOrder.verify(bookRepository).save(book);
 		inOrder.verify(authorRepository).update(author1);
 		inOrder.verify(authorRepository).update(author2);
@@ -143,6 +145,86 @@ public class BookstoreManagerImplTest {
 				.isExactlyInstanceOf(BookstorePersistenceException.class)
 				.hasMessage("Could not find author with id: 1");
 
+		verify(authorRepository).findById(1L);
+		verifyNoMoreInteractions(authorRepository);
+		verifyNoInteractions(bookRepository);
+	}
+	
+	/**
+	 * Question: Is legit to spy on HashSet? It should be not
+	 * Then it's possible to check if the sets are being updated inOrder?
+	 * 
+	 * Using ArgumentCaptor can't be done because we'll get the
+	 * final state of the objects, and not the state they were in when
+	 * the method is called.
+	 */
+	@Test
+	public void test_delete_author_when_book_set_not_empty() {
+		Author author = new Author(1L, "author to delete", new LinkedHashSet<>());
+		Book book1 = new Book(1L, "test book", new HashSet<>());
+		Book book2 = new Book(3L, "third test book", new HashSet<>());
+		author.getBooks().add(book1);
+		author.getBooks().add(book2);
+		book1.getAuthors().add(author);
+		book2.getAuthors().add(author);
+		when(authorRepository.findById(anyLong())).thenReturn(Optional.of(author));
+		when(authorRepository.delete(anyLong())).thenReturn(author);
+		
+		bookstoreManager.delete(author);
+		
+		InOrder inOrder = inOrder(authorRepository,bookRepository);
+		inOrder.verify(bookRepository).update(book1);
+		inOrder.verify(bookRepository).update(book2);
+		inOrder.verify(authorRepository).delete(1);
+		assertThat(book1.getAuthors()).isEmpty();
+		assertThat(book2.getAuthors()).isEmpty();
+	}
+	
+	@Test
+	public void test_delete_book_when_its_not_present() {
+		Book book = new Book(2L, "book to delete", new HashSet<>());
+		when(bookRepository.findById(anyLong())).thenReturn(Optional.empty());
+
+		assertThatThrownBy(() -> bookstoreManager.delete(book))				
+				.isExactlyInstanceOf(BookstorePersistenceException.class)
+				.hasMessage("Could not find book with id: 2");
+
+		verify(bookRepository).findById(2);
+		verifyNoMoreInteractions(bookRepository);
+		verifyNoInteractions(authorRepository);
+	}
+	
+	@Test
+	public void test_delete_book_when_its_set_is_not_empty() {
+		Book book = new Book(1L, "book to delete", new LinkedHashSet<>());
+		Author author1 = new Author(1L, "some guy", new HashSet<>());
+		Author author2 = new Author(3L, "tizio", new HashSet<>());
+		book.getAuthors().add(author1);
+		book.getAuthors().add(author2);
+		author1.getBooks().add(book);
+		author2.getBooks().add(book);
+		when(bookRepository.findById(anyLong())).thenReturn(Optional.of(book));
+		when(bookRepository.delete(anyLong())).thenReturn(book);
+		
+		bookstoreManager.delete(book);
+		
+		InOrder inOrder = inOrder(authorRepository,bookRepository);
+		inOrder.verify(authorRepository).update(author1);
+		inOrder.verify(authorRepository).update(author2);
+		inOrder.verify(bookRepository).delete(1);
+		assertThat(author1.getBooks()).isEmpty();
+		assertThat(author2.getBooks()).isEmpty();
+	}
+	
+	@Test
+	public void test_update_author_should_throw_if_not_present() {
+		when(authorRepository.findById(anyLong())).thenReturn(Optional.empty());
+		Author author = new Author(1L, "not existant", null);
+		
+		assertThatThrownBy(() -> bookstoreManager.update(author))
+			.isExactlyInstanceOf(BookstorePersistenceException.class)
+			.hasMessage("Cannot find author to update with id: 1");
+		
 		verify(authorRepository).findById(1L);
 		verifyNoMoreInteractions(authorRepository);
 		verifyNoInteractions(bookRepository);
