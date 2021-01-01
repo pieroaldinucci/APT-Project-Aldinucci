@@ -267,9 +267,11 @@ public class BookstoreManagerImplTest {
 		
 		assertThat(book1.getAuthors()).isEmpty();
 		assertThat(book2.getAuthors().size()).isEqualTo(1);
-		assertThat(book2.getAuthors().iterator().next()).usingRecursiveComparison().isEqualTo(updatedAuthor);
+		assertThat(book2.getAuthors().iterator().next())
+			.usingRecursiveComparison().isEqualTo(updatedAuthor);
 		assertThat(book3.getAuthors().size()).isEqualTo(1);
-		assertThat(book3.getAuthors().iterator().next()).usingRecursiveComparison().isEqualTo(updatedAuthor);		
+		assertThat(book3.getAuthors().iterator().next())
+			.usingRecursiveComparison().isEqualTo(updatedAuthor);		
 		InOrder inOrder = inOrder(authorRepository,bookRepository);
 		inOrder.verify(authorRepository).findById(3L);
 		inOrder.verify(bookRepository).update(book1);
@@ -329,9 +331,11 @@ public class BookstoreManagerImplTest {
 		
 		assertThat(author1.getBooks()).isEmpty();
 		assertThat(author2.getBooks().size()).isEqualTo(1);
-		assertThat(author2.getBooks().iterator().next()).usingRecursiveComparison().isEqualTo(updatedBook);
+		assertThat(author2.getBooks().iterator().next())
+			.usingRecursiveComparison().isEqualTo(updatedBook);
 		assertThat(author3.getBooks().size()).isEqualTo(1);
-		assertThat(author3.getBooks().iterator().next()).usingRecursiveComparison().isEqualTo(updatedBook);		
+		assertThat(author3.getBooks().iterator().next())
+			.usingRecursiveComparison().isEqualTo(updatedBook);		
 		InOrder inOrder = inOrder(authorRepository,bookRepository);
 		inOrder.verify(bookRepository).findById(3L);
 		inOrder.verify(authorRepository).update(author1);
