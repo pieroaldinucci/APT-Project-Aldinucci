@@ -2,6 +2,7 @@ package piero.aldinucci.apt.bookstore.service;
 
 import java.util.List;
 
+import piero.aldinucci.apt.bookstore.exceptions.BookstorePersistenceException;
 import piero.aldinucci.apt.bookstore.model.Author;
 import piero.aldinucci.apt.bookstore.model.Book;
 import piero.aldinucci.apt.bookstore.transaction.TransactionManager;
@@ -16,18 +17,28 @@ public class BookstoreManagerImpl implements BookstoreManager {
 
 	@Override
 	public Author newAuthor(Author author) {
+		if (!author.getBooks().isEmpty())
+			throw new IllegalArgumentException("New authors should have an empty Book Set");
+		author.setId(null);
 		return transactionManager.doInTransaction((authorR, bookR) -> authorR.save(author));
 	}
-	
+
 	@Override
 	public Book newBook(Book book) {
-		// TODO Auto-generated method stub
-		return null;
+		book.setId(null);
+		return transactionManager.doInTransaction((authorR, bookR) -> {
+			Book returnBook = bookR.save(book);
+			returnBook.getAuthors().stream().forEach(a -> {
+				a.getBooks().add(returnBook);
+				authorR.update(a);
+			});
+			return returnBook;
+		});
 	}
 
 	@Override
 	public void delete(Author author) {
-		// TODO Auto-generated method stub
+		throw new BookstorePersistenceException();
 
 	}
 
@@ -39,14 +50,12 @@ public class BookstoreManagerImpl implements BookstoreManager {
 
 	@Override
 	public List<Author> getAllAuthors() {
-		// TODO Auto-generated method stub
-		return null;
+		return transactionManager.doInTransaction((authorR, bookR) -> authorR.findAll());
 	}
 
 	@Override
 	public List<Book> getAllBooks() {
-		// TODO Auto-generated method stub
-		return null;
+		return transactionManager.doInTransaction((authorR, bookR) -> bookR.findAll());
 	}
 
 	@Override
