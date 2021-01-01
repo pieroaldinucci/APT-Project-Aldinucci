@@ -8,18 +8,19 @@ import piero.aldinucci.apt.bookstore.transaction.TransactionManager;
 
 public class BookstoreManagerImpl implements BookstoreManager {
 
-	public BookstoreManagerImpl(TransactionManager transactionManager) {
-		// TODO Auto-generated constructor stub
-	}
+	private TransactionManager transactionManager;
 
-	@Override
-	public Book newBook(Book book) {
-		// TODO Auto-generated method stub
-		return null;
+	public BookstoreManagerImpl(TransactionManager transactionManager) {
+		this.transactionManager = transactionManager;
 	}
 
 	@Override
 	public Author newAuthor(Author author) {
+		return transactionManager.doInTransaction((authorR, bookR) -> authorR.save(author));
+	}
+	
+	@Override
+	public Book newBook(Book book) {
 		// TODO Auto-generated method stub
 		return null;
 	}
