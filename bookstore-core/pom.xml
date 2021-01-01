@@ -65,8 +65,7 @@
 									<POSTGRES_DB>projectAPTTestDb</POSTGRES_DB>
 								</env>
 								<wait>
-									<log>(?s)\[1\] LOG: database system is ready to accept
-										connections</log>
+									<log>(?s)\[1\] LOG:  database system is ready to accept connections</log>
 									<time>20000</time>
 								</wait>
 							</run>

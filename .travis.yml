@@ -34,4 +34,4 @@ script:
    #- ./travis-build
 #   - mvn -f bookstore-core/pom.xml clean verify org.pitest:pitest-maven:mutationCoverage $MAVEN_ARGS
 #   - mvn -f bookstore-core/pom.xml clean verify -Pjacoco $MAVEN_ARGS
-    - mvn -f bookstore-parent/pom.xml verify
+    - mvn -f bookstore-parent/pom.xml clean verify -Pjacoco $MAVEN_ARGS
