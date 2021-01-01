@@ -236,7 +236,7 @@ public class ComposeBookSwingView extends JDialog implements ComposeBookView {
 	}
 
 	@Override
-	public void showAuthorList(List<Author> authors) {
+	public void composeNewBook(List<Author> authors) {
 		textField.setText(null);
 		modelAvailableAuthors.clear();
 		modelBookAuthors.clear();

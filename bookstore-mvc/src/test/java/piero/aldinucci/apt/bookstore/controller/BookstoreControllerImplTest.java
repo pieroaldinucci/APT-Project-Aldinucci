@@ -144,7 +144,7 @@ public class BookstoreControllerImplTest {
 		
 		controller.composeBook();
 		
-		verify(composeBookView).showAuthorList(authors);
+		verify(composeBookView).composeNewBook(authors);
 	}
 	
 	@Test

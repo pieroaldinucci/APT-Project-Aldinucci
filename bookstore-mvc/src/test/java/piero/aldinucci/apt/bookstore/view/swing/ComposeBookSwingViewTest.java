@@ -109,7 +109,7 @@ public class ComposeBookSwingViewTest extends AssertJSwingJUnitTestCase {
 		composeBookView.setVisible(false);
 		dialogFixture.requireNotVisible();
 		
-		GuiActionRunner.execute(() -> composeBookView.showAuthorList(Lists.emptyList()));
+		GuiActionRunner.execute(() -> composeBookView.composeNewBook(Lists.emptyList()));
 		
 		dialogFixture.requireVisible();
 	}
@@ -126,7 +126,7 @@ public class ComposeBookSwingViewTest extends AssertJSwingJUnitTestCase {
 		Author author1 = new Author(2L, "test name", null);
 		Author author2 = new Author(3L, "another name", null);
 
-		GuiActionRunner.execute(() -> composeBookView.showAuthorList(Arrays.asList(author1, author2)));
+		GuiActionRunner.execute(() -> composeBookView.composeNewBook(Arrays.asList(author1, author2)));
 
 		assertThat(composeBookView.getModelBookAuthors().toArray()).isEmpty();
 		assertThat(composeBookView.getModelAvailableAuthors().toArray()).containsExactly(author1, author2);

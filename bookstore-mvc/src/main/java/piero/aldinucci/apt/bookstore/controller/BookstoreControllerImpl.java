@@ -72,7 +72,7 @@ public class BookstoreControllerImpl implements BookstoreController {
 
 	@Override
 	public void composeBook() {
-		composeBookView.showAuthorList(manager.getAllAuthors());
+		composeBookView.composeNewBook(manager.getAllAuthors());
 	}
 
 	@Override

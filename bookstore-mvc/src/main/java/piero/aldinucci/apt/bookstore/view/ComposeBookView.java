@@ -9,5 +9,6 @@ import piero.aldinucci.apt.bookstore.model.Book;
 public interface ComposeBookView {
 
 	public Optional<Book> getBook();
-	public void showAuthorList(List<Author> authors);
+	public void composeNewBook(List<Author> authors);
+//	public void modifyBook(Book book, List<Author> authors);
 }
