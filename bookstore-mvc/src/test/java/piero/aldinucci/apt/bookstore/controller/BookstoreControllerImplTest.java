@@ -73,8 +73,9 @@ public class BookstoreControllerImplTest {
 		
 		controller.newAuthor(author);
 		
-		verify(manager).newAuthor(author);
-		verify(authorView).authorAdded(authorAdded);
+		InOrder inOrder = inOrder(manager,authorView);
+		inOrder.verify(manager).newAuthor(author);
+		inOrder.verify(authorView).authorAdded(authorAdded);
 	}
 	
 	@Test
@@ -99,10 +100,11 @@ public class BookstoreControllerImplTest {
 		assertThatCode(() -> controller.deleteBook(book))
 			.doesNotThrowAnyException();
 		
-		verify(manager).delete(book);
-		verify(bookView).showError("Error while deleting book", book);
-		verify(manager).getAllBooks();
-		verify(bookView).showAllBooks(books);
+		InOrder inOrder = inOrder(manager,bookView);
+		inOrder.verify(manager).delete(book);
+		inOrder.verify(bookView).showError("Error while deleting book", book);
+		inOrder.verify(manager).getAllBooks();
+		inOrder.verify(bookView).showAllBooks(books);
 		verifyNoMoreInteractions(manager);
 	}
 	
@@ -166,8 +168,9 @@ public class BookstoreControllerImplTest {
 		
 		controller.saveComposedBook();
 		
-		verify(manager).newBook(bookToAdd);
-		verify(bookView).bookAdded(bookAdded);
+		InOrder inOrder = inOrder(manager,bookView);
+		inOrder.verify(manager).newBook(bookToAdd);
+		inOrder.verify(bookView).bookAdded(bookAdded);
 	}
 
 }
