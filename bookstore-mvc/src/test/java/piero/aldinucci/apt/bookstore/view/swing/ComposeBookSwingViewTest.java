@@ -1,6 +1,9 @@
 package piero.aldinucci.apt.bookstore.view.swing;
 
 import static org.assertj.core.api.Assertions.*;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoInteractions;
+import static org.mockito.MockitoAnnotations.*;
 
 import java.util.Arrays;
 import java.util.HashSet;
@@ -21,7 +24,10 @@ import org.assertj.swing.junit.testcase.AssertJSwingJUnitTestCase;
 import org.junit.After;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.ArgumentCaptor;
+import org.mockito.Mock;
 
+import piero.aldinucci.apt.bookstore.controller.BookstoreController;
 import piero.aldinucci.apt.bookstore.model.Author;
 import piero.aldinucci.apt.bookstore.model.Book;
 
@@ -36,10 +42,18 @@ public class ComposeBookSwingViewTest extends AssertJSwingJUnitTestCase {
 
 	private ComposeBookSwingView composeBookView;
 	private DialogFixture dialogFixture;
+	
+	@Mock
+	private BookstoreController controller;
 
 	@Override
 	protected void onSetUp() throws Exception {
-		GuiActionRunner.execute(() -> composeBookView = new ComposeBookSwingView());
+		openMocks(this);
+		
+		GuiActionRunner.execute(() -> {
+			composeBookView = new ComposeBookSwingView();
+			composeBookView.setController(controller);
+		});
 
 		dialogFixture = new DialogFixture(robot(), composeBookView);
 		dialogFixture.show();
@@ -68,9 +82,9 @@ public class ComposeBookSwingViewTest extends AssertJSwingJUnitTestCase {
 
 	@Test
 	@GUITest
-	public void test_Dialog_window_cannot_be_closed_from_frame() {
+	public void test_Dialog_window_is_hidden_but_not_disposed_when_closed() {
 		dialogFixture.close();
-		dialogFixture.requireVisible();
+		dialogFixture.requireNotVisible();
 	}
 
 	@Test
@@ -117,8 +131,6 @@ public class ComposeBookSwingViewTest extends AssertJSwingJUnitTestCase {
 	@Test
 	@GUITest
 	public void test_showAuthorList_should_clear_and_update_the_available_authors_list() {
-		assertThat(composeBookView.getBook()).isNull();
-		
 		GuiActionRunner.execute(() -> {
 			composeBookView.getModelBookAuthors().addElement(new Author(5L,"Isaac",new HashSet<>()));
 			composeBookView.getModelBookAuthors().addElement(new Author(3L,"Clarke",new HashSet<>()));
@@ -146,19 +158,17 @@ public class ComposeBookSwingViewTest extends AssertJSwingJUnitTestCase {
 	}
 
 	@Test
-	public void test_pressing_cancel_button_will_return_empty_optional_and_hide_Dialog() {
-		assertThat(composeBookView.getBook()).isNull();
+	public void test_pressing_cancel_button_will_not_call_the_controller_and_hide_Dialog() {
+//		GuiActionRunner.execute(() -> {
+//			composeBookView.getModelAvailableAuthors().addElement(new Author(2L, "database author", new HashSet<>()));
+//			composeBookView.getModelBookAuthors().addElement(new Author(5L, "book author", new HashSet<>()));
+//		});
 		
-		GuiActionRunner.execute(() -> {
-			composeBookView.getModelAvailableAuthors().addElement(new Author(2L, "database author", new HashSet<>()));
-			composeBookView.getModelBookAuthors().addElement(new Author(5L, "book author", new HashSet<>()));
-		});
-		
-		dialogFixture.textBox(TITLE_TEXT_FIELD).enterText("Title");
+//		dialogFixture.textBox(TITLE_TEXT_FIELD).enterText("Title");
 		dialogFixture.button(JButtonMatcher.withText("Cancel")).click();
 
 		dialogFixture.requireNotVisible();
-		assertThat(composeBookView.getBook()).isEmpty();
+		verifyNoInteractions(controller);
 	}
 
 	@Test
@@ -235,9 +245,7 @@ public class ComposeBookSwingViewTest extends AssertJSwingJUnitTestCase {
 
 	@Test
 	@GUITest
-	public void test_OKbutton_should_hide_dialog_and_create_a_book_with_multiple_authors() {
-		assertThat(composeBookView.getBook()).isNull();
-		
+	public void test_OKbutton_should_hide_dialog_create_a_book_and_call_controller() {
 		Author author = new Author(2L, "author name", new HashSet<Book>());
 		Author author2 = new Author(5L, "another name", new HashSet<Book>());
 		HashSet<Author> authors = new HashSet<>();
@@ -251,10 +259,10 @@ public class ComposeBookSwingViewTest extends AssertJSwingJUnitTestCase {
 		dialogFixture.textBox(TITLE_TEXT_FIELD).enterText("Book!");
 		dialogFixture.button(JButtonMatcher.withText("OK")).click();
 
-		assertThat(composeBookView.getBook()).isNotEmpty();
-		assertThat(composeBookView.getBook().get()).usingRecursiveComparison()
-				.isEqualTo(new Book(null, "Book!", authors));
 		dialogFixture.requireNotVisible();
+		ArgumentCaptor<Book> bookCaptor = ArgumentCaptor.forClass(Book.class);
+		verify(controller).newBook(bookCaptor.capture());
+		assertThat(bookCaptor.getValue()).usingRecursiveComparison().isEqualTo(new Book(null, "Book!", authors));
 	}
 
 }

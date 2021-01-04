@@ -76,10 +76,8 @@ public class BookstoreControllerImpl implements BookstoreController {
 	}
 
 	@Override
-	public void saveComposedBook() {
-		Optional<Book> optionalBook = composeBookView.getBook();
-		if (optionalBook.isPresent())
-			bookView.bookAdded(manager.newBook(optionalBook.get()));
+	public void newBook(Book book) {
+		bookView.bookAdded(manager.newBook(book));
 	}
 	
 	private void showAllAuthors() {

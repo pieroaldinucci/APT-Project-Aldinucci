@@ -66,6 +66,19 @@ public class BookstoreControllerImplTest {
 	}
 	
 	@Test
+	public void test_newBook() {
+		Book bookToAdd = new Book(null,"A book",new HashSet<>());
+		Book bookAdded = new Book(1L,"A book",new HashSet<>());
+		when(manager.newBook(isA(Book.class))).thenReturn(bookAdded);
+		
+		controller.newBook(bookToAdd);
+		
+		InOrder inOrder = inOrder(manager,bookView);
+		inOrder.verify(manager).newBook(bookToAdd);
+		inOrder.verify(bookView).bookAdded(bookAdded);
+	}
+	
+	@Test
 	public void test_newAuthor() {
 		Author author = new Author(null, "An Author", new HashSet<>());
 		Author authorAdded = new Author(2L, "An Author", new HashSet<>());
@@ -147,30 +160,6 @@ public class BookstoreControllerImplTest {
 		controller.composeBook();
 		
 		verify(composeBookView).composeNewBook(authors);
-	}
-	
-	@Test
-	public void test_saveComposedBook_when_book_is_not_composed() {
-		when(composeBookView.getBook()).thenReturn(Optional.empty());
-		
-		controller.saveComposedBook();
-		
-		verifyNoInteractions(manager);
-		verifyNoInteractions(bookView);
-	}
-	
-	@Test
-	public void test_saveComposedBook_when_book_is_composed_succesfully() {
-		Book bookToAdd = new Book(null,"A book",new HashSet<>());
-		Book bookAdded = new Book(1L,"A book",new HashSet<>());
-		when(composeBookView.getBook()).thenReturn(Optional.of(bookToAdd));
-		when(manager.newBook(isA(Book.class))).thenReturn(bookAdded);
-		
-		controller.saveComposedBook();
-		
-		InOrder inOrder = inOrder(manager,bookView);
-		inOrder.verify(manager).newBook(bookToAdd);
-		inOrder.verify(bookView).bookAdded(bookAdded);
 	}
 
 }

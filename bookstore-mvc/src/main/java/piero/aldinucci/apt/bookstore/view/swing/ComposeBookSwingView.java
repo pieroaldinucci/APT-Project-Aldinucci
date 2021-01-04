@@ -13,6 +13,7 @@ import javax.swing.JDialog;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 
+import piero.aldinucci.apt.bookstore.controller.BookstoreController;
 import piero.aldinucci.apt.bookstore.model.Author;
 import piero.aldinucci.apt.bookstore.model.Book;
 import piero.aldinucci.apt.bookstore.view.ComposeBookView;
@@ -36,6 +37,8 @@ public class ComposeBookSwingView extends JDialog implements ComposeBookView {
 	 */
 	private static final long serialVersionUID = 1L;
 
+	private BookstoreController controller;
+	
 	private final JPanel contentPanel = new JPanel();
 	private JTextField textField;
 
@@ -46,15 +49,13 @@ public class ComposeBookSwingView extends JDialog implements ComposeBookView {
 	private JList<Author> availableAuthors;
 	private JList<Author> bookAuthors;
 
-	private transient Optional<Book> createdBook;
-
 	private JButton okButton;
 
 	/**
 	 * Create the dialog.
 	 */
 	public ComposeBookSwingView() {
-		setDefaultCloseOperation(JDialog.DO_NOTHING_ON_CLOSE);
+		setDefaultCloseOperation(JDialog.HIDE_ON_CLOSE);
 		setModalityType(ModalityType.APPLICATION_MODAL);
 		setModal(true);
 		setBounds(100, 100, 450, 300);
@@ -88,7 +89,6 @@ public class ComposeBookSwingView extends JDialog implements ComposeBookView {
 	private void createCancelButton(JPanel buttonPane) {
 		JButton cancelButton = new JButton("Cancel");
 		cancelButton.addActionListener(e -> {
-			createdBook = Optional.empty();
 			setVisible(false);
 		});
 		cancelButton.setActionCommand("Cancel");
@@ -100,8 +100,8 @@ public class ComposeBookSwingView extends JDialog implements ComposeBookView {
 		okButton.addActionListener(e -> {
 			Book book = new Book(null, textField.getText(), new HashSet<>());
 			Arrays.stream(modelBookAuthors.toArray()).forEach(a -> book.getAuthors().add((Author) a));
-			createdBook = Optional.of(book);
 			setVisible(false);
+			controller.newBook(book);
 		});
 		okButton.setEnabled(false);
 		okButton.setActionCommand("OK");
@@ -230,10 +230,6 @@ public class ComposeBookSwingView extends JDialog implements ComposeBookView {
 		return modelBookAuthors;
 	}
 
-	@Override
-	public Optional<Book> getBook() {
-		return createdBook;
-	}
 
 	@Override
 	public void composeNewBook(List<Author> authors) {
@@ -242,6 +238,10 @@ public class ComposeBookSwingView extends JDialog implements ComposeBookView {
 		modelBookAuthors.clear();
 		authors.stream().forEach(a -> modelAvailableAuthors.addElement(a));
 		setVisible(true);
+	}
+
+	public void setController(BookstoreController controller) {
+		this.controller = controller;
 	}
 
 }
