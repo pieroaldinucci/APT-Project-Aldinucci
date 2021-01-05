@@ -107,10 +107,12 @@
 					<artifactId>pitest-maven</artifactId>
 					<configuration>
 						<targetClasses>
-							<param>piero.aldinucci.apt.bookstore.repositories*</param>
+							<param>piero.aldinucci.apt.bookstore.service*</param>
+              <param>piero.aldinucci.apt.bookstore.repositories*</param>
 							<param>piero.aldinucci.apt.bookstore.transaction*</param>
 						</targetClasses>
 						<targetTests>
+							<param>piero.aldinucci.apt.bookstore.service*</param>
 							<param>piero.aldinucci.apt.bookstore.repositories*</param>
 							<param>piero.aldinucci.apt.bookstore.transaction*</param>
 						</targetTests>
