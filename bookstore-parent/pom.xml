@@ -176,7 +176,7 @@
 							<goals>
 								<goal>mutationCoverage</goal>
 							</goals>
-							<phase>verify</phase>
+							<phase>integration-test</phase>
 						</execution>
 					</executions>
 				</plugin>
