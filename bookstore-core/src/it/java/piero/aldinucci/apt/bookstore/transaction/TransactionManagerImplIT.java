@@ -21,6 +21,7 @@ import piero.aldinucci.apt.bookstore.exceptions.BookstorePersistenceException;
 import piero.aldinucci.apt.bookstore.model.Author;
 import piero.aldinucci.apt.bookstore.model.Book;
 
+
 public class TransactionManagerImplIT {
 
 	private TransactionManagerJPA transactionManager;

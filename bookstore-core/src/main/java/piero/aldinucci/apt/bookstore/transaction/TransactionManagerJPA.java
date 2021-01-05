@@ -31,7 +31,9 @@ public class TransactionManagerJPA implements TransactionManager {
 		} catch (RuntimeException e) {
 			throw new BookstorePersistenceException("Error while committing transaction",e);
 		} finally {
-			entityManager.close();
+			// how can we test that this is called?
+			// Changing it into a field and create a get method would work, but it's even worth it?
+			entityManager.close(); 
 		}
 		
 		return result;

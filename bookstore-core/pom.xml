@@ -102,6 +102,20 @@
 						</excludes>
 					</configuration>
 				</plugin>
+				<plugin>
+					<groupId>org.pitest</groupId>
+					<artifactId>pitest-maven</artifactId>
+					<configuration>
+						<targetClasses>
+							<param>piero.aldinucci.apt.bookstore.repositories*</param>
+							<param>piero.aldinucci.apt.bookstore.transaction*</param>
+						</targetClasses>
+						<targetTests>
+							<param>piero.aldinucci.apt.bookstore.repositories*</param>
+							<param>piero.aldinucci.apt.bookstore.transaction*</param>
+						</targetTests>
+					</configuration>
+				</plugin>
 			</plugins>
 		</pluginManagement>
 	</build>
