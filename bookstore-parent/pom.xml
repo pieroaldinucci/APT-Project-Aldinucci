@@ -12,13 +12,20 @@
 		<maven.compiler.source>1.8</maven.compiler.source>
 		<maven.compiler.target>1.8</maven.compiler.target>
 		<jdk9-or-more>false</jdk9-or-more>
-		<sonar.issue.ignore.multicriteria>e1,e2</sonar.issue.ignore.multicriteria>
+		<sonar.issue.ignore.multicriteria>e1,e2,e3</sonar.issue.ignore.multicriteria>
 		<!-- Rule: inheritance depth larger than 5 -->
 		<sonar.issue.ignore.multicriteria.e1.ruleKey>java:S110</sonar.issue.ignore.multicriteria.e1.ruleKey>
 		<sonar.issue.ignore.multicriteria.e1.resourceKey>**/*.java</sonar.issue.ignore.multicriteria.e1.resourceKey>
 		<!-- Rule: no assertions, because assertj-swing is used instead -->
 		<sonar.issue.ignore.multicriteria.e2.ruleKey>java:S2699</sonar.issue.ignore.multicriteria.e2.ruleKey>
 		<sonar.issue.ignore.multicriteria.e2.resourceKey>**/*.java</sonar.issue.ignore.multicriteria.e2.resourceKey>
+		<!-- Duplicate blocks, SonarQube false positive -->
+		<sonar.issue.ignore.multicriteria.e3.ruleKey>common-java:DuplicatedBlocks</sonar.issue.ignore.multicriteria.e3.ruleKey>
+		<sonar.issue.ignore.multicriteria.e3.resourceKey>**/model/*.java</sonar.issue.ignore.multicriteria.e3.resourceKey>
+		<sonar.coverage.exclusions>
+			**/model/*.*,
+			**/exceptions/*.*,
+		</sonar.coverage.exclusions>
 	</properties>
 
 	<modules>
