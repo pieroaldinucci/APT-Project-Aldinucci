@@ -99,6 +99,7 @@
 					<configuration>
 						<excludes>
 							<exclude>piero/aldinucci/apt/bookstore/model/*.class</exclude>
+							<exclude>piero/aldinucci/apt/bookstore/exceptions/*.class</exclude>
 						</excludes>
 					</configuration>
 				</plugin>
