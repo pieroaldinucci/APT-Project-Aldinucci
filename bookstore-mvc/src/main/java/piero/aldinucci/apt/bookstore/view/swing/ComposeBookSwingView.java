@@ -2,33 +2,29 @@ package piero.aldinucci.apt.bookstore.view.swing;
 
 import java.awt.BorderLayout;
 import java.awt.FlowLayout;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.Insets;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Optional;
 
 import javax.swing.DefaultListModel;
 import javax.swing.JButton;
 import javax.swing.JDialog;
+import javax.swing.JLabel;
+import javax.swing.JList;
 import javax.swing.JPanel;
+import javax.swing.JTextField;
+import javax.swing.ListSelectionModel;
 import javax.swing.border.EmptyBorder;
 
 import piero.aldinucci.apt.bookstore.controller.BookstoreController;
 import piero.aldinucci.apt.bookstore.model.Author;
 import piero.aldinucci.apt.bookstore.model.Book;
 import piero.aldinucci.apt.bookstore.view.ComposeBookView;
-
-import java.awt.GridBagLayout;
-import javax.swing.JLabel;
-import java.awt.GridBagConstraints;
-import javax.swing.JTextField;
-import java.awt.Insets;
-import javax.swing.JList;
-import javax.swing.ListSelectionModel;
-import java.awt.event.ActionListener;
-import java.awt.event.ActionEvent;
-import java.awt.event.KeyAdapter;
-import java.awt.event.KeyEvent;
 
 public class ComposeBookSwingView extends JDialog implements ComposeBookView {
 
@@ -37,7 +33,7 @@ public class ComposeBookSwingView extends JDialog implements ComposeBookView {
 	 */
 	private static final long serialVersionUID = 1L;
 
-	private BookstoreController controller;
+	private transient BookstoreController controller;
 	
 	private final JPanel contentPanel = new JPanel();
 	private JTextField textField;
@@ -55,7 +51,7 @@ public class ComposeBookSwingView extends JDialog implements ComposeBookView {
 	 * Create the dialog.
 	 */
 	public ComposeBookSwingView() {
-		setDefaultCloseOperation(JDialog.HIDE_ON_CLOSE);
+		setDefaultCloseOperation(HIDE_ON_CLOSE);
 		setModalityType(ModalityType.APPLICATION_MODAL);
 		setModal(true);
 		setBounds(100, 100, 450, 300);
@@ -88,9 +84,7 @@ public class ComposeBookSwingView extends JDialog implements ComposeBookView {
 
 	private void createCancelButton(JPanel buttonPane) {
 		JButton cancelButton = new JButton("Cancel");
-		cancelButton.addActionListener(e -> {
-			setVisible(false);
-		});
+		cancelButton.addActionListener(e -> setVisible(false));
 		cancelButton.setActionCommand("Cancel");
 		buttonPane.add(cancelButton);
 	}
@@ -111,12 +105,10 @@ public class ComposeBookSwingView extends JDialog implements ComposeBookView {
 
 	private void createRemoveAuthorButton() {
 		removeAuthorButton = new JButton(">");
-		removeAuthorButton.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				Author author = bookAuthors.getSelectedValue();
-				modelBookAuthors.removeElement(author);
-				modelAvailableAuthors.addElement(author);
-			}
+		removeAuthorButton.addActionListener(e -> {
+			Author author = bookAuthors.getSelectedValue();
+			modelBookAuthors.removeElement(author);
+			modelAvailableAuthors.addElement(author);
 		});
 		removeAuthorButton.setEnabled(false);
 		removeAuthorButton.setName("buttonRemoveAuthor");
@@ -171,12 +163,10 @@ public class ComposeBookSwingView extends JDialog implements ComposeBookView {
 
 	private void createAddAuthorButton() {
 		addAuthorButton = new JButton("<");
-		addAuthorButton.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				Author author = availableAuthors.getSelectedValue();
-				modelAvailableAuthors.removeElement(author);
-				modelBookAuthors.addElement(author);
-			}
+		addAuthorButton.addActionListener(e -> {
+			Author author = availableAuthors.getSelectedValue();
+			modelAvailableAuthors.removeElement(author);
+			modelBookAuthors.addElement(author);
 		});
 		addAuthorButton.setName("buttonAddAuthor");
 		addAuthorButton.setEnabled(false);

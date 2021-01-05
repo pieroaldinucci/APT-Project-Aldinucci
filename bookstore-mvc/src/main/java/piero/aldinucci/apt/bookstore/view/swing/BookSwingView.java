@@ -5,7 +5,6 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.swing.DefaultListCellRenderer;
@@ -14,12 +13,12 @@ import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JPanel;
+import javax.swing.ListSelectionModel;
 
 import piero.aldinucci.apt.bookstore.controller.BookstoreController;
 import piero.aldinucci.apt.bookstore.model.Author;
 import piero.aldinucci.apt.bookstore.model.Book;
 import piero.aldinucci.apt.bookstore.view.BookView;
-import javax.swing.ListSelectionModel;
 
 public class BookSwingView extends JPanel implements BookView {
 
@@ -149,15 +148,6 @@ public class BookSwingView extends JPanel implements BookView {
 		errorLabel.setText(message+": "+book);
 	}
 
-//	@Override
-//	public void showCreateBook(List<Author> authors) {
-//		newBookDialog.setAuthorList(authors);
-//		newBookDialog.setVisible(true);
-//		
-//		Optional<Book> newBook = newBookDialog.getReturnValue();
-//		if (newBook.isPresent())
-//			controller.newBook(newBook.get());
-//	}
 
 	public void setController(BookstoreController controller) {
 		this.controller = controller;

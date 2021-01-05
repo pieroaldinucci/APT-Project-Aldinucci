@@ -1,7 +1,5 @@
 package piero.aldinucci.apt.bookstore.controller;
 
-import java.util.Optional;
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 

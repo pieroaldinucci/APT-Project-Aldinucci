@@ -1,7 +1,5 @@
 package piero.aldinucci.apt.bookstore.view.swing;
 
-import static org.assertj.core.api.Assertions.*;
-
 import org.assertj.swing.annotation.GUITest;
 import org.assertj.swing.core.matcher.JButtonMatcher;
 import org.assertj.swing.edt.GuiActionRunner;

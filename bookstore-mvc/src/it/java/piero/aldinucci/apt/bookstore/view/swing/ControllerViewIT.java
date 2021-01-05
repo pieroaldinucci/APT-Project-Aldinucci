@@ -1,13 +1,12 @@
 package piero.aldinucci.apt.bookstore.view.swing;
 
-import static org.assertj.core.api.Assertions.*;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.isA;
 import static org.mockito.Mockito.when;
-import static org.mockito.ArgumentMatchers.*;
-import static org.mockito.MockitoAnnotations.*;
+import static org.mockito.MockitoAnnotations.openMocks;
 
 import java.util.Arrays;
 import java.util.HashSet;
-import java.util.LinkedList;
 import java.util.List;
 
 import org.assertj.swing.annotation.GUITest;
@@ -19,7 +18,6 @@ import org.assertj.swing.junit.testcase.AssertJSwingJUnitTestCase;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 
 import piero.aldinucci.apt.bookstore.controller.BookstoreControllerImpl;
 import piero.aldinucci.apt.bookstore.model.Author;

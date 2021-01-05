@@ -1,15 +1,12 @@
 package piero.aldinucci.apt.bookstore.view.swing;
 
-import static org.assertj.core.api.Assertions.*;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoInteractions;
-import static org.mockito.MockitoAnnotations.*;
+import static org.mockito.MockitoAnnotations.openMocks;
 
 import java.util.Arrays;
 import java.util.HashSet;
-import java.util.Optional;
-
-import javax.swing.JDialog;
 
 import org.assertj.core.util.Lists;
 import org.assertj.swing.annotation.GUITest;
