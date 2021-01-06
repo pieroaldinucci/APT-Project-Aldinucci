@@ -1,10 +1,11 @@
 package piero.aldinucci.apt.bookstore.view.swing;
 
-import static org.assertj.core.api.Assertions.*;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
-import static org.mockito.MockitoAnnotations.*;
+import static org.mockito.MockitoAnnotations.openMocks;
 
+import java.awt.Color;
 import java.util.Arrays;
 import java.util.HashSet;
 
@@ -63,7 +64,8 @@ public class AuthorSwingViewTest extends AssertJSwingJUnitTestCase {
 	@Test
 	public void test_Components() {
 		authorPanel.label(JLabelMatcher.withText("Name"));
-		authorPanel.label(ERROR_LABEL).requireText(" ");
+		assertThat(authorPanel.label(ERROR_LABEL).requireText(" ").target().getForeground())
+			.isEqualTo(Color.RED);
 		authorPanel.textBox(NAME_TEXT_FIELD).requireEnabled().requireEmpty();
 		assertThat(authorPanel.list(AUTHOR_LIST).contents()).isEmpty();
 		assertThat(authorPanel.button(ADD_AUTHOR_BUTTON).requireDisabled().text()).isEqualTo("Add");

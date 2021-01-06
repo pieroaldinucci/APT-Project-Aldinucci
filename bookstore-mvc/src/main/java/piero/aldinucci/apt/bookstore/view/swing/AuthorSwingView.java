@@ -20,6 +20,7 @@ import javax.swing.JList;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import javax.swing.ListSelectionModel;
+import java.awt.Color;
 
 public class AuthorSwingView extends JPanel implements AuthorView {
 	/**
@@ -60,6 +61,7 @@ public class AuthorSwingView extends JPanel implements AuthorView {
 
 	private void createErrorLabel() {
 		errorLabel = new JLabel(" ");
+		errorLabel.setForeground(Color.RED);
 		errorLabel.setName("ErrorLabel");
 		GridBagConstraints gbclabel = new GridBagConstraints();
 		gbclabel.insets = new Insets(0, 0, 0, 5);

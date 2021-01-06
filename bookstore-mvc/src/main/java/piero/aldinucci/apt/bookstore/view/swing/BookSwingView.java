@@ -19,6 +19,7 @@ import piero.aldinucci.apt.bookstore.controller.BookstoreController;
 import piero.aldinucci.apt.bookstore.model.Author;
 import piero.aldinucci.apt.bookstore.model.Book;
 import piero.aldinucci.apt.bookstore.view.BookView;
+import java.awt.Color;
 
 public class BookSwingView extends JPanel implements BookView {
 
@@ -57,6 +58,7 @@ public class BookSwingView extends JPanel implements BookView {
 
 	private void createErrorLabel() {
 		errorLabel = new JLabel("");
+		errorLabel.setForeground(Color.RED);
 		errorLabel.setName("ErrorLabel");
 		GridBagConstraints gbclblNewLabel = new GridBagConstraints();
 		gbclblNewLabel.gridwidth = 2;

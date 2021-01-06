@@ -5,6 +5,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.MockitoAnnotations.openMocks;
 
+import java.awt.Color;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
@@ -62,9 +63,12 @@ public class BookSwingViewTest extends AssertJSwingJUnitTestCase {
 	@GUITest
 	public void test_components() {
 		bookPanel.list(BOOK_J_LIST).requireNoSelection();
-		bookPanel.button(NEW_BOOK_BUTTON).requireEnabled();
-		bookPanel.button(DELETE_BOOK_BUTTON).requireDisabled();
-		bookPanel.label(ERROR_LABEL).requireText("");
+		assertThat(bookPanel.button(NEW_BOOK_BUTTON).requireEnabled().text())
+			.isEqualTo("New Book");
+		assertThat(bookPanel.button(DELETE_BOOK_BUTTON).requireDisabled().text())
+			.isEqualTo("Delete Book");
+		assertThat(bookPanel.label(ERROR_LABEL).requireText("").foreground().target())
+			.isEqualTo(Color.RED);
 	}
 
 	@Test
