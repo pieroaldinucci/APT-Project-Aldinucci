@@ -2,7 +2,6 @@ package piero.aldinucci.apt.bookstore.transaction;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.mockito.Mockito.spy;
 
 import java.util.HashSet;
 import java.util.List;
@@ -30,7 +29,7 @@ public class TransactionManagerImplIT {
 	@Before
 	public void setUp() {
 		emFactory = Persistence.createEntityManagerFactory("apt.project.bookstore");
-		transactionManager = spy(new TransactionManagerJPA(emFactory));
+		transactionManager = new TransactionManagerJPA(emFactory);
 		
 		EntityManager entityManager = emFactory.createEntityManager();
 		
