@@ -46,9 +46,6 @@ public class ControllerViewIT extends AssertJSwingJUnitTestCase{
 	private BookstoreManager manager;
 	
 	private BookstoreControllerImpl controller;
-	private AuthorSwingView authorView;
-	private BookSwingView bookView;
-	private ComposeBookSwingView composeBookView;
 	private FrameFixture window;
 	private DialogFixture dialog;
 	
@@ -70,12 +67,9 @@ public class ControllerViewIT extends AssertJSwingJUnitTestCase{
 		@Provides
 		BookstoreControllerImpl getController(ViewsFactory viewsFactory) {
 			BookstoreControllerImpl controller = new BookstoreControllerImpl(manager);
-			authorView = (AuthorSwingView)viewsFactory.createAuthorView(controller);
-			controller.setAuthorView(authorView);
-			bookView = (BookSwingView) viewsFactory.createBookView(controller);
-			controller.setBookView(bookView);
-			composeBookView = (ComposeBookSwingView)viewsFactory.createComposeBookView(controller);
-			controller.setComposeBookView(composeBookView);
+			controller.setAuthorView(viewsFactory.createAuthorView(controller));
+			controller.setBookView(viewsFactory.createBookView(controller));
+			controller.setComposeBookView(viewsFactory.createComposeBookView(controller));
 			return controller;
 		}
 	}
@@ -88,8 +82,9 @@ public class ControllerViewIT extends AssertJSwingJUnitTestCase{
 		
 		GuiActionRunner.execute(() -> {
 			controller = injector.getInstance(BookstoreControllerImpl.class);
-			JFrame frame = new BookstoreSwingFrame(authorView,bookView);
-			dialog = new DialogFixture(robot(), composeBookView);
+			JFrame frame = new BookstoreSwingFrame((AuthorSwingView) controller.getAuthorView(),
+					(BookSwingView) controller.getBookView());
+			dialog = new DialogFixture(robot(), (ComposeBookSwingView) controller.getComposeBookView());
 			window = new FrameFixture(robot(), frame);
 			return frame;
 		});

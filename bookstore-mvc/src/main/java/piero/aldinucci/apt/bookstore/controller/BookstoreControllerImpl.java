@@ -99,4 +99,15 @@ public class BookstoreControllerImpl implements BookstoreController {
 		this.authorView = authorView;
 	}
 	
+	public AuthorView getAuthorView() {
+		return authorView;
+	}
+	
+	public BookView getBookView() {
+		return bookView;
+	}
+	
+	public ComposeBookView getComposeBookView() {
+		return composeBookView;
+	}
 }
