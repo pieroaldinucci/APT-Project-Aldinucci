@@ -5,7 +5,9 @@ import javax.persistence.EntityManager;
 import piero.aldinucci.apt.bookstore.repositories.AuthorRepository;
 import piero.aldinucci.apt.bookstore.repositories.BookRepository;
 
-public interface JPARepositoriesFactory {
-	public AuthorRepository getAuthorRepository(EntityManager entityManager);
-	public BookRepository getBookRepository(EntityManager entityManager);
+public interface RepositoriesJPAFactory {
+
+	public AuthorRepository createAuthorRepository(EntityManager entityManager);
+
+	public BookRepository createBookRepository(EntityManager entityManager);
 }

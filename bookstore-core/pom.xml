@@ -37,20 +37,6 @@
 			<groupId>org.mockito</groupId>
 			<artifactId>mockito-core</artifactId>
 		</dependency>
-		<dependency>
-			<groupId>com.google.inject</groupId>
-			<artifactId>guice</artifactId>
-		</dependency>
-		<dependency>
-    		<groupId>com.google.auto.factory</groupId>
-    		<artifactId>auto-factory</artifactId>
-    		<version>1.0-beta8</version>
-    		<optional>true</optional>
-		</dependency>
-		<dependency>
-			<groupId>com.google.inject.extensions</groupId>
-			<artifactId>guice-assistedinject</artifactId>
-		</dependency>
 	</dependencies>
 
 

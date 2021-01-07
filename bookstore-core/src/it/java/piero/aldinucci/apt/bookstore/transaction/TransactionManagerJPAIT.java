@@ -19,17 +19,18 @@ import org.junit.Test;
 import piero.aldinucci.apt.bookstore.exceptions.BookstorePersistenceException;
 import piero.aldinucci.apt.bookstore.model.Author;
 import piero.aldinucci.apt.bookstore.model.Book;
+import piero.aldinucci.apt.bookstore.repositories.factory.RepositoriesJPAFactoryImpl;
 
 
-public class TransactionManagerImplIT {
+public class TransactionManagerJPAIT {
 
-	private TransactionManagerJPA transactionManager;
+	private TransactionManager transactionManager;
 	private EntityManagerFactory emFactory;
 
 	@Before
 	public void setUp() {
 		emFactory = Persistence.createEntityManagerFactory("apt.project.bookstore");
-		transactionManager = new TransactionManagerJPA(emFactory);
+		transactionManager = new TransactionManagerJPA(emFactory,new RepositoriesJPAFactoryImpl());
 		
 		EntityManager entityManager = emFactory.createEntityManager();
 		
@@ -40,7 +41,6 @@ public class TransactionManagerImplIT {
 			.forEach(e -> entityManager.remove(e));
 		entityManager.getTransaction().commit();
 		entityManager.close();
-		
 	}
 	
 	@After
@@ -49,8 +49,9 @@ public class TransactionManagerImplIT {
 	}
 	
 	@Test
-	public void test_doInTransaction_should_save_author_to_db() {
+	public void test_doInTransaction_should_save_author_to_db_in_transaction() {
 		Author author = new Author(null, "First Author", new HashSet<>());
+		
 		Author returnedAuthor = transactionManager.doInTransaction((authorR, bookR) -> authorR.save(author));
 		
 		EntityManager em = emFactory.createEntityManager();
@@ -62,54 +63,18 @@ public class TransactionManagerImplIT {
 	}
 	
 	@Test
-	public void test_doInTransaction_should_save_book_to_db() {
-		Book book = new Book(null, "first book", new HashSet<>());
-		Book returnedBook = transactionManager.doInTransaction((authorR, bookR) -> bookR.save(book));
-		
-		EntityManager em = emFactory.createEntityManager();
-		Book savedBook = em.find(Book.class, returnedBook.getId());
-		em.close();
-		
-		assertThat(savedBook.getTitle()).isEqualTo("first book");
-		assertThat(savedBook).usingRecursiveComparison().isEqualTo(returnedBook);
-	}
-	
-	@Test
-	public void test_doInTransaction_should_read_author_from_db() {
-		Author author = new Author(null, "First Author", new HashSet<>());
+	public void test_doInTransaction_should_read_book_from_db() {
+		Book book = new Book(null, "A Title", new HashSet<>());
 		EntityManager em = emFactory.createEntityManager();
 		em.getTransaction().begin();
-		em.persist(author);
+		em.persist(book);
 		em.getTransaction().commit();
 		em.close();
 
-		Optional<Author> returnedAuthor = transactionManager.doInTransaction((authorR, bookR) -> 
-			authorR.findById(author.getId()));
+		Optional<Book> returnedBook = transactionManager.doInTransaction((authorR, bookR) -> 
+			bookR.findById(book.getId()));
 		
-		assertThat(author).usingRecursiveComparison().isEqualTo(returnedAuthor.get());
-	}
-	
-	@Test
-	public void test_doInTransaction_findall_authors_from_db() {
-		Author author = new Author(null, "First Author", new HashSet<>());
-		Author author2 = new Author(null, "Second Author", new HashSet<>());
-		Book book = new Book(null, "Libbro", new HashSet<Author>());
-		author.getBooks().add(book);
-		book.getAuthors().add(author);
-		EntityManager em = emFactory.createEntityManager();
-		em.getTransaction().begin();
-		em.persist(author);
-		em.persist(author2);
-		em.persist(book);
-		em.getTransaction().commit();
-		em.clear();
-		
-		List<Author> authors = transactionManager.doInTransaction((authorR, bookR) ->
-			authorR.findAll());
-		
-		assertThat(authors).containsExactly(author,author2);
-		assertThat(authors.get(0)).usingRecursiveComparison().isEqualTo(author).isNotSameAs(author);
-		assertThat(authors.get(1)).usingRecursiveComparison().isEqualTo(author2).isNotSameAs(author2);
+		assertThat(book).usingRecursiveComparison().isEqualTo(returnedBook.get());
 	}
 	
 	@Test
