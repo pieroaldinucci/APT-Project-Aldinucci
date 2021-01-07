@@ -49,8 +49,7 @@ public class BookSwingViewTest extends AssertJSwingJUnitTestCase {
 
 		GuiActionRunner.execute(() -> {
 			frame = new JFrame();
-			bookView = new BookSwingView();
-			bookView.setController(controller);
+			bookView = new BookSwingView(controller);
 			frame.add(bookView);
 			return bookView;
 		});

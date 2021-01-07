@@ -3,6 +3,8 @@ package piero.aldinucci.apt.bookstore.controller;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import com.google.inject.Inject;
+
 import piero.aldinucci.apt.bookstore.exceptions.BookstorePersistenceException;
 import piero.aldinucci.apt.bookstore.model.Author;
 import piero.aldinucci.apt.bookstore.model.Book;
@@ -13,19 +15,18 @@ import piero.aldinucci.apt.bookstore.view.ComposeBookView;
 
 public class BookstoreControllerImpl implements BookstoreController {
 
+	private static final Logger LOGGER = LogManager.getLogger();
+	
 	private AuthorView authorView;
 	private BookView bookView;
-	private BookstoreManager manager;
 	private ComposeBookView composeBookView;
-	private static final Logger LOGGER = LogManager.getLogger();
-
-	public BookstoreControllerImpl(AuthorView authorView, BookView bookView, ComposeBookView composeBookView, BookstoreManager manager) {
-		this.authorView = authorView;
-		this.bookView = bookView;
-		this.composeBookView = composeBookView;
+	private BookstoreManager manager;
+	
+	@Inject
+	public BookstoreControllerImpl(BookstoreManager manager) {
 		this.manager = manager;
 	}
-
+	
 	@Override
 	public void allAuthors() {
 		showAllAuthors();
@@ -86,4 +87,27 @@ public class BookstoreControllerImpl implements BookstoreController {
 		bookView.showAllBooks(manager.getAllBooks());
 	}
 
+	public void setComposeBookView(ComposeBookView composeBookView) {
+		this.composeBookView = composeBookView;
+	}
+
+	public void setBookView(BookView bookView) {
+		this.bookView = bookView;
+	}
+
+	public void setAuthorView(AuthorView authorView) {
+		this.authorView = authorView;
+	}
+	
+	public AuthorView getAuthorView() {
+		return authorView;
+	}
+	
+	public BookView getBookView() {
+		return bookView;
+	}
+	
+	public ComposeBookView getComposeBookView() {
+		return composeBookView;
+	}
 }

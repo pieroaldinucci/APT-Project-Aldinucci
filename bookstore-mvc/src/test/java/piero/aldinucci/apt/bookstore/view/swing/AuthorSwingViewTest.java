@@ -51,8 +51,7 @@ public class AuthorSwingViewTest extends AssertJSwingJUnitTestCase {
 		
 		GuiActionRunner.execute(() -> {
 			frame = new JFrame();
-			authorView = new AuthorSwingView();
-			authorView.setController(controller);
+			authorView = new AuthorSwingView(controller);
 			frame.add(authorView);
 			return frame;
 		});

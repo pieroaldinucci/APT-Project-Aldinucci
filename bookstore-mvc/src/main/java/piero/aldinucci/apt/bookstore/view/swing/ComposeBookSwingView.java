@@ -21,6 +21,9 @@ import javax.swing.JTextField;
 import javax.swing.ListSelectionModel;
 import javax.swing.border.EmptyBorder;
 
+import com.google.inject.Inject;
+import com.google.inject.assistedinject.Assisted;
+
 import piero.aldinucci.apt.bookstore.controller.BookstoreController;
 import piero.aldinucci.apt.bookstore.model.Author;
 import piero.aldinucci.apt.bookstore.model.Book;
@@ -50,7 +53,10 @@ public class ComposeBookSwingView extends JDialog implements ComposeBookView {
 	/**
 	 * Create the dialog.
 	 */
-	public ComposeBookSwingView() {
+	@Inject
+	public ComposeBookSwingView(@Assisted BookstoreController controller) {
+		this.controller = controller;
+		
 		setDefaultCloseOperation(HIDE_ON_CLOSE);
 		setModalityType(ModalityType.APPLICATION_MODAL);
 		setModal(true);
@@ -228,10 +234,6 @@ public class ComposeBookSwingView extends JDialog implements ComposeBookView {
 		modelBookAuthors.clear();
 		authors.stream().forEach(a -> modelAvailableAuthors.addElement(a));
 		setVisible(true);
-	}
-
-	public void setController(BookstoreController controller) {
-		this.controller = controller;
 	}
 
 }

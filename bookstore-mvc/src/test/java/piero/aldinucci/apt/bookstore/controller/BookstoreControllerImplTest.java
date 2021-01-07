@@ -45,7 +45,10 @@ public class BookstoreControllerImplTest {
 	@Before
 	public void setUp() {
 		openMocks(this);
-		controller = new BookstoreControllerImpl(authorView, bookView, composeBookView, manager); 
+		controller = new BookstoreControllerImpl(manager);
+		controller.setAuthorView(authorView);
+		controller.setBookView(bookView);
+		controller.setComposeBookView(composeBookView);
 	}
 	
 	@Test

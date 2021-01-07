@@ -48,8 +48,7 @@ public class ComposeBookSwingViewTest extends AssertJSwingJUnitTestCase {
 		openMocks(this);
 		
 		GuiActionRunner.execute(() -> {
-			composeBookView = new ComposeBookSwingView();
-			composeBookView.setController(controller);
+			composeBookView = new ComposeBookSwingView(controller);
 		});
 
 		dialogFixture = new DialogFixture(robot(), composeBookView);

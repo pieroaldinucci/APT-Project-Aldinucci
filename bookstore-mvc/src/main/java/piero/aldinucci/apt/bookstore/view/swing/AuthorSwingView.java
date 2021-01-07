@@ -20,6 +20,10 @@ import javax.swing.JList;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import javax.swing.ListSelectionModel;
+
+import com.google.inject.Inject;
+import com.google.inject.assistedinject.Assisted;
+
 import java.awt.Color;
 
 public class AuthorSwingView extends JPanel implements AuthorView {
@@ -42,7 +46,10 @@ public class AuthorSwingView extends JPanel implements AuthorView {
 	/**
 	 * Create the panel.
 	 */
-	public AuthorSwingView() {
+	@Inject
+	public AuthorSwingView(@Assisted BookstoreController controller) {
+		this.controller = controller;
+		
 		GridBagLayout gridBagLayout = new GridBagLayout();
 		gridBagLayout.columnWidths = new int[] { 20, 200, 30, 20 };
 		gridBagLayout.rowHeights = new int[] { 27, 20, 90, 30, 21, 0 };
@@ -168,10 +175,6 @@ public class AuthorSwingView extends JPanel implements AuthorView {
 
 	private void clearErrorLabel() {
 		errorLabel.setText("");
-	}
-
-	public void setController(BookstoreController controller) {
-		this.controller = controller;
 	}
 
 }

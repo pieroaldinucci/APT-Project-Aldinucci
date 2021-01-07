@@ -15,6 +15,9 @@ import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.ListSelectionModel;
 
+import com.google.inject.Inject;
+import com.google.inject.assistedinject.Assisted;
+
 import piero.aldinucci.apt.bookstore.controller.BookstoreController;
 import piero.aldinucci.apt.bookstore.model.Author;
 import piero.aldinucci.apt.bookstore.model.Book;
@@ -41,7 +44,10 @@ public class BookSwingView extends JPanel implements BookView {
 	/**
 	 * Create the panel.
 	 */
-	public BookSwingView() {
+	@Inject
+	public BookSwingView(@Assisted BookstoreController controller) {
+		this.controller = controller;
+		
 		GridBagLayout gridBagLayout = new GridBagLayout();
 		gridBagLayout.columnWidths = new int[] { 30, 150, 150, 30, 0 };
 		gridBagLayout.rowHeights = new int[] { 30, 100, 30, 30, 0 };
@@ -148,11 +154,6 @@ public class BookSwingView extends JPanel implements BookView {
 	@Override
 	public void showError(String message, Book book) {
 		errorLabel.setText(message+": "+book);
-	}
-
-
-	public void setController(BookstoreController controller) {
-		this.controller = controller;
 	}
 
 	DefaultListModel<Book> getBookModelList() {

@@ -10,6 +10,8 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 
+import javax.swing.JFrame;
+
 import org.assertj.swing.annotation.GUITest;
 import org.assertj.swing.core.matcher.JButtonMatcher;
 import org.assertj.swing.edt.GuiActionRunner;
@@ -21,49 +23,73 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 
+import com.google.inject.AbstractModule;
+import com.google.inject.Guice;
+import com.google.inject.Injector;
+import com.google.inject.Provides;
+import com.google.inject.assistedinject.FactoryModuleBuilder;
+
 import piero.aldinucci.apt.bookstore.controller.BookstoreControllerImpl;
 import piero.aldinucci.apt.bookstore.exceptions.BookstorePersistenceException;
 import piero.aldinucci.apt.bookstore.model.Author;
 import piero.aldinucci.apt.bookstore.model.Book;
 import piero.aldinucci.apt.bookstore.service.BookstoreManager;
+import piero.aldinucci.apt.bookstore.view.AuthorView;
+import piero.aldinucci.apt.bookstore.view.BookView;
+import piero.aldinucci.apt.bookstore.view.ComposeBookView;
+import piero.aldinucci.apt.bookstore.view.factory.ViewsFactory;
 
 @RunWith(GUITestRunner.class)
 public class ControllerViewIT extends AssertJSwingJUnitTestCase{
-	
+
 	@Mock
 	private BookstoreManager manager;
 	
 	private BookstoreControllerImpl controller;
-	private ComposeBookSwingView bookComposer;
-	private AuthorSwingView authorView;
-	private BookSwingView bookView;
 	private FrameFixture window;
-	private BookstoreSwingFrame frame;
-
-	private List<Author> authors;
-
-	private List<Book> books;
+	private DialogFixture dialog;
 	
+	private List<Author> authors;
+	private List<Book> books;
+
+	private class IntegrationTestModule extends AbstractModule{
+		
+		@Override
+		protected void configure() {
+			bind(BookstoreManager.class).toInstance(manager);
+			install(new FactoryModuleBuilder()
+				.implement(AuthorView.class, AuthorSwingView.class)
+				.implement(BookView.class, BookSwingView.class)
+				.implement(ComposeBookView.class, ComposeBookSwingView.class)
+				.build(ViewsFactory.class));
+		}
+		
+		@Provides
+		BookstoreControllerImpl getController(ViewsFactory viewsFactory) {
+			BookstoreControllerImpl controller = new BookstoreControllerImpl(manager);
+			controller.setAuthorView(viewsFactory.createAuthorView(controller));
+			controller.setBookView(viewsFactory.createBookView(controller));
+			controller.setComposeBookView(viewsFactory.createComposeBookView(controller));
+			return controller;
+		}
+	}
+	
+
 	@Override
 	protected void onSetUp() throws Exception {
 		openMocks(this);
-		
+		Injector injector = Guice.createInjector(new IntegrationTestModule());
 		
 		GuiActionRunner.execute(() -> {
-			authorView = new AuthorSwingView();
-			bookView = new BookSwingView();
-			bookComposer = new ComposeBookSwingView();
-			controller = new BookstoreControllerImpl(authorView, bookView, bookComposer, manager);
-			authorView.setController(controller);
-			bookView.setController(controller);
-			bookComposer.setController(controller);
-			frame = new BookstoreSwingFrame(authorView, bookView);
+			controller = injector.getInstance(BookstoreControllerImpl.class);
+			JFrame frame = new BookstoreSwingFrame((AuthorSwingView) controller.getAuthorView(),
+					(BookSwingView) controller.getBookView());
+			dialog = new DialogFixture(robot(), (ComposeBookSwingView) controller.getComposeBookView());
+			window = new FrameFixture(robot(), frame);
 			return frame;
 		});
-
-		window = new FrameFixture(robot(), frame);
-		window.show();
 		
+		window.show();
 		allAuthorsAndBooksSetup();
 	}
 
@@ -129,7 +155,6 @@ public class ControllerViewIT extends AssertJSwingJUnitTestCase{
 		window.tabbedPane().selectTab("Books");
 		window.button(JButtonMatcher.withText("New Book")).click();
 
-		DialogFixture dialog = new DialogFixture(robot(), bookComposer);
 		dialog.textBox("titleTextField").enterText("Comic");
 		dialog.list("AvailableAuthors").selectItem(1);
 		dialog.button(JButtonMatcher.withText("<")).click();
