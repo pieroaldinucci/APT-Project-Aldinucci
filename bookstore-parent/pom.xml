@@ -186,6 +186,12 @@
 							<phase>integration-test</phase>
 						</execution>
 					</executions>
+					<configuration>
+						<mutators>
+							<mutator>DEFAULTS</mutator>
+						</mutators>
+						<mutationThreshold>90</mutationThreshold>
+					</configuration>
 				</plugin>
 				<plugin>
 					<groupId>io.fabric8</groupId>
