@@ -20,9 +20,10 @@ public class BookstoreSwingFrameIT extends AssertJSwingJUnitTestCase{
 	
 	@Override
 	protected void onSetUp() throws Exception {
+		
 		GuiActionRunner.execute(() -> {
-			authorView = new AuthorSwingView();
-			bookView = new BookSwingView();
+			authorView = new AuthorSwingView(null);
+			bookView = new BookSwingView(null);
 			frame = new BookstoreSwingFrame(authorView, bookView);
 			return frame;
 		});
