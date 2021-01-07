@@ -5,6 +5,11 @@ import java.util.Optional;
 
 import javax.persistence.EntityManager;
 
+import com.google.auto.factory.AutoFactory;
+import com.google.auto.factory.Provided;
+import com.google.inject.Inject;
+import com.google.inject.assistedinject.Assisted;
+
 import piero.aldinucci.apt.bookstore.exceptions.BookstorePersistenceException;
 import piero.aldinucci.apt.bookstore.model.Author;
 
@@ -12,7 +17,8 @@ public class AuthorJPARepository implements AuthorRepository{
 
 	private EntityManager entityManager;
 
-	public AuthorJPARepository(EntityManager entityManager) {
+	@Inject
+	public AuthorJPARepository(@Assisted EntityManager entityManager) {
 		this.entityManager = entityManager;
 	}
 
