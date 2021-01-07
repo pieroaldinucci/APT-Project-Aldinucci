@@ -159,21 +159,20 @@ public class AuthorJPARepositoryIT {
 		Author authorToDelete = persistAuthor("Author to be deleted");
 		
 		entityManager.getTransaction().begin();
-		Author deletedAuthor = repository.delete(authorToDelete.getId());
+		repository.delete(authorToDelete.getId());
 		entityManager.getTransaction().commit();
 		
-		assertThat(deletedAuthor).usingRecursiveComparison().isEqualTo(authorToDelete);
 		assertThat(entityManager.find(Author.class,authorToDelete.getId()))
 			.isNull();
 	}
 	
 	@Test
-	public void test_delete_author_when_not_present_should_return_null() {
-		entityManager.getTransaction().begin();
-		Author deletedAuthor = repository.delete(2L);
-		entityManager.getTransaction().commit();
-			
-		assertThat(deletedAuthor).isNull();
+	public void test_delete_author_when_not_present_should_not_use_entityManager_to_remove_it() {
+		assertThatCode(() -> {
+			entityManager.getTransaction().begin();
+			repository.delete(2L);
+			entityManager.getTransaction().commit();
+		}).doesNotThrowAnyException();
 	}
 
 	

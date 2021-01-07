@@ -46,7 +46,8 @@ public class BookstoreManagerImpl implements BookstoreManager {
 				b.getAuthors().remove(toDelete);
 				bookR.update(b);
 			});
-			return authorR.delete(toDelete.getId());
+			authorR.delete(toDelete.getId());
+			return null;
 		});
 	}
 
@@ -59,7 +60,8 @@ public class BookstoreManagerImpl implements BookstoreManager {
 				a.getBooks().remove(toDelete);
 				authorR.update(a);
 			});
-			return bookR.delete(toDelete.getId());
+			bookR.delete(toDelete.getId());
+			return null;
 		});
 
 	}

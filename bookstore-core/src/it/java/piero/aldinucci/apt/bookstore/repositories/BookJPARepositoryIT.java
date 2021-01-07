@@ -152,21 +152,20 @@ public class BookJPARepositoryIT {
 		Book bookToDelete = persistBook("Book to be deleted");
 		
 		entityManager.getTransaction().begin();
-		Book deletedBook = repository.delete(bookToDelete.getId());
+		repository.delete(bookToDelete.getId());
 		entityManager.getTransaction().commit();
 		
-		assertThat(deletedBook).usingRecursiveComparison().isEqualTo(bookToDelete);
 		assertThat(entityManager.find(Book.class,bookToDelete.getId()))
 			.isNull();
 	}
 	
 	@Test
-	public void test_delete_book_when_not_present_should_return_null() {
-		entityManager.getTransaction().begin();
-		Book deletedBook = repository.delete(2L);
-		entityManager.getTransaction().commit();
-			
-		assertThat(deletedBook).isNull();
+	public void test_delete_book_when_not_present_should_not_try_to_remove_it() {
+		assertThatCode(() -> {
+			entityManager.getTransaction().begin();
+			repository.delete(2L);
+			entityManager.getTransaction().commit();
+		}).doesNotThrowAnyException();
 	}
 	
 	

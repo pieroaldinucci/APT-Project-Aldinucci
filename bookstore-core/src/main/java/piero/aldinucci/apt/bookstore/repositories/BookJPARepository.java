@@ -42,11 +42,10 @@ public class BookJPARepository implements BookRepository{
 	}
 
 	@Override
-	public Book delete(long id) {
+	public void delete(long id) {
 		Book book = entityManager.find(Book.class, id);
 		if (book != null)
 			entityManager.remove(book);
-		return book;
 	}
 
 }

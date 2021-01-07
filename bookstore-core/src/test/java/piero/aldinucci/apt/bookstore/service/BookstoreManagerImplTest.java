@@ -167,7 +167,7 @@ public class BookstoreManagerImplTest {
 		book1.getAuthors().add(author);
 		book2.getAuthors().add(author);
 		when(authorRepository.findById(anyLong())).thenReturn(Optional.of(author));
-		when(authorRepository.delete(anyLong())).thenReturn(author);
+//		when(authorRepository.delete(anyLong())).thenReturn(author);
 		
 		bookstoreManager.delete(author);
 		
@@ -203,7 +203,7 @@ public class BookstoreManagerImplTest {
 		author1.getBooks().add(book);
 		author2.getBooks().add(book);
 		when(bookRepository.findById(anyLong())).thenReturn(Optional.of(book));
-		when(bookRepository.delete(anyLong())).thenReturn(book);
+//		when(bookRepository.delete(anyLong())).thenReturn(book);
 		
 		bookstoreManager.delete(book);
 		

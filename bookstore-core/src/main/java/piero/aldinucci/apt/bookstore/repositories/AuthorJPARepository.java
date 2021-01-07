@@ -42,11 +42,10 @@ public class AuthorJPARepository implements AuthorRepository{
 	}
 
 	@Override
-	public Author delete(long id) {
+	public void delete(long id) {
 		Author author = entityManager.find(Author.class, id);
 		if (author != null)
 			entityManager.remove(author);
-		return author;
 	}
 
 }
