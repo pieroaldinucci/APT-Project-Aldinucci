@@ -83,15 +83,22 @@
 				<version>3.6.28</version>
 				<scope>test</scope>
 			</dependency>
+			<!-- <dependency> -->
+			<!-- <groupId>com.google.inject</groupId> -->
+			<!-- <artifactId>guice</artifactId> -->
+			<!-- <version>4.2.3</version> -->
+			<!-- </dependency> -->
+			<!-- <dependency> -->
+			<!-- <groupId>com.google.inject.extensions</groupId> -->
+			<!-- <artifactId>guice-assistedinject</artifactId> -->
+			<!-- <version>4.2.3</version> -->
+			<!-- </dependency> -->
 			<dependency>
 				<groupId>com.google.inject</groupId>
-				<artifactId>guice</artifactId>
+				<artifactId>guice-bom</artifactId>
 				<version>4.2.3</version>
-			</dependency>
-			<dependency>
-				<groupId>com.google.inject.extensions</groupId>
-				<artifactId>guice-assistedinject</artifactId>
-				<version>4.2.3</version>
+				<scope>import</scope>
+				<type>pom</type>
 			</dependency>
 		</dependencies>
 	</dependencyManagement>
