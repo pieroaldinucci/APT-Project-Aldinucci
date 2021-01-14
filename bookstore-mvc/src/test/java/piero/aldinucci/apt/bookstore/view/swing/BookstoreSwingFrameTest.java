@@ -40,10 +40,12 @@ public class BookstoreSwingFrameTest extends AssertJSwingJUnitTestCase {
 		JTabbedPaneFixture tabbedPane = window.tabbedPane("MainPane");
 		tabbedPane.requireTabTitles("Authors", "Books");
 
-		window.panel("authorPanel").requireVisible();
-
 		tabbedPane.selectTab("Books");
 
 		window.panel("bookPanel").requireVisible();
+		
+		tabbedPane.selectTab("Authors");
+		
+		window.panel("authorPanel").requireVisible();
 	}
 }

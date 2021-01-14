@@ -69,7 +69,7 @@ public class AuthorSwingView extends JPanel implements AuthorView {
 	private void createErrorLabel() {
 		errorLabel = new JLabel(" ");
 		errorLabel.setForeground(Color.RED);
-		errorLabel.setName("ErrorLabel");
+		errorLabel.setName("AuthorErrorLabel");
 		GridBagConstraints gbclabel = new GridBagConstraints();
 		gbclabel.insets = new Insets(0, 0, 0, 5);
 		gbclabel.gridx = 1;

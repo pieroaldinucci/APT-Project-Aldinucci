@@ -65,7 +65,7 @@ public class BookSwingView extends JPanel implements BookView {
 	private void createErrorLabel() {
 		errorLabel = new JLabel("");
 		errorLabel.setForeground(Color.RED);
-		errorLabel.setName("ErrorLabel");
+		errorLabel.setName("BookErrorLabel");
 		GridBagConstraints gbclblNewLabel = new GridBagConstraints();
 		gbclblNewLabel.gridwidth = 2;
 		gbclblNewLabel.insets = new Insets(0, 0, 0, 5);
@@ -75,7 +75,7 @@ public class BookSwingView extends JPanel implements BookView {
 	}
 
 	private void createDeleteButton() {
-		btnDelete = new JButton("Delete Book");
+		btnDelete = new JButton("Delete");
 		btnDelete.addActionListener(e -> {
 			Book book = bookJList.getSelectedValue();
 			controller.deleteBook(book);
@@ -90,7 +90,7 @@ public class BookSwingView extends JPanel implements BookView {
 	}
 
 	private void createNewButton() {
-		JButton btnNewButton = new JButton("New Book");
+		JButton btnNewButton = new JButton("New");
 		btnNewButton.setName("NewBook");
 		btnNewButton.addActionListener(e -> controller.composeBook());
 		GridBagConstraints gbcbtnNewButton = new GridBagConstraints();

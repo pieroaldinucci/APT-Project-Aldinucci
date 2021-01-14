@@ -2,7 +2,6 @@ package piero.aldinucci.apt.bookstore.view.swing;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.isA;
-import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.openMocks;
 
@@ -30,7 +29,6 @@ import com.google.inject.Provides;
 import com.google.inject.assistedinject.FactoryModuleBuilder;
 
 import piero.aldinucci.apt.bookstore.controller.BookstoreControllerImpl;
-import piero.aldinucci.apt.bookstore.exceptions.BookstorePersistenceException;
 import piero.aldinucci.apt.bookstore.model.Author;
 import piero.aldinucci.apt.bookstore.model.Book;
 import piero.aldinucci.apt.bookstore.service.BookstoreManager;
@@ -40,17 +38,17 @@ import piero.aldinucci.apt.bookstore.view.ComposeBookView;
 import piero.aldinucci.apt.bookstore.view.factory.ViewsFactory;
 
 @RunWith(GUITestRunner.class)
-public class ControllerViewIT extends AssertJSwingJUnitTestCase{
+public class FullControllerViewIT extends AssertJSwingJUnitTestCase{
 
 	@Mock
 	private BookstoreManager manager;
 	
-	private BookstoreControllerImpl controller;
 	private FrameFixture window;
 	private DialogFixture dialog;
-	
 	private List<Author> authors;
 	private List<Book> books;
+
+	private BookstoreControllerImpl controller;
 
 	private class IntegrationTestModule extends AbstractModule{
 		
@@ -118,99 +116,35 @@ public class ControllerViewIT extends AssertJSwingJUnitTestCase{
 		
 		when(manager.getAllAuthors()).thenReturn(authors);
 		when(manager.getAllBooks()).thenReturn(books);
+	}
+	
+	
+	@Test
+	@GUITest
+	public void test_UI_navigation() {
+		when(manager.newAuthor(isA(Author.class)))
+			.thenAnswer(invocation -> (Author) invocation.getArgument(0));
 		
 		GuiActionRunner.execute(() -> {
 			controller.allBooks();
 			controller.allAuthors();
 		});
-	}
-	
-	
-	@Test
-	@GUITest
-	public void test_add_new_Author() {
-		when(manager.newAuthor(isA(Author.class))).thenAnswer(invocation -> {
-			Author author = invocation.getArgument(0, Author.class);
-			author.setId(4L);
-			return author;
-		});
+		
+		window.tabbedPane().selectTab("Books");
+		window.button("DeleteBook").requireDisabled();
+		window.list("BookJList").requireItemCount(3);
+		window.button("NewBook").click();
+		
+		dialog.requireVisible().list("AvailableAuthors").requireItemCount(3);
+		dialog.button(JButtonMatcher.withText("Cancel")).click();
+		dialog.requireNotVisible();
 		
 		window.tabbedPane().selectTab("Authors");
-		window.textBox().enterText("Test a1");
+		window.textBox().enterText("Someone");
 		window.button(JButtonMatcher.withText("Add")).click();
 		
-		Author author = new Author(4L, "Test a1", new HashSet<>());
-		assertThat(window.list().item(3).value()).isEqualTo(author.toString());
-	}
-
-	@Test
-	@GUITest
-	public void test_compose_new_Book() {
-		when(manager.newBook(isA(Book.class))).thenAnswer(invocation -> {
-			Book book = invocation.getArgument(0, Book.class);
-			book.setId(14L);
-			return book;
-		});
-
-		window.tabbedPane().selectTab("Books");
-		window.button(JButtonMatcher.withText("New Book")).click();
-
-		dialog.textBox("titleTextField").enterText("Comic");
-		dialog.list("AvailableAuthors").selectItem(1);
-		dialog.button(JButtonMatcher.withText("<")).click();
-		dialog.button(JButtonMatcher.withText("OK")).click();
-
-		Book composedBook = new Book(14L, "Comic", new HashSet<>());
-		assertThat(window.list().item(3).value()).isEqualTo(composedBook.toString() + "; Authors: Isaac");
+		assertThat(window.list("AuthorList").requireItemCount(4).item(3).value())
+			.isEqualTo(new Author(null,"Someone",null).toString());
 	}
 	
-	@Test
-	@GUITest
-	public void test_delete_author_success() {
-		window.tabbedPane().selectTab("Authors");
-		window.list().selectItem(0);
-		window.button("DeleteAuthor").click();
-		
-		assertThat(window.list().valueAt(0)).isEqualTo(authors.get(1).toString());
-		assertThat(window.list().valueAt(1)).isEqualTo(authors.get(2).toString());
-	}
-	
-	@Test
-	@GUITest
-	public void test_delete_author_error() {
-		doThrow(new BookstorePersistenceException()).when(manager).delete(isA(Author.class));
-		
-		window.tabbedPane().selectTab("Authors");
-		window.list().selectItem(0);
-		window.button("DeleteAuthor").click();
-		
-		window.list().requireItemCount(3);
-		assertThat(window.label("ErrorLabel").text()).isNotBlank();
-	}
-	
-	@Test
-	@GUITest
-	public void test_delete_book_success() {
-		window.tabbedPane().selectTab("Books");
-		window.list().selectItem(1);
-		window.button("DeleteBook").click();
-		
-		assertThat(window.list().valueAt(0)).isEqualTo(books.get(0).toString()+
-				"; Authors: Newton");
-		assertThat(window.list().valueAt(1)).isEqualTo(books.get(2).toString()+
-				"; Authors: Arthur - Isaac");
-	}
-
-	@Test
-	@GUITest
-	public void test_delete_book_error() {
-		doThrow(new BookstorePersistenceException()).when(manager).delete(isA(Book.class));
-		
-		window.tabbedPane().selectTab("Books");
-		window.list().selectItem(0);
-		window.button("DeleteBook").click();
-		
-		window.list().requireItemCount(3);
-		assertThat(window.label("ErrorLabel").text()).isNotBlank();
-	}
 }

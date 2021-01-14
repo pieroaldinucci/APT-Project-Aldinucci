@@ -31,7 +31,7 @@ import piero.aldinucci.apt.bookstore.model.Book;
 @RunWith(GUITestRunner.class)
 public class BookSwingViewTest extends AssertJSwingJUnitTestCase {
 
-	private static final String ERROR_LABEL = "ErrorLabel";
+	private static final String ERROR_LABEL = "BookErrorLabel";
 	private static final String NEW_BOOK_BUTTON = "NewBook";
 	private static final String DELETE_BOOK_BUTTON = "DeleteBook";
 	private static final String BOOK_J_LIST = "BookJList";
@@ -63,9 +63,9 @@ public class BookSwingViewTest extends AssertJSwingJUnitTestCase {
 	public void test_components() {
 		bookPanel.list(BOOK_J_LIST).requireNoSelection();
 		assertThat(bookPanel.button(NEW_BOOK_BUTTON).requireEnabled().text())
-			.isEqualTo("New Book");
+			.isEqualTo("New");
 		assertThat(bookPanel.button(DELETE_BOOK_BUTTON).requireDisabled().text())
-			.isEqualTo("Delete Book");
+			.isEqualTo("Delete");
 		assertThat(bookPanel.label(ERROR_LABEL).requireText("").foreground().target())
 			.isEqualTo(Color.RED);
 	}

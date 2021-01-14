@@ -114,7 +114,7 @@ public class ComposeBookSwingViewTest extends AssertJSwingJUnitTestCase {
 
 	@Test
 	@GUITest
-	public void test_showAuthorList_should_make_the_dialog_visible() {
+	public void test_composeNewBook_should_make_the_dialog_visible() {
 		composeBookView.setModal(false);
 		composeBookView.setVisible(false);
 		dialogFixture.requireNotVisible();
@@ -126,7 +126,7 @@ public class ComposeBookSwingViewTest extends AssertJSwingJUnitTestCase {
 	
 	@Test
 	@GUITest
-	public void test_showAuthorList_should_clear_and_update_the_available_authors_list() {
+	public void test_composeNewBook_should_clear_and_update_the_available_authors_list() {
 		GuiActionRunner.execute(() -> {
 			composeBookView.getModelBookAuthors().addElement(new Author(5L,"Isaac",new HashSet<>()));
 			composeBookView.getModelBookAuthors().addElement(new Author(3L,"Clarke",new HashSet<>()));
@@ -155,12 +155,6 @@ public class ComposeBookSwingViewTest extends AssertJSwingJUnitTestCase {
 
 	@Test
 	public void test_pressing_cancel_button_will_not_call_the_controller_and_hide_Dialog() {
-//		GuiActionRunner.execute(() -> {
-//			composeBookView.getModelAvailableAuthors().addElement(new Author(2L, "database author", new HashSet<>()));
-//			composeBookView.getModelBookAuthors().addElement(new Author(5L, "book author", new HashSet<>()));
-//		});
-		
-//		dialogFixture.textBox(TITLE_TEXT_FIELD).enterText("Title");
 		dialogFixture.button(JButtonMatcher.withText("Cancel")).click();
 
 		dialogFixture.requireNotVisible();

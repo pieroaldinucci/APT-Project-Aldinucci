@@ -33,7 +33,7 @@ import piero.aldinucci.apt.bookstore.model.Book;
 @RunWith(GUITestRunner.class)
 public class AuthorSwingViewTest extends AssertJSwingJUnitTestCase {
 
-	private static final String ERROR_LABEL = "ErrorLabel";
+	private static final String AUTHOR_ERROR_LABEL = "AuthorErrorLabel";
 	private static final String DELETE_AUTHOR_BUTTON = "DeleteAuthor";
 	private static final String ADD_AUTHOR_BUTTON = "AddAuthor";
 	private static final String NAME_TEXT_FIELD = "NameTextField";
@@ -63,7 +63,7 @@ public class AuthorSwingViewTest extends AssertJSwingJUnitTestCase {
 	@Test
 	public void test_Components() {
 		authorPanel.label(JLabelMatcher.withText("Name"));
-		assertThat(authorPanel.label(ERROR_LABEL).requireText(" ").target().getForeground())
+		assertThat(authorPanel.label(AUTHOR_ERROR_LABEL).requireText(" ").target().getForeground())
 			.isEqualTo(Color.RED);
 		authorPanel.textBox(NAME_TEXT_FIELD).requireEnabled().requireEmpty();
 		assertThat(authorPanel.list(AUTHOR_LIST).contents()).isEmpty();
@@ -136,7 +136,7 @@ public class AuthorSwingViewTest extends AssertJSwingJUnitTestCase {
 		GuiActionRunner.execute(() -> authorView.authorAdded(testAuthor));
 		
 		assertThat(authorView.getAuthorListModel().toArray()).containsExactly(testAuthor);
-		assertThat(authorPanel.label(ERROR_LABEL).text()).isEmpty();
+		assertThat(authorPanel.label(AUTHOR_ERROR_LABEL).text()).isEmpty();
 	}
 	
 	@Test
@@ -152,7 +152,7 @@ public class AuthorSwingViewTest extends AssertJSwingJUnitTestCase {
 		GuiActionRunner.execute(() -> authorView.authorRemoved(testAuthor));
 		
 		assertThat(authorView.getAuthorListModel().toArray()).containsExactly(testAuthor2);
-		assertThat(authorPanel.label("ErrorLabel").text()).isEmpty();
+		assertThat(authorPanel.label(AUTHOR_ERROR_LABEL).text()).isEmpty();
 	}
 	
 	@Test
@@ -163,7 +163,7 @@ public class AuthorSwingViewTest extends AssertJSwingJUnitTestCase {
 		
 		GuiActionRunner.execute(() -> authorView.showError("This is an Error Message!", testAuthor));
 		
-		authorPanel.label("ErrorLabel").requireText("This is an Error Message!: "+testAuthor);
+		authorPanel.label(AUTHOR_ERROR_LABEL).requireText("This is an Error Message!: "+testAuthor);
 	}
 	
 	@Test
