@@ -2,6 +2,10 @@ package piero.aldinucci.apt.bookstore.transaction;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.when;
+import static org.mockito.MockitoAnnotations.*;
 
 import java.util.HashSet;
 import java.util.List;
@@ -15,10 +19,17 @@ import javax.persistence.PersistenceException;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import org.mockito.Mock;
+import org.mockito.Spy;
 
 import piero.aldinucci.apt.bookstore.exceptions.BookstorePersistenceException;
 import piero.aldinucci.apt.bookstore.model.Author;
 import piero.aldinucci.apt.bookstore.model.Book;
+import piero.aldinucci.apt.bookstore.repositories.AuthorJPARepository;
+import piero.aldinucci.apt.bookstore.repositories.AuthorRepository;
+import piero.aldinucci.apt.bookstore.repositories.BookJPARepository;
+import piero.aldinucci.apt.bookstore.repositories.BookRepository;
+import piero.aldinucci.apt.bookstore.repositories.factory.RepositoriesJPAFactory;
 import piero.aldinucci.apt.bookstore.repositories.factory.RepositoriesJPAFactoryImpl;
 
 
@@ -32,15 +43,15 @@ public class TransactionManagerJPAIT {
 		emFactory = Persistence.createEntityManagerFactory("apt.project.bookstore");
 		transactionManager = new TransactionManagerJPA(emFactory,new RepositoriesJPAFactoryImpl());
 		
-		EntityManager entityManager = emFactory.createEntityManager();
+		EntityManager em = emFactory.createEntityManager();
 		
-		entityManager.getTransaction().begin();
-		entityManager.createQuery("from Author",Author.class).getResultStream()
-			.forEach(e -> entityManager.remove(e));
-		entityManager.createQuery("from Book",Book.class).getResultStream()
-			.forEach(e -> entityManager.remove(e));
-		entityManager.getTransaction().commit();
-		entityManager.close();
+		em.getTransaction().begin();
+		em.createQuery("from Author",Author.class).getResultStream()
+			.forEach(e -> em.remove(e));
+		em.createQuery("from Book",Book.class).getResultStream()
+			.forEach(e -> em.remove(e));
+		em.getTransaction().commit();
+		em.close();
 	}
 	
 	@After
@@ -49,45 +60,39 @@ public class TransactionManagerJPAIT {
 	}
 	
 	@Test
-	public void test_doInTransaction_should_save_author_to_db_in_transaction() {
+	public void test_doInTransaction_should_save_entities_to_db_in_transaction() {
 		Author author = new Author(null, "First Author", new HashSet<>());
 		
-		Author returnedAuthor = transactionManager.doInTransaction((authorR, bookR) -> authorR.save(author));
+		Author returnedAuthor = transactionManager.doInTransaction((authorR, bookR) ->{
+			Book book = new Book(null, "A book", new HashSet<>());
+			book = bookR.save(book);
+			author.getBooks().add(book);
+			return authorR.save(author);
+		});
 		
 		EntityManager em = emFactory.createEntityManager();
 		Author savedAuthor = em.find(Author.class, returnedAuthor.getId());
 		em.close();
-
+		
 		assertThat(savedAuthor.getName()).isEqualTo("First Author");
 		assertThat(savedAuthor).usingRecursiveComparison().isEqualTo(returnedAuthor);
-	}
-	
-	@Test
-	public void test_doInTransaction_should_read_book_from_db() {
-		Book book = new Book(null, "A Title", new HashSet<>());
-		EntityManager em = emFactory.createEntityManager();
-		em.getTransaction().begin();
-		em.persist(book);
-		em.getTransaction().commit();
-		em.close();
-
-		Optional<Book> returnedBook = transactionManager.doInTransaction((authorR, bookR) -> 
-			bookR.findById(book.getId()));
 		
-		assertThat(book).usingRecursiveComparison().isEqualTo(returnedBook.get());
+		Book savedBook = transactionManager.doInTransaction((authorR,bookR) ->
+			bookR.findAll().get(0));
+		
+		assertThat(savedAuthor.getBooks()).usingRecursiveFieldByFieldElementComparator()
+			.containsExactly(savedBook);
 	}
 	
 	@Test
-	public void test_doInTransaction_should_throw_and_rollback_when_RuntimeException_occur() {
+	public void test_doInTransaction_should_throw_when_commit_fail() {
 		Author author = new Author(null, "First Author", new HashSet<>());
 		Book book = new Book(null, "a Book", new HashSet<>());
 		author.getBooks().add(book);
 		
 		assertThatThrownBy(() -> transactionManager.doInTransaction((authorR, bookR) ->
 				authorR.save(author)))
-			.isExactlyInstanceOf(BookstorePersistenceException.class)
-			.hasMessage("Error while committing transaction")
-			.getCause().isInstanceOf(PersistenceException.class);
+			.isExactlyInstanceOf(BookstorePersistenceException.class);
 		
 		EntityManager em = emFactory.createEntityManager();
 		List<Author> authors = em.createQuery("from Author",Author.class).getResultList();
@@ -95,5 +100,6 @@ public class TransactionManagerJPAIT {
 		
 		assertThat(authors).isEmpty();
 	}
+	
 
 }

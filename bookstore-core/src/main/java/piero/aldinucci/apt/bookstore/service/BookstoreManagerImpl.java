@@ -83,6 +83,8 @@ public class BookstoreManagerImpl implements BookstoreManager {
 					new BookstorePersistenceException("Cannot find author to update with id: " + author.getId()));
 			
 			HashSet<Book> fullSet = new HashSet<>(oldAuthor.getBooks());
+			authorR.update(author);
+			
 			fullSet.addAll(author.getBooks());
 			fullSet.stream().forEach(b -> {
 				b.getAuthors().remove(oldAuthor);
@@ -90,8 +92,6 @@ public class BookstoreManagerImpl implements BookstoreManager {
 					b.getAuthors().add(author);
 				bookR.update(b);
 			});
-			
-			authorR.update(author);
 			return null;
 		});
 	}
@@ -103,6 +103,8 @@ public class BookstoreManagerImpl implements BookstoreManager {
 					new BookstorePersistenceException("Cannot find book to update with id: " + book.getId()));
 			
 			HashSet<Author> fullSet = new HashSet<>(oldBook.getAuthors());
+			bookR.update(book);
+			
 			fullSet.addAll(book.getAuthors());
 			fullSet.stream().forEach(a -> {
 				a.getBooks().remove(oldBook);
@@ -110,8 +112,6 @@ public class BookstoreManagerImpl implements BookstoreManager {
 					a.getBooks().add(book);
 				authorR.update(a);
 			});
-			
-			bookR.update(book);
 			return null;
 		});
 	}

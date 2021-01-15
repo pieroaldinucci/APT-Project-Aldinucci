@@ -36,15 +36,15 @@ import piero.aldinucci.apt.bookstore.transaction.TransactionManager;
 public class BookstoreManagerImplTest {
 
 	@Mock
-	AuthorRepository authorRepository;
+	private AuthorRepository authorRepository;
 
 	@Mock
-	BookRepository bookRepository;
+	private BookRepository bookRepository;
 
 	@Mock
-	TransactionManager transactionManager;
+	private TransactionManager transactionManager;
 
-	BookstoreManagerImpl bookstoreManager;
+	private BookstoreManagerImpl bookstoreManager;
 
 	@Before
 	public void setUp() {
@@ -274,10 +274,10 @@ public class BookstoreManagerImplTest {
 			.usingRecursiveComparison().isEqualTo(updatedAuthor);		
 		InOrder inOrder = inOrder(authorRepository,bookRepository);
 		inOrder.verify(authorRepository).findById(3L);
+		inOrder.verify(authorRepository).update(updatedAuthor);
 		inOrder.verify(bookRepository).update(book1);
 		inOrder.verify(bookRepository).update(book2);
 		inOrder.verify(bookRepository).update(book3);
-		inOrder.verify(authorRepository).update(updatedAuthor);
 		verifyNoMoreInteractions(authorRepository);
 		verifyNoMoreInteractions(bookRepository);
 	}
@@ -338,10 +338,10 @@ public class BookstoreManagerImplTest {
 			.usingRecursiveComparison().isEqualTo(updatedBook);		
 		InOrder inOrder = inOrder(authorRepository,bookRepository);
 		inOrder.verify(bookRepository).findById(3L);
+		inOrder.verify(bookRepository).update(updatedBook);
 		inOrder.verify(authorRepository).update(author1);
 		inOrder.verify(authorRepository).update(author2);
 		inOrder.verify(authorRepository).update(author3);
-		inOrder.verify(bookRepository).update(updatedBook);
 		verifyNoMoreInteractions(bookRepository);
 		verifyNoMoreInteractions(authorRepository);
 	}
