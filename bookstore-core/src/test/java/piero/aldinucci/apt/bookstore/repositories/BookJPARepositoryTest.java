@@ -19,7 +19,7 @@ import piero.aldinucci.apt.bookstore.exceptions.BookstorePersistenceException;
 import piero.aldinucci.apt.bookstore.model.Author;
 import piero.aldinucci.apt.bookstore.model.Book;
 
-public class BookJPARepositoryIT {
+public class BookJPARepositoryTest {
 
 	private BookJPARepository repository;
 	private EntityManagerFactory emFactory;
@@ -27,11 +27,7 @@ public class BookJPARepositoryIT {
 	
 	@Before
 	public void setUp() {
-		HashMap<String, String> propertiesJPA = new HashMap<String, String>();
-		propertiesJPA.put("javax.persistence.jdbc.url", "jdbc:postgresql://localhost:5432/projectAPTTestDb");
-		propertiesJPA.put("javax.persistence.jdbc.driver", "org.postgresql.Driver");
-		propertiesJPA.put("hibernate.dialect", "org.hibernate.dialect.PostgreSQL95Dialect");
-		emFactory = Persistence.createEntityManagerFactory("apt.project.bookstore",propertiesJPA);
+		emFactory = Persistence.createEntityManagerFactory("apt.project.bookstore");
 		entityManager = emFactory.createEntityManager();
 		
 		entityManager.getTransaction().begin();

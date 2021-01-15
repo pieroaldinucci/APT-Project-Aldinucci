@@ -1,0 +1,61 @@
+package piero.aldinucci.apt.bookstore.repositories.factory;
+
+import static org.assertj.core.api.Assertions.assertThat;
+
+import java.util.HashMap;
+
+import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
+import javax.persistence.Persistence;
+
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+
+import piero.aldinucci.apt.bookstore.repositories.AuthorJPARepository;
+import piero.aldinucci.apt.bookstore.repositories.AuthorRepository;
+import piero.aldinucci.apt.bookstore.repositories.BookJPARepository;
+import piero.aldinucci.apt.bookstore.repositories.BookRepository;
+
+public class RepositoriesJPAFactoryImplTest {
+
+	
+	private RepositoriesJPAFactoryImpl factory;
+	private EntityManagerFactory emFactory;
+	private EntityManager entityManager;
+	
+	@Before
+	public void setUp() {
+		HashMap<String, String> propertiesJPA = new HashMap<String, String>();
+		propertiesJPA.put("javax.persistence.jdbc.url", "jdbc:hsqldb:mem:unit-testing-jpa");
+		propertiesJPA.put("javax.persistence.jdbc.driver", "org.hsqldb.jdbcDriver");
+		propertiesJPA.put("hibernate.dialect", "org.hibernate.dialect.HSQLDialect");
+		emFactory = Persistence.createEntityManagerFactory("apt.project.bookstore",propertiesJPA);
+		entityManager = emFactory.createEntityManager();
+
+		factory = new RepositoriesJPAFactoryImpl();
+	}
+	
+	@After
+	public void tearDown() {
+		entityManager.close();
+		emFactory.close();
+	}
+	
+	@Test
+	public void test_createAuthorRepository() {
+		AuthorRepository authorRepository = factory.createAuthorRepository(entityManager);
+		
+		assertThat(authorRepository).isExactlyInstanceOf(AuthorJPARepository.class);
+		assertThat(entityManager.isOpen()).isTrue();
+	}
+	
+	@Test
+	public void test_createBookRepository() {
+		BookRepository bookRepository = factory.createBookRepository(entityManager);
+		
+		assertThat(bookRepository).isExactlyInstanceOf(BookJPARepository.class);
+		assertThat(entityManager.isOpen()).isTrue();
+	}
+
+}

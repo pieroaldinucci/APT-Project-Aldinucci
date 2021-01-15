@@ -7,6 +7,7 @@ import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.*;
 
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
@@ -40,7 +41,11 @@ public class TransactionManagerJPAIT {
 
 	@Before
 	public void setUp() {
-		emFactory = Persistence.createEntityManagerFactory("apt.project.bookstore");
+		HashMap<String, String> propertiesJPA = new HashMap<String, String>();
+		propertiesJPA.put("javax.persistence.jdbc.url", "jdbc:postgresql://localhost:5432/projectAPTTestDb");
+		propertiesJPA.put("javax.persistence.jdbc.driver", "org.postgresql.Driver");
+		propertiesJPA.put("hibernate.dialect", "org.hibernate.dialect.PostgreSQL95Dialect");
+		emFactory = Persistence.createEntityManagerFactory("apt.project.bookstore",propertiesJPA);
 		transactionManager = new TransactionManagerJPA(emFactory,new RepositoriesJPAFactoryImpl());
 		
 		EntityManager em = emFactory.createEntityManager();
@@ -60,7 +65,7 @@ public class TransactionManagerJPAIT {
 	}
 	
 	@Test
-	public void test_doInTransaction_should_save_entities_to_db_in_transaction() {
+	public void test_doInTransaction_should_save_entities_to_db_inside_transaction() {
 		Author author = new Author(null, "First Author", new HashSet<>());
 		
 		Author returnedAuthor = transactionManager.doInTransaction((authorR, bookR) ->{
@@ -84,6 +89,7 @@ public class TransactionManagerJPAIT {
 			.containsExactly(savedBook);
 	}
 	
+	// This is specifically to check if the commit is inside the try catch
 	@Test
 	public void test_doInTransaction_should_throw_when_commit_fail() {
 		Author author = new Author(null, "First Author", new HashSet<>());

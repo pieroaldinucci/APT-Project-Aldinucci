@@ -3,6 +3,7 @@ package piero.aldinucci.apt.bookstore.model;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatCode;
 
+import java.util.HashMap;
 import java.util.HashSet;
 
 import javax.persistence.EntityManager;
@@ -13,12 +14,17 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-public class BookAnnotationsIT {
+public class BookAnnotationsTest {
 	EntityManagerFactory emFactory;
 	
 	@Before
 	public void setUp() {
-		emFactory = Persistence.createEntityManagerFactory("apt.project.bookstore");
+		HashMap<String, String> propertiesJPA = new HashMap<String, String>();
+		propertiesJPA.put("javax.persistence.jdbc.url", "jdbc:hsqldb:mem:unit-testing-jpa");
+		propertiesJPA.put("javax.persistence.jdbc.driver", "org.hsqldb.jdbcDriver");
+		propertiesJPA.put("hibernate.dialect", "org.hibernate.dialect.HSQLDialect");
+		emFactory = Persistence.createEntityManagerFactory("apt.project.bookstore",propertiesJPA);
+		
 		EntityManager entityManager = emFactory.createEntityManager();
 		
 		entityManager.getTransaction().begin();

@@ -2,6 +2,7 @@ package piero.aldinucci.apt.bookstore.service;
 
 import static org.assertj.core.api.Assertions.*;
 
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 
@@ -29,7 +30,11 @@ public class FullServiceLayerIT {
 	
 	@Before
 	public void setUp() {
-		emFactory = Persistence.createEntityManagerFactory("apt.project.bookstore");
+		HashMap<String, String> propertiesJPA = new HashMap<String, String>();
+		propertiesJPA.put("javax.persistence.jdbc.url", "jdbc:postgresql://localhost:5432/projectAPTTestDb");
+		propertiesJPA.put("javax.persistence.jdbc.driver", "org.postgresql.Driver");
+		propertiesJPA.put("hibernate.dialect", "org.hibernate.dialect.PostgreSQL95Dialect");
+		emFactory = Persistence.createEntityManagerFactory("apt.project.bookstore",propertiesJPA);
 		transactionManager = new TransactionManagerJPA(emFactory,new RepositoriesJPAFactoryImpl());
 		bookstoreManager = new BookstoreManagerImpl(transactionManager);
 		
