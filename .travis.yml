@@ -18,7 +18,7 @@ addons:
       token: $SONAR_TOKEN
 
 services:
-#   - docker
+   - docker
    - xvfb
 
 #skip installation step
@@ -36,4 +36,4 @@ script:
 #   - mvn -f bookstore-core/pom.xml clean verify org.pitest:pitest-maven:mutationCoverage $MAVEN_ARGS
 #   - mvn -f bookstore-core/pom.xml clean verify -Pjacoco $MAVEN_ARGS
 #    - mvn -f bookstore-parent/pom.xml clean verify -Pjacoco $MAVEN_ARGS
-    - mvn -f bookstore-parent/pom.xml clean verify -Pjacoco -Pno-core-tests $MAVEN_ARGS
+    - mvn -f bookstore-parent/pom.xml clean verify -Pjacoco $MAVEN_ARGS
