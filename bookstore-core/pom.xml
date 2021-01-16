@@ -33,6 +33,14 @@
 			<groupId>org.apache.logging.log4j</groupId>
 			<artifactId>log4j-core</artifactId>
 		</dependency>
+		<dependency>
+			<groupId>org.mockito</groupId>
+			<artifactId>mockito-core</artifactId>
+		</dependency>
+		<dependency>
+    		<groupId>org.hsqldb</groupId>
+    		<artifactId>hsqldb</artifactId>
+		</dependency>
 	</dependencies>
 
 
@@ -95,7 +103,24 @@
 					<configuration>
 						<excludes>
 							<exclude>piero/aldinucci/apt/bookstore/model/*.class</exclude>
+							<exclude>piero/aldinucci/apt/bookstore/exceptions/*.class</exclude>
 						</excludes>
+					</configuration>
+				</plugin>
+				<plugin>
+					<groupId>org.pitest</groupId>
+					<artifactId>pitest-maven</artifactId>
+					<configuration>
+						<targetClasses>
+							<param>piero.aldinucci.apt.bookstore.service*</param>
+              				<param>piero.aldinucci.apt.bookstore.repositories*</param>
+							<param>piero.aldinucci.apt.bookstore.transaction*</param>
+						</targetClasses>
+						<targetTests>
+							<param>piero.aldinucci.apt.bookstore.service*</param>
+							<param>piero.aldinucci.apt.bookstore.repositories*</param>
+							<param>piero.aldinucci.apt.bookstore.transaction*</param>
+						</targetTests>
 					</configuration>
 				</plugin>
 			</plugins>

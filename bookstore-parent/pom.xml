@@ -12,6 +12,8 @@
 		<maven.compiler.source>1.8</maven.compiler.source>
 		<maven.compiler.target>1.8</maven.compiler.target>
 		<jdk9-or-more>false</jdk9-or-more>
+		<sonar.exclusions>**/model/*.java</sonar.exclusions>
+		<sonar.coverage.exclusions>**/exceptions/*.*</sonar.coverage.exclusions>
 		<sonar.issue.ignore.multicriteria>e1,e2,e3</sonar.issue.ignore.multicriteria>
 		<!-- Rule: inheritance depth larger than 5 -->
 		<sonar.issue.ignore.multicriteria.e1.ruleKey>java:S110</sonar.issue.ignore.multicriteria.e1.ruleKey>
@@ -22,10 +24,6 @@
 		<!-- Duplicate blocks, SonarQube false positive -->
 		<sonar.issue.ignore.multicriteria.e3.ruleKey>common-java:DuplicatedBlocks</sonar.issue.ignore.multicriteria.e3.ruleKey>
 		<sonar.issue.ignore.multicriteria.e3.resourceKey>**/model/*.java</sonar.issue.ignore.multicriteria.e3.resourceKey>
-		<sonar.coverage.exclusions>
-			**/model/*.*,
-			**/exceptions/*.*,
-		</sonar.coverage.exclusions>
 	</properties>
 
 	<modules>
@@ -89,6 +87,12 @@
 				<version>4.2.3</version>
 				<scope>import</scope>
 				<type>pom</type>
+			</dependency>
+			<dependency>
+				<groupId>org.hsqldb</groupId>
+				<artifactId>hsqldb</artifactId>
+				<version>2.5.1</version>
+				<scope>test</scope>
 			</dependency>
 		</dependencies>
 	</dependencyManagement>
@@ -197,9 +201,15 @@
 							<goals>
 								<goal>mutationCoverage</goal>
 							</goals>
-							<phase>verify</phase>
+							<phase>integration-test</phase>
 						</execution>
 					</executions>
+					<configuration>
+						<mutators>
+							<mutator>DEFAULTS</mutator>
+						</mutators>
+						<mutationThreshold>90</mutationThreshold>
+					</configuration>
 				</plugin>
 				<plugin>
 					<groupId>io.fabric8</groupId>

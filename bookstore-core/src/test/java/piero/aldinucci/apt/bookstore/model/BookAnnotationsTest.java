@@ -3,6 +3,7 @@ package piero.aldinucci.apt.bookstore.model;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatCode;
 
+import java.util.HashMap;
 import java.util.HashSet;
 
 import javax.persistence.EntityManager;
@@ -13,18 +14,18 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-public class AuthorAnnotationsIT {
-	
+public class BookAnnotationsTest {
 	EntityManagerFactory emFactory;
 	
 	@Before
 	public void setUp() {
 		emFactory = Persistence.createEntityManagerFactory("apt.project.bookstore");
+		
 		EntityManager entityManager = emFactory.createEntityManager();
 		
 		entityManager.getTransaction().begin();
-		entityManager.createQuery("from Author", Author.class).getResultStream()
-			.forEach(a -> entityManager.remove(a));
+		entityManager.createQuery("from Book", Book.class).getResultStream()
+			.forEach(b -> entityManager.remove(b));
 		entityManager.getTransaction().commit();
 		entityManager.close();
 	}
@@ -33,25 +34,33 @@ public class AuthorAnnotationsIT {
 	public void tearDown() {
 		emFactory.close();
 	}
-
+	
 	@Test
-	public void test_generatedID_and_Eager_Initialization() {
-		Author author = new Author(null, "an Author", new HashSet<>());
+	public void test_generatedID() {
+		Book book = new Book(null, "a Title", new HashSet<>());
 		EntityManager entityManager = emFactory.createEntityManager();
 		entityManager.getTransaction().begin();
-		entityManager.persist(author);
+		entityManager.persist(book);
 		entityManager.getTransaction().commit();
 		entityManager.close();
 		
-		assertThat(author.getId()).isNotNull();
+		assertThat(book.getId()).isNotNull();
+	}
+	
+	@Test
+	public void test_Eager_Initialization() {
+		Book book = new Book(null, "a Title", new HashSet<>());
+		EntityManager entityManager = emFactory.createEntityManager();
+		entityManager.getTransaction().begin();
+		entityManager.persist(book);
+		entityManager.getTransaction().commit();
+		entityManager.clear();
 		
-		entityManager = emFactory.createEntityManager();
-		Author retrievedAuthor = entityManager.find(Author.class, author.getId());
+		Book retrievedBook = entityManager.find(Book.class, book.getId());
 		entityManager.close();
 		
 		assertThatCode(() -> {
-			assertThat(retrievedAuthor).usingRecursiveComparison().isEqualTo(author);
+			assertThat(retrievedBook).usingRecursiveComparison().isEqualTo(book);
 		}).doesNotThrowAnyException();
 	}
-
 }
