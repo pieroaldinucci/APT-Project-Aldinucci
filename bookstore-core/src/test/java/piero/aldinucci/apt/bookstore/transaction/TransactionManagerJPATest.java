@@ -15,6 +15,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 import javax.persistence.PersistenceException;
+import javax.persistence.TransactionRequiredException;
 
 import org.junit.After;
 import org.junit.Before;
@@ -88,8 +89,8 @@ public class TransactionManagerJPATest {
 	}
 	
 	@Test
-	public void test_PersistenceException_should_be_rethrown_as_BookstorePersistanceException() {
-		doThrow(PersistenceException.class).when(authorRepository).delete(anyLong());
+	public void test_PersistenceExceptions_should_be_wrapped_by_BookstorePersistanceException() {
+		doThrow(TransactionRequiredException.class).when(authorRepository).delete(anyLong());
 		
 		assertThatThrownBy(() -> {
 			transactionManager.doInTransaction((authorR,bookR) -> {
@@ -97,14 +98,14 @@ public class TransactionManagerJPATest {
 				return null;
 			});
 		}).isExactlyInstanceOf(BookstorePersistenceException.class)
-			.hasMessage("Error while committing transaction")
+			.hasMessage("Error while executing transaction")
 			.getCause().isInstanceOf(PersistenceException.class);
 		
 		assertThat(transactionManager.getEntityManager().isOpen()).isFalse();
 	}
 	
 	@Test
-	public void test_non_persistence_related_RuntimeExceptions_should_not_be_rethrown() {
+	public void test_non_persistence_related_Exceptions_should_not_be_catched() {
 		IllegalArgumentException iaException = new IllegalArgumentException();
 		doThrow(iaException).when(authorRepository).delete(anyLong());
 		

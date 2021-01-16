@@ -2,35 +2,22 @@ package piero.aldinucci.apt.bookstore.transaction;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.spy;
-import static org.mockito.Mockito.when;
-import static org.mockito.MockitoAnnotations.*;
 
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Optional;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
-import javax.persistence.PersistenceException;
 
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import org.mockito.Mock;
-import org.mockito.Spy;
 
 import piero.aldinucci.apt.bookstore.exceptions.BookstorePersistenceException;
 import piero.aldinucci.apt.bookstore.model.Author;
 import piero.aldinucci.apt.bookstore.model.Book;
-import piero.aldinucci.apt.bookstore.repositories.AuthorJPARepository;
-import piero.aldinucci.apt.bookstore.repositories.AuthorRepository;
-import piero.aldinucci.apt.bookstore.repositories.BookJPARepository;
-import piero.aldinucci.apt.bookstore.repositories.BookRepository;
-import piero.aldinucci.apt.bookstore.repositories.factory.RepositoriesJPAFactory;
 import piero.aldinucci.apt.bookstore.repositories.factory.RepositoriesJPAFactoryImpl;
 
 
@@ -49,7 +36,6 @@ public class TransactionManagerJPAIT {
 		transactionManager = new TransactionManagerJPA(emFactory,new RepositoriesJPAFactoryImpl());
 		
 		EntityManager em = emFactory.createEntityManager();
-		
 		em.getTransaction().begin();
 		em.createQuery("from Author",Author.class).getResultStream()
 			.forEach(e -> em.remove(e));
@@ -65,33 +51,34 @@ public class TransactionManagerJPAIT {
 	}
 	
 	@Test
-	public void test_doInTransaction_should_save_entities_to_db_inside_transaction() {
-		Author author = new Author(null, "First Author", new HashSet<>());
-		
-		Author returnedAuthor = transactionManager.doInTransaction((authorR, bookR) ->{
-			Book book = new Book(null, "A book", new HashSet<>());
-			book = bookR.save(book);
-			author.getBooks().add(book);
-			return authorR.save(author);
-		});
-		
+	public void test_doInTransaction_should_save_and_update_entities_to_db_inside_transaction() {
+		Author author = (new Author(null, "First Author", new HashSet<>()));
 		EntityManager em = emFactory.createEntityManager();
-		Author savedAuthor = em.find(Author.class, returnedAuthor.getId());
+		em.getTransaction().begin();
+		em.persist(author);
+		em.getTransaction().commit();
 		em.close();
 		
-		assertThat(savedAuthor.getName()).isEqualTo("First Author");
-		assertThat(savedAuthor).usingRecursiveComparison().isEqualTo(returnedAuthor);
+		Book book = transactionManager.doInTransaction((authorR, bookR) -> {
+			Book b = new Book(null,"first book",new HashSet<>());
+			b.getAuthors().add(author);
+			b = bookR.save(b);
+			author.getBooks().add(b);
+			authorR.update(author);
+			return b;
+		});
 		
-		Book savedBook = transactionManager.doInTransaction((authorR,bookR) ->
-			bookR.findAll().get(0));
+		em = emFactory.createEntityManager();
+		Author savedAuthor = em.createQuery("from Author",Author.class).getSingleResult();
+		Book savedBook = em.createQuery("from Book", Book.class).getSingleResult();
+		em.close();
 		
-		assertThat(savedAuthor.getBooks()).usingRecursiveFieldByFieldElementComparator()
-			.containsExactly(savedBook);
+		assertThat(savedAuthor).usingRecursiveComparison().isEqualTo(author);
+		assertThat(savedBook).usingRecursiveComparison().isEqualTo(book);
 	}
 	
-	// This is specifically to check if the commit is inside the try catch
 	@Test
-	public void test_doInTransaction_should_throw_when_commit_fail() {
+	public void test_doInTransaction_should_catch_exception_when_commit_fails() {
 		Author author = new Author(null, "First Author", new HashSet<>());
 		Book book = new Book(null, "a Book", new HashSet<>());
 		author.getBooks().add(book);

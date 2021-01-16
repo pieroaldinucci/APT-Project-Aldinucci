@@ -4,8 +4,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.List;
-import java.util.Optional;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
@@ -20,10 +18,12 @@ import piero.aldinucci.apt.bookstore.model.Book;
 
 public class RepositoriesWithPostgresIT {
 
-	private AuthorJPARepository authorRep;
-	private BookJPARepository bookRep;
+	private AuthorJPARepository authorRepository;
+	private BookJPARepository bookRepository;
 	private EntityManagerFactory emFactory;
 	private EntityManager entityManager;
+	private Author author;
+	private Book book;
 	
 	@Before
 	public void setUp() {
@@ -42,8 +42,10 @@ public class RepositoriesWithPostgresIT {
 		entityManager.getTransaction().commit();
 		entityManager.clear();
 		
-		authorRep = new AuthorJPARepository(entityManager);
-		bookRep = new BookJPARepository(entityManager);
+		authorRepository = new AuthorJPARepository(entityManager);
+		bookRepository = new BookJPARepository(entityManager);
+		
+		populateDB();
 	}
 	
 	@After
@@ -52,105 +54,82 @@ public class RepositoriesWithPostgresIT {
 		emFactory.close();
 	}
 	
-	@Test
-	public void test_findAll_should_return_list_with_all_authors_in_presistence_context() {
-		Author author1 = persistAuthor("Person1");
-		Author author2 = persistAuthor("Person2");
-		
-		entityManager.getTransaction().begin();
-		List<Author> authors = authorRep.findAll();
-		entityManager.getTransaction().commit();
-		
-		assertThat(authors).containsExactly(author1,author2);
-		assertThat(authors.get(0)).usingRecursiveComparison().isEqualTo(author1);
-		assertThat(authors.get(1)).usingRecursiveComparison().isEqualTo(author2);
-		authors.stream().forEach(a -> assertThat(entityManager.contains(a)).isTrue());
-	}
 	
 	@Test
-	public void test_findById_when_id_exist_should_return_an_author_inside_presistance_context() {
-		Author pAuthor = persistAuthor("test name");
-		
-		Optional<Author> found = authorRep.findById(pAuthor.getId());
-		
-		assertThat(found).isNotEmpty();
-		assertThat(found.get()).usingRecursiveComparison().isEqualTo(pAuthor);
-		assertThat(entityManager.contains(found.get())).isTrue();
-	}
-	
-	@Test
-	public void test_save_author_with_book() {
+	public void test_save_author_with_bookSet_not_empty() {
 		Book bookToSave = new Book(null,"A book",new HashSet<>());
 		Author authorToSave = new Author(null, "new Author", new HashSet<>());
 		
 		entityManager.getTransaction().begin();
-		Book savedBook = bookRep.save(bookToSave);
+		Book savedBook = bookRepository.save(bookToSave);
 		authorToSave.getBooks().add(savedBook);
-		Author savedAuthor = authorRep.save(authorToSave);
+		Author savedAuthor = authorRepository.save(authorToSave);
 		entityManager.getTransaction().commit();
 		
-		EntityManager em2 = emFactory.createEntityManager();
-		Author persistedAuthor = em2.find(Author.class, savedAuthor.getId());
+		EntityManager em = emFactory.createEntityManager();
+		Author persistedAuthor = em.find(Author.class, savedAuthor.getId());
+		Book persistedBook = em.find(Book.class, savedBook.getId());
+		em.close();
+		
 		assertThat(persistedAuthor).usingRecursiveComparison().isEqualTo(savedAuthor);
-		em2.close();
+		assertThat(persistedBook).usingRecursiveComparison().isEqualTo(savedBook);
 	}
 	
 	@Test
-	public void test_update_author_with_different_name_and_books() {
-		Book book1 = persistBook("first book");
-		Book book2 = persistBook("second book");
-		Author persistedAuthor = new Author (null,"name to edit", new HashSet<>());
-		persistedAuthor.getBooks().add(book1);
+	public void test_update_removing_circular_reference() {
+		author.getBooks().remove(book);
+		book.getAuthors().remove(author);
+		
 		entityManager.getTransaction().begin();
-		entityManager.persist(persistedAuthor);
+		authorRepository.update(author);
+		bookRepository.update(book);
 		entityManager.getTransaction().commit();
 		entityManager.clear();
 		
+		EntityManager em = emFactory.createEntityManager();
+		Author foundAuthor = em.find(Author.class, author.getId());
+		Book foundBook = em.find(Book.class,book.getId());
+		em.close();
 		
-		Author modifiedAuthor = new Author(persistedAuthor.getId(), "modified name", new HashSet<>());
-		modifiedAuthor.getBooks().add(book2);
-		
-		entityManager.getTransaction().begin();
-		authorRep.update(modifiedAuthor);
-		entityManager.getTransaction().commit();
-		entityManager.clear();
-		
-		Author found = entityManager.find(Author.class, persistedAuthor.getId());
-		assertThat(found).usingRecursiveComparison().isEqualTo(modifiedAuthor);
-		assertThat(found).usingRecursiveComparison().isNotEqualTo(persistedAuthor);
+		assertThat(foundAuthor.getBooks()).isEmpty();
+		assertThat(foundBook.getAuthors()).isEmpty();
 	}
 	
 	@Test
-	public void test_delete_author_success() {
-		Author authorToDelete = persistAuthor("Author to be deleted");
-		
+	public void test_findById_with_circular_references() {
 		entityManager.getTransaction().begin();
-		authorRep.delete(authorToDelete.getId());
+		Author foundAuthor = authorRepository.findById(author.getId()).get();
+		Book foundBook = bookRepository.findById(book.getId()).get();
 		entityManager.getTransaction().commit();
 		
-		assertThat(entityManager.find(Author.class,authorToDelete.getId()))
-			.isNull();
-	}
-
-	
-	private Author persistAuthor (String name) {
-		EntityManager em2 = emFactory.createEntityManager();
-		Author author = new Author(null, name, new HashSet<>());
-		em2.getTransaction().begin();
-		em2.persist(author);
-		em2.getTransaction().commit();
-		em2.close();
-		return author;
+		assertThat(foundAuthor).isSameAs(foundBook.getAuthors().iterator().next());
+		assertThat(foundBook).isSameAs(foundAuthor.getBooks().iterator().next());
 	}
 	
-	private Book persistBook (String title) {
-		EntityManager em2 = emFactory.createEntityManager();
-		Book book = new Book(null, title, new HashSet<>());
-		em2.getTransaction().begin();
-		em2.persist(book);
-		em2.getTransaction().commit();
-		em2.close();
-		return book;
+	@Test
+	public void test_deleting_all_entities_with_circular_references() {
+		entityManager.getTransaction().begin();
+		authorRepository.delete(author.getId());
+		bookRepository.delete(book.getId());
+		entityManager.getTransaction().commit();
+		
+		EntityManager em = emFactory.createEntityManager();
+		assertThat(em.createQuery("from Author",Author.class).getResultList()).isEmpty();
+		assertThat(em.createQuery("from Book",Book.class).getResultList()).isEmpty();
+		em.close();
+	}
+	
+	public void populateDB() {
+		author = new Author(null, "test name", new HashSet<>());
+		book = new Book(null, "test title", new HashSet<>());
+		EntityManager em = emFactory.createEntityManager();
+		em.getTransaction().begin();
+		em.persist(author);
+		em.persist(book);
+		author.getBooks().add(book);
+		book.getAuthors().add(author);
+		em.getTransaction().commit();
+		em.close();
 	}
 	
 }

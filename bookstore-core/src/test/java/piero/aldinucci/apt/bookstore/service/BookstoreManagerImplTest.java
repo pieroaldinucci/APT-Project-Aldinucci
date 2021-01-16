@@ -150,7 +150,7 @@ public class BookstoreManagerImplTest {
 	}
 	
 	/**
-	 * Question: Is legit to spy on HashSet? It should be not
+	 * Question: Is legit to spy on HashSet? It should not be
 	 * Then it's possible to check if the sets are being updated inOrder?
 	 * 
 	 * Using ArgumentCaptor can't be done because we'll get the

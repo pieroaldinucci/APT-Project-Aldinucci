@@ -12,6 +12,8 @@
 		<maven.compiler.source>1.8</maven.compiler.source>
 		<maven.compiler.target>1.8</maven.compiler.target>
 		<jdk9-or-more>false</jdk9-or-more>
+		<sonar.exclusions>**/model/*.java</sonar.exclusions>
+		<sonar.coverage.exclusions>**/exceptions/*.*</sonar.coverage.exclusions>
 	</properties>
 
 	<modules>

@@ -19,11 +19,7 @@ public class BookAnnotationsTest {
 	
 	@Before
 	public void setUp() {
-		HashMap<String, String> propertiesJPA = new HashMap<String, String>();
-		propertiesJPA.put("javax.persistence.jdbc.url", "jdbc:hsqldb:mem:unit-testing-jpa");
-		propertiesJPA.put("javax.persistence.jdbc.driver", "org.hsqldb.jdbcDriver");
-		propertiesJPA.put("hibernate.dialect", "org.hibernate.dialect.HSQLDialect");
-		emFactory = Persistence.createEntityManagerFactory("apt.project.bookstore",propertiesJPA);
+		emFactory = Persistence.createEntityManagerFactory("apt.project.bookstore");
 		
 		EntityManager entityManager = emFactory.createEntityManager();
 		
@@ -40,7 +36,7 @@ public class BookAnnotationsTest {
 	}
 	
 	@Test
-	public void test_generatedID_and_Eager_Initialization() {
+	public void test_generatedID() {
 		Book book = new Book(null, "a Title", new HashSet<>());
 		EntityManager entityManager = emFactory.createEntityManager();
 		entityManager.getTransaction().begin();
@@ -49,8 +45,17 @@ public class BookAnnotationsTest {
 		entityManager.close();
 		
 		assertThat(book.getId()).isNotNull();
+	}
+	
+	@Test
+	public void test_Eager_Initialization() {
+		Book book = new Book(null, "a Title", new HashSet<>());
+		EntityManager entityManager = emFactory.createEntityManager();
+		entityManager.getTransaction().begin();
+		entityManager.persist(book);
+		entityManager.getTransaction().commit();
+		entityManager.clear();
 		
-		entityManager = emFactory.createEntityManager();
 		Book retrievedBook = entityManager.find(Book.class, book.getId());
 		entityManager.close();
 		

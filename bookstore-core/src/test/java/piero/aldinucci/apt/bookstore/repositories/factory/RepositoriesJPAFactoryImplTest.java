@@ -26,11 +26,7 @@ public class RepositoriesJPAFactoryImplTest {
 	
 	@Before
 	public void setUp() {
-		HashMap<String, String> propertiesJPA = new HashMap<String, String>();
-		propertiesJPA.put("javax.persistence.jdbc.url", "jdbc:hsqldb:mem:unit-testing-jpa");
-		propertiesJPA.put("javax.persistence.jdbc.driver", "org.hsqldb.jdbcDriver");
-		propertiesJPA.put("hibernate.dialect", "org.hibernate.dialect.HSQLDialect");
-		emFactory = Persistence.createEntityManagerFactory("apt.project.bookstore",propertiesJPA);
+		emFactory = Persistence.createEntityManagerFactory("apt.project.bookstore");
 		entityManager = emFactory.createEntityManager();
 
 		factory = new RepositoriesJPAFactoryImpl();
