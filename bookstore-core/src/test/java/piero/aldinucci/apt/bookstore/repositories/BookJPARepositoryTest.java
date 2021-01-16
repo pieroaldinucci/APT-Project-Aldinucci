@@ -2,6 +2,7 @@ package piero.aldinucci.apt.bookstore.repositories;
 
 import static org.assertj.core.api.Assertions.*;
 
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
@@ -18,7 +19,7 @@ import piero.aldinucci.apt.bookstore.exceptions.BookstorePersistenceException;
 import piero.aldinucci.apt.bookstore.model.Author;
 import piero.aldinucci.apt.bookstore.model.Book;
 
-public class BookJPARepositoryIT {
+public class BookJPARepositoryTest {
 
 	private BookJPARepository repository;
 	private EntityManagerFactory emFactory;

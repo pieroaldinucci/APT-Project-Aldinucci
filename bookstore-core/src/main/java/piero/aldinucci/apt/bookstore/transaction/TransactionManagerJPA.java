@@ -34,7 +34,7 @@ public class TransactionManagerJPA implements TransactionManager {
 			result = code.apply(authorRepository, bookRepository);
 			transaction.commit();
 		} catch (PersistenceException e) {
-			throw new BookstorePersistenceException("Error while committing transaction",e);
+			throw new BookstorePersistenceException("Error while executing transaction",e);
 		} finally {
 			getEntityManager().close();
 		}
