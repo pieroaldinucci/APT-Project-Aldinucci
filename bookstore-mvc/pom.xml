@@ -49,6 +49,23 @@
 				<artifactId>build-helper-maven-plugin</artifactId>
 			</plugin>
 		</plugins>
+
+		<pluginManagement>
+			<plugins>
+				<plugin>
+					<groupId>org.pitest</groupId>
+					<artifactId>pitest-maven</artifactId>
+					<configuration>
+						<targetClasses>
+							<param>piero.aldinucci.apt.bookstore.controller*</param>
+						</targetClasses>
+						<targetTests>
+							<param>piero.aldinucci.apt.bookstore.controller*</param>
+						</targetTests>
+					</configuration>
+				</plugin>
+			</plugins>
+		</pluginManagement>
 	</build>
 
 </project>

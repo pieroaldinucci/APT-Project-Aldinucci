@@ -1,6 +1,6 @@
 package piero.aldinucci.apt.bookstore.controller;
 
-import static org.assertj.core.api.Assertions.assertThatCode;
+import static org.assertj.core.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.isA;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.inOrder;
@@ -155,6 +155,21 @@ public class BookstoreControllerImplTest {
 		inOrder.verify(manager).getAllAuthors();
 		inOrder.verify(authorView).showAllAuthors(authors);
 		verifyNoMoreInteractions(manager);
+	}
+	
+	@Test
+	public void test_getAuthorView() {
+		assertThat(controller.getAuthorView()).isSameAs(authorView);
+	}
+	
+	@Test
+	public void test_getBookView() {
+		assertThat(controller.getBookView()).isSameAs(bookView);
+	}
+	
+	@Test
+	public void test_getComposeBookView() {
+		assertThat(controller.getComposeBookView()).isSameAs(composeBookView);
 	}
 	
 
