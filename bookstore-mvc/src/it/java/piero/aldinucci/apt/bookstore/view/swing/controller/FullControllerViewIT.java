@@ -1,4 +1,4 @@
-package piero.aldinucci.apt.bookstore.view.swing;
+package piero.aldinucci.apt.bookstore.view.swing.controller;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.isA;
@@ -36,6 +36,10 @@ import piero.aldinucci.apt.bookstore.view.AuthorView;
 import piero.aldinucci.apt.bookstore.view.BookView;
 import piero.aldinucci.apt.bookstore.view.ComposeBookView;
 import piero.aldinucci.apt.bookstore.view.factory.ViewsFactory;
+import piero.aldinucci.apt.bookstore.view.swing.AuthorSwingView;
+import piero.aldinucci.apt.bookstore.view.swing.BookSwingView;
+import piero.aldinucci.apt.bookstore.view.swing.BookstoreSwingFrame;
+import piero.aldinucci.apt.bookstore.view.swing.ComposeBookSwingView;
 
 @RunWith(GUITestRunner.class)
 public class FullControllerViewIT extends AssertJSwingJUnitTestCase{

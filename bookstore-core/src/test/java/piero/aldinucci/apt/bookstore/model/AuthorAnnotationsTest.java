@@ -3,7 +3,6 @@ package piero.aldinucci.apt.bookstore.model;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatCode;
 
-import java.util.HashMap;
 import java.util.HashSet;
 
 import javax.persistence.EntityManager;
