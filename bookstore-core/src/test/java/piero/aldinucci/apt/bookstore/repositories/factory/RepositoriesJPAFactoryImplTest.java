@@ -2,8 +2,6 @@ package piero.aldinucci.apt.bookstore.repositories.factory;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import java.util.HashMap;
-
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;

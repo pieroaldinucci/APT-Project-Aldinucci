@@ -17,9 +17,15 @@ public class BookstoreControllerImpl implements BookstoreController {
 
 	private static final Logger LOGGER = LogManager.getLogger();
 	
+	@Inject
 	private AuthorView authorView;
+	
+	@Inject
 	private BookView bookView;
+	
+	@Inject
 	private ComposeBookView composeBookView;
+	
 	private BookstoreManager manager;
 	
 	@Inject
