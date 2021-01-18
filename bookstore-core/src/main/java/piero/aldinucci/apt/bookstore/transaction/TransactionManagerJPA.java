@@ -5,6 +5,8 @@ import javax.persistence.EntityManagerFactory;
 import javax.persistence.EntityTransaction;
 import javax.persistence.PersistenceException;
 
+import com.google.inject.Inject;
+
 import piero.aldinucci.apt.bookstore.exceptions.BookstorePersistenceException;
 import piero.aldinucci.apt.bookstore.repositories.AuthorRepository;
 import piero.aldinucci.apt.bookstore.repositories.BookRepository;
@@ -16,6 +18,7 @@ public class TransactionManagerJPA implements TransactionManager {
 	private RepositoriesJPAFactory repositoryFactory;
 	private EntityManager entityManager;
 
+	@Inject
 	public TransactionManagerJPA(EntityManagerFactory emFactory, RepositoriesJPAFactory repositoriesFactory) {
 		this.emFactory = emFactory;
 		this.repositoryFactory = repositoriesFactory;

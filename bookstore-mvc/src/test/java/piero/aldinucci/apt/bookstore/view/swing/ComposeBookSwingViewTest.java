@@ -126,7 +126,8 @@ public class ComposeBookSwingViewTest extends AssertJSwingJUnitTestCase {
 	
 	@Test
 	@GUITest
-	public void test_composeNewBook_should_clear_and_update_the_available_authors_list() {
+	public void test_composeNewBook_should_clear_all_components_and_update_the_available_authors_list() {
+		dialogFixture.textBox().setText("Not Empty");
 		GuiActionRunner.execute(() -> {
 			composeBookView.getModelBookAuthors().addElement(new Author(5L,"Isaac",new HashSet<>()));
 			composeBookView.getModelBookAuthors().addElement(new Author(3L,"Clarke",new HashSet<>()));
@@ -138,6 +139,7 @@ public class ComposeBookSwingViewTest extends AssertJSwingJUnitTestCase {
 
 		assertThat(composeBookView.getModelBookAuthors().toArray()).isEmpty();
 		assertThat(composeBookView.getModelAvailableAuthors().toArray()).containsExactly(author1, author2);
+		dialogFixture.textBox().requireEmpty();
 	}
 	
 	@Test

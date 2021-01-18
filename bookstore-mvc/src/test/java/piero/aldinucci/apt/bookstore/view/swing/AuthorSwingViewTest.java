@@ -130,13 +130,15 @@ public class AuthorSwingViewTest extends AssertJSwingJUnitTestCase {
 	
 	@Test
 	@GUITest
-	public void test_authorAdded_should_update_the_list_and_clear_error() {
+	public void test_authorAdded_should_clear_text_field_update_the_list_and_clear_error() {
+		authorPanel.textBox().setText("John");
 		Author testAuthor = new Author(1L, "John", new HashSet<Book>());
 		
 		GuiActionRunner.execute(() -> authorView.authorAdded(testAuthor));
 		
 		assertThat(authorView.getAuthorListModel().toArray()).containsExactly(testAuthor);
 		assertThat(authorPanel.label(AUTHOR_ERROR_LABEL).text()).isEmpty();
+		authorPanel.textBox().requireEmpty();
 	}
 	
 	@Test

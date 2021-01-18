@@ -3,6 +3,8 @@ package piero.aldinucci.apt.bookstore.service;
 import java.util.HashSet;
 import java.util.List;
 
+import com.google.inject.Inject;
+
 import piero.aldinucci.apt.bookstore.exceptions.BookstorePersistenceException;
 import piero.aldinucci.apt.bookstore.model.Author;
 import piero.aldinucci.apt.bookstore.model.Book;
@@ -12,6 +14,7 @@ public class BookstoreManagerImpl implements BookstoreManager {
 
 	private TransactionManager transactionManager;
 
+	@Inject
 	public BookstoreManagerImpl(TransactionManager transactionManager) {
 		this.transactionManager = transactionManager;
 	}

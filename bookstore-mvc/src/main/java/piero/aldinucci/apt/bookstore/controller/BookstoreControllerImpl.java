@@ -59,6 +59,8 @@ public class BookstoreControllerImpl implements BookstoreController {
 			LOGGER.error("Controller: Error while deleting book",e);
 			bookView.showError("Error while deleting book", book);
 			showAllBooks();
+		} finally {
+			showAllAuthors();
 		}
 	}
 
@@ -71,6 +73,8 @@ public class BookstoreControllerImpl implements BookstoreController {
 			LOGGER.error("Controller: Error while deleting author",e);
 			authorView.showError("Error while deleting author", author);
 			showAllAuthors();
+		} finally {
+			showAllBooks();
 		}
 	}
 
