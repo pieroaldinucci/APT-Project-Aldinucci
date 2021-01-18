@@ -16,9 +16,11 @@
 		
 			<property name="javax.persistence.jdbc.url"
 				value="jdbc:postgresql://localhost:5432/projectAPTTestDb" />
+			<!-- 
 			<property name="javax.persistence.jdbc.user" value="testUser" />
 			<property name="javax.persistence.jdbc.password"
 				value="secret" />
+				-->
 			<property name="javax.persistence.jdbc.driver"
 				value="org.postgresql.Driver" />
 			<property name="hibernate.dialect" value="org.hibernate.dialect.PostgreSQL95Dialect"/>
