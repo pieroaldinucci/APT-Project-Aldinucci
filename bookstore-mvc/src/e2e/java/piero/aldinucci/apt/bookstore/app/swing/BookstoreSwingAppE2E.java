@@ -1,31 +1,25 @@
 package piero.aldinucci.apt.bookstore.app.swing;
 
-import static org.assertj.core.api.Assertions.*;
-import static org.assertj.swing.launcher.ApplicationLauncher.*;
-import org.assertj.swing.finder.*;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.swing.launcher.ApplicationLauncher.application;
 
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
-import java.util.Map;
 import java.util.regex.Pattern;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
-import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JList;
 
 import org.assertj.swing.core.GenericTypeMatcher;
 import org.assertj.swing.core.matcher.JButtonMatcher;
-import org.assertj.swing.finder.DialogFinder;
 import org.assertj.swing.finder.WindowFinder;
-import org.assertj.swing.fixture.AbstractContainerFixture;
 import org.assertj.swing.fixture.DialogFixture;
 import org.assertj.swing.fixture.FrameFixture;
 import org.assertj.swing.fixture.JListFixture;
-import org.assertj.swing.fixture.JPanelFixture;
 import org.assertj.swing.junit.runner.GUITestRunner;
 import org.assertj.swing.junit.testcase.AssertJSwingJUnitTestCase;
 import org.junit.Test;
@@ -73,6 +67,7 @@ public class BookstoreSwingAppE2E extends AssertJSwingJUnitTestCase{
 	@Override
 	protected void onTearDown() {
 		emFactory.close();
+		window.cleanUp();
 //		window.close();
 	}
 	
@@ -154,43 +149,43 @@ public class BookstoreSwingAppE2E extends AssertJSwingJUnitTestCase{
 	
 	@Test
 	public void test_delete_Author_error() {
+		window.focus();
+		window.tabbedPane().selectTab("Authors");
+		JListFixture listFixture = window.list();
+		listFixture.selectItem(Pattern.compile(".*"+NAME_FIXTURE_3+".*"));
+		
 		EntityManager em = emFactory.createEntityManager();
 		em.getTransaction().begin();
 		Author author = em.find(Author.class, authors.get(2).getId());
 		em.remove(author);
-//		em.createQuery("from Book",Book.class).getResultStream().forEach(b -> em.remove(b));
-//		em.createQuery("from Author",Author.class).getResultStream().forEach(a -> em.remove(a));
 		em.getTransaction().commit();
 		em.close();
 		
-		window.tabbedPane().selectTab("Authors");
-		JListFixture listFixture = window.list();
-		listFixture.selectItem(Pattern.compile(".*"+NAME_FIXTURE_3+".*"));
 		window.button("DeleteAuthor").click();
 		
-//		assertThat(window.label("AuthorErrorLabel").text()).contains(NAME_FIXTURE_3);
-//		assertThat(listFixture.contents()).noneSatisfy(a -> 
-//			assertThat(a).contains(NAME_FIXTURE_3));
+		assertThat(window.label("AuthorErrorLabel").text()).contains(NAME_FIXTURE_3);
+		assertThat(listFixture.contents()).noneSatisfy(a -> 
+			assertThat(a).contains(NAME_FIXTURE_3));
 	}
 	
 	@Test
 	public void test_delete_Book_error() {
+		window.focus();
+		window.tabbedPane().selectTab("Books");
+		JListFixture listFixture = window.list("BookJList");
+		listFixture.selectItem(Pattern.compile(".*"+TITLE_FIXTURE_3+".*"));
+		
 		EntityManager em = emFactory.createEntityManager();
 		em.getTransaction().begin();
 		Book book = em.find(Book.class, books.get(2).getId());
 		em.remove(book);
-//		em.createQuery("from Book",Book.class).getResultStream().forEach(b -> em.remove(b));
-//		em.createQuery("from Author",Author.class).getResultStream().forEach(a -> em.remove(a));
 		em.getTransaction().commit();
 		em.close();
 		
-		window.tabbedPane().selectTab("Books");
-		JListFixture listFixture = window.list();
-		listFixture.selectItem(Pattern.compile(".*"+TITLE_FIXTURE_3+".*"));
 		window.button("DeleteBook").click();
 		
-//		assertThat(window.label("BookErrorLabel").text()).contains(TITLE_FIXTURE_3);
-//		assertThat(listFixture.contents()).noneSatisfy(b -> 
-//			assertThat(b).contains(TITLE_FIXTURE_3));
+		assertThat(window.label("BookErrorLabel").text()).contains(TITLE_FIXTURE_3);
+		assertThat(listFixture.contents()).noneSatisfy(b -> 
+			assertThat(b).contains(TITLE_FIXTURE_3));
 	}
 }

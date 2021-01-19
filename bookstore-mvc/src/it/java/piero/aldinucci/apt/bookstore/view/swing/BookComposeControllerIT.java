@@ -30,6 +30,7 @@ import piero.aldinucci.apt.bookstore.exceptions.BookstorePersistenceException;
 import piero.aldinucci.apt.bookstore.model.Author;
 import piero.aldinucci.apt.bookstore.model.Book;
 import piero.aldinucci.apt.bookstore.service.BookstoreManager;
+import piero.aldinucci.apt.bookstore.view.AuthorView;
 
 
 @RunWith(GUITestRunner.class)
@@ -37,6 +38,9 @@ public class BookComposeControllerIT extends AssertJSwingJUnitTestCase{
 	
 	@Mock
 	private BookstoreManager manager;
+	
+	@Mock
+	private AuthorView authorView;
 		
 	private FrameFixture window;
 	private DialogFixture dialog;
@@ -56,6 +60,7 @@ public class BookComposeControllerIT extends AssertJSwingJUnitTestCase{
 			ComposeBookSwingView composeBookView = new ComposeBookSwingView(controller);
 			controller.setBookView(bookView);
 			controller.setComposeBookView(composeBookView);
+			controller.setAuthorView(authorView);
 			
 			dialog = new DialogFixture(robot(),composeBookView);
 			JFrame bookFrame = new JFrame();

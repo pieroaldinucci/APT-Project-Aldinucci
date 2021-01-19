@@ -61,46 +61,7 @@
 			<plugin>
 				<groupId>io.fabric8</groupId>
 				<artifactId>docker-maven-plugin</artifactId>
-				<configuration>
-					<showLogs>true</showLogs>
-					<images>
-						<image>
-							<alias>app-postgres</alias>
-							<name>postgres:13.1</name>
-							<run>
-								<ports>
-									<port>5432:5432</port>
-								</ports>
-								<env>
-									<POSTGRES_USER>testUser</POSTGRES_USER>
-									<POSTGRES_PASSWORD>secret</POSTGRES_PASSWORD>
-									<POSTGRES_DB>projectAPTTestDb</POSTGRES_DB>
-								</env>
-								<wait>
-									<log>(?s)\[1\] LOG:  database system is ready to accept connections</log>
-									<time>20000</time>
-								</wait>
-							</run>
-						</image>
-					</images>
-				</configuration>
-				<executions>
-					<execution>
-						<id>docker:start</id>
-						<phase>pre-integration-test</phase>
-						<goals>
-							<goal>start</goal>
-						</goals>
-					</execution>
-					<execution>
-						<id>docker:stop</id>
-						<phase>post-integration-test</phase>
-						<goals>
-							<goal>stop</goal>
-						</goals>
-					</execution>
-				</executions>
-			</plugin>
+			</plugin>	
 		</plugins>
 
 		<pluginManagement>

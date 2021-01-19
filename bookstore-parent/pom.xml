@@ -13,7 +13,10 @@
 		<maven.compiler.target>1.8</maven.compiler.target>
 		<jdk9-or-more>false</jdk9-or-more>
 		<sonar.exclusions>**/model/*.java</sonar.exclusions>
-		<sonar.coverage.exclusions>**/exceptions/*.*</sonar.coverage.exclusions>
+		<sonar.coverage.exclusions>
+			**/exceptions/*.*,
+			**/app/swing/*.*
+		</sonar.coverage.exclusions>
 		<sonar.issue.ignore.multicriteria>e1,e2,e3</sonar.issue.ignore.multicriteria>
 		<!-- Rule: inheritance depth larger than 5 -->
 		<sonar.issue.ignore.multicriteria.e1.ruleKey>java:S110</sonar.issue.ignore.multicriteria.e1.ruleKey>
@@ -144,21 +147,6 @@
 								<goal>verify</goal>
 							</goals>
 						</execution>
-						<execution>
-							<id>e2e-tests</id>
-							<goals>
-								<goal>integration-test</goal>
-								<goal>verify</goal>
-							</goals>
-							<configuration>
-								<excludes>
-									<exclude>**/*IT.java</exclude>
-								</excludes>
-								<includes>
-									<include>**/*E2E.java</include>
-								</includes>
-							</configuration>
-						</execution>
 					</executions>
 				</plugin>
 				<plugin>
@@ -236,6 +224,45 @@
 					<groupId>io.fabric8</groupId>
 					<artifactId>docker-maven-plugin</artifactId>
 					<version>0.34.1</version>
+					<configuration>
+						<showLogs>true</showLogs>
+						<images>
+							<image>
+								<alias>app-postgres</alias>
+								<name>postgres:13.1</name>
+								<run>
+									<ports>
+										<port>5432:5432</port>
+									</ports>
+									<env>
+										<POSTGRES_USER>testUser</POSTGRES_USER>
+										<POSTGRES_PASSWORD>secret</POSTGRES_PASSWORD>
+										<POSTGRES_DB>projectAPTTestDb</POSTGRES_DB>
+									</env>
+									<wait>
+										<log>(?s)\[1\] LOG:  database system is ready to accept connections</log>
+										<time>20000</time>
+									</wait>
+								</run>
+							</image>
+						</images>
+					</configuration>
+					<executions>
+						<execution>
+							<id>docker:start</id>
+							<phase>pre-integration-test</phase>
+							<goals>
+								<goal>start</goal>
+							</goals>
+						</execution>
+						<execution>
+							<id>docker:stop</id>
+							<phase>post-integration-test</phase>
+							<goals>
+								<goal>stop</goal>
+							</goals>
+						</execution>
+					</executions>
 				</plugin>
 			</plugins>
 		</pluginManagement>
@@ -252,6 +279,7 @@
 				<jdk>[1.9,)</jdk>
 			</activation>
 		</profile>
+
 		<profile>
 			<id>jacoco</id>
 			<build>
@@ -270,6 +298,7 @@
 				</plugins>
 			</build>
 		</profile>
+
 		<profile>
 			<id>mutation-test</id>
 			<build>
@@ -281,5 +310,37 @@
 				</plugins>
 			</build>
 		</profile>
+
+		<profile>
+			<id>e2e-test</id>
+			<build>
+				<pluginManagement>
+					<plugins>
+						<plugin>
+							<groupId>org.apache.maven.plugins</groupId>
+							<artifactId>maven-failsafe-plugin</artifactId>
+							<executions>
+								<execution>
+									<id>e2e-tests</id>
+									<goals>
+										<goal>integration-test</goal>
+										<goal>verify</goal>
+									</goals>
+									<configuration>
+										<excludes>
+											<exclude>**/*IT.java</exclude>
+										</excludes>
+										<includes>
+											<include>**/*E2E.java</include>
+										</includes>
+									</configuration>
+								</execution>
+							</executions>
+						</plugin>
+					</plugins>
+				</pluginManagement>
+			</build>
+		</profile>
+
 	</profiles>
 </project>

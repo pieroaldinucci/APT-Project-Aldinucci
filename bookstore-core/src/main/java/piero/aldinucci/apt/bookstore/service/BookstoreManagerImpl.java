@@ -2,9 +2,6 @@ package piero.aldinucci.apt.bookstore.service;
 
 import java.util.HashSet;
 import java.util.List;
-import java.util.Optional;
-
-import javax.persistence.PersistenceException;
 
 import com.google.inject.Inject;
 
@@ -47,7 +44,7 @@ public class BookstoreManagerImpl implements BookstoreManager {
 	public void deleteAuthor(long id) {
 		transactionManager.doInTransaction((authorR, bookR) -> {
 			Author deleted = authorR.delete(id).orElseThrow(() -> 
-				new IllegalArgumentException("Could not find author with id: " + id));
+				new BookstorePersistenceException("Could not find author with id: " + id));
 			
 			deleted.getBooks().stream().forEach(b -> {
 				b.getAuthors().remove(deleted);
@@ -61,13 +58,13 @@ public class BookstoreManagerImpl implements BookstoreManager {
 	public void deleteBook(long id) {
 		transactionManager.doInTransaction((authorR, bookR) -> {
 			Book deleted = bookR.delete(id).orElseThrow(() -> 
-				new IllegalArgumentException("Could not find book with id: " + id));
+				new BookstorePersistenceException("Could not find book with id: " + id));
 			
 			deleted.getAuthors().stream().forEach(a -> {
 				a.getBooks().remove(deleted);
 				authorR.update(a);
 			});
-			return deleted;
+			return null;
 		});
 
 	}

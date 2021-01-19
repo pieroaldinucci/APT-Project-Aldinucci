@@ -140,7 +140,7 @@ public class BookstoreManagerImplTest {
 		when(authorRepository.delete(anyLong())).thenReturn(Optional.empty());
 
 		assertThatThrownBy(() -> bookstoreManager.deleteAuthor(1))				
-				.isExactlyInstanceOf(IllegalArgumentException.class)
+				.isExactlyInstanceOf(BookstorePersistenceException.class)
 				.hasMessage("Could not find author with id: 1");
 
 		verify(authorRepository).delete(1L);
@@ -183,7 +183,7 @@ public class BookstoreManagerImplTest {
 		when(bookRepository.delete(anyLong())).thenReturn(Optional.empty());
 
 		assertThatThrownBy(() -> bookstoreManager.deleteBook(2L))				
-				.isExactlyInstanceOf(IllegalArgumentException.class)
+				.isExactlyInstanceOf(BookstorePersistenceException.class)
 				.hasMessage("Could not find book with id: 2");
 
 		verify(bookRepository).delete(2);

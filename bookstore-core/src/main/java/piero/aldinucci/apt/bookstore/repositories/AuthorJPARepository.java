@@ -5,7 +5,6 @@ import java.util.Optional;
 
 import javax.persistence.EntityManager;
 
-import piero.aldinucci.apt.bookstore.exceptions.BookstorePersistenceException;
 import piero.aldinucci.apt.bookstore.model.Author;
 
 public class AuthorJPARepository implements AuthorRepository{
@@ -35,10 +34,10 @@ public class AuthorJPARepository implements AuthorRepository{
 
 	@Override
 	public void update(Author author) {
-		Author oldAuthor = entityManager.find(Author.class, author.getId());
-		if (oldAuthor == null)
-			throw new BookstorePersistenceException("Cannot find author to update with id: "+author.getId());
-		entityManager.merge(author);
+		if (author.getId() == null)
+			throw new IllegalArgumentException("Cannot update an author with null id");
+		if (entityManager.find(Author.class, author.getId()) != null) 
+				entityManager.merge(author);
 	}
 
 	@Override

@@ -2,7 +2,6 @@ package piero.aldinucci.apt.bookstore.transaction;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
-import javax.persistence.EntityTransaction;
 import javax.persistence.PersistenceException;
 
 import com.google.inject.Inject;

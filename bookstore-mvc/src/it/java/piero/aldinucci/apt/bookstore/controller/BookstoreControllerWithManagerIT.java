@@ -120,7 +120,7 @@ public class BookstoreControllerWithManagerIT {
 		Book book = new Book(1L,"title",new HashSet<>());
 		book.getAuthors().add(authorToDelete);
 		authorFound.getBooks().add(book);
-		when(authorRepository.findById(anyLong())).thenReturn(Optional.of(authorFound));
+		when(authorRepository.delete(anyLong())).thenReturn(Optional.of(authorFound));
 		
 		controller.deleteAuthor(authorToDelete);
 		
@@ -137,7 +137,7 @@ public class BookstoreControllerWithManagerIT {
 		Author author = new Author(5L,"name",new HashSet<>());
 		author.getBooks().add(bookToDelete);
 		bookFound.getAuthors().add(author);
-		when(bookRepository.findById(anyLong())).thenReturn(Optional.of(bookFound));
+		when(bookRepository.delete(anyLong())).thenReturn(Optional.of(bookFound));
 		
 		controller.deleteBook(bookToDelete);
 		

@@ -3,11 +3,7 @@ package piero.aldinucci.apt.bookstore.app.swing;
 import java.awt.EventQueue;
 import java.util.HashMap;
 import java.util.concurrent.Callable;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
 
-import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 
@@ -20,13 +16,9 @@ import picocli.CommandLine.Option;
 import piero.aldinucci.apt.bookstore.app.guice.modules.BookstoreControllerSwingModule;
 import piero.aldinucci.apt.bookstore.app.guice.modules.BookstoreManagerJPAModule;
 import piero.aldinucci.apt.bookstore.controller.BookstoreControllerImpl;
-import piero.aldinucci.apt.bookstore.repositories.factory.RepositoriesJPAFactoryImpl;
-import piero.aldinucci.apt.bookstore.service.BookstoreManagerImpl;
-import piero.aldinucci.apt.bookstore.transaction.TransactionManagerJPA;
 import piero.aldinucci.apt.bookstore.view.swing.AuthorSwingView;
 import piero.aldinucci.apt.bookstore.view.swing.BookSwingView;
 import piero.aldinucci.apt.bookstore.view.swing.BookstoreSwingFrame;
-import piero.aldinucci.apt.bookstore.view.swing.ComposeBookSwingView;
 
 @Command(mixinStandardHelpOptions = true)
 public class BookstoreSwingApp implements Callable<Void> {

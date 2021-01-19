@@ -71,5 +71,19 @@
 			</plugins>
 		</pluginManagement>
 	</build>
+	
+	<profiles>
+		<profile>
+			<id>e2e-test</id>
+			<build>
+				<plugins>
+					<plugin>
+						<groupId>io.fabric8</groupId>
+						<artifactId>docker-maven-plugin</artifactId>
+					</plugin>	
+				</plugins>
+			</build>
+		</profile>
+	</profiles>
 
 </project>
