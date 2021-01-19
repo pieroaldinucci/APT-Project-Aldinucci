@@ -4,6 +4,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 
+import javax.persistence.PersistenceException;
+
 import com.google.inject.Inject;
 
 import piero.aldinucci.apt.bookstore.exceptions.BookstorePersistenceException;
@@ -42,13 +44,13 @@ public class BookstoreManagerImpl implements BookstoreManager {
 	}
 
 	@Override
-	public void delete(Author author) {
+	public void deleteAuthor(long id) {
 		transactionManager.doInTransaction((authorR, bookR) -> {
-			Author toDelete = authorR.findById(author.getId()).orElseThrow(
-					() -> new BookstorePersistenceException("Could not find author with id: " + author.getId()));
-			authorR.delete(toDelete.getId());
-			toDelete.getBooks().stream().forEach(b -> {
-				b.getAuthors().remove(toDelete);
+			Author deleted = authorR.delete(id).orElseThrow(() -> 
+				new IllegalArgumentException("Could not find author with id: " + id));
+			
+			deleted.getBooks().stream().forEach(b -> {
+				b.getAuthors().remove(deleted);
 				bookR.update(b);
 			});
 			return null;
@@ -56,16 +58,16 @@ public class BookstoreManagerImpl implements BookstoreManager {
 	}
 
 	@Override
-	public void delete(Book book) {
+	public void deleteBook(long id) {
 		transactionManager.doInTransaction((authorR, bookR) -> {
-			Book toDelete = bookR.findById(book.getId()).orElseThrow(
-					() -> new BookstorePersistenceException("Could not find book with id: " + book.getId()));
-			bookR.delete(toDelete.getId());
-			toDelete.getAuthors().stream().forEach(a -> {
-				a.getBooks().remove(toDelete);
+			Book deleted = bookR.delete(id).orElseThrow(() -> 
+				new IllegalArgumentException("Could not find book with id: " + id));
+			
+			deleted.getAuthors().stream().forEach(a -> {
+				a.getBooks().remove(deleted);
 				authorR.update(a);
 			});
-			return null;
+			return deleted;
 		});
 
 	}

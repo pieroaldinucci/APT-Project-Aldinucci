@@ -1,7 +1,7 @@
 package piero.aldinucci.apt.bookstore.view.swing;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.ArgumentMatchers.isA;
+import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -150,7 +150,7 @@ public class BookComposeControllerIT extends AssertJSwingJUnitTestCase{
 	@GUITest
 	public void test_delete_book_error() {
 		GuiActionRunner.execute(() -> controller.allBooks());
-		doThrow(new BookstorePersistenceException()).when(manager).delete(isA(Book.class));
+		doThrow(new BookstorePersistenceException()).when(manager).deleteBook(anyLong());
 		window.list().selectItem(0);
 		assertThat(window.label("BookErrorLabel").text()).isBlank();
 		

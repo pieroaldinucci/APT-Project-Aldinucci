@@ -76,7 +76,7 @@ public class FullServiceLayerIT {
 	
 	@Test
 	public void test_delete_author_success() {
-		bookstoreManager.delete(authors.get(0));
+		bookstoreManager.deleteAuthor(authors.get(0).getId());
 
 		EntityManager em = emFactory.createEntityManager();
 		Author author = em.createQuery("from Author", Author.class).getSingleResult();
@@ -90,9 +90,7 @@ public class FullServiceLayerIT {
 	
 	@Test
 	public void test_delete_author_when_author_is_missing() {
-		Author nonExistantAuthor = new Author(27L,"Testname",new HashSet<>());
-		
-		assertThatThrownBy(() ->  bookstoreManager.delete(nonExistantAuthor))
+		assertThatThrownBy(() ->  bookstoreManager.deleteAuthor(27))
 			.isInstanceOf(BookstorePersistenceException.class);
 
 		EntityManager em = emFactory.createEntityManager();
@@ -106,7 +104,7 @@ public class FullServiceLayerIT {
 	
 	@Test
 	public void test_delete_book_success() {
-		bookstoreManager.delete(books.get(1));
+		bookstoreManager.deleteBook(books.get(1).getId());
 
 		EntityManager em = emFactory.createEntityManager();
 		List<Author> authorList = em.createQuery("from Author", Author.class).getResultList();
@@ -120,9 +118,9 @@ public class FullServiceLayerIT {
 	
 	@Test
 	public void test_delete_book_when_is_missing() {
-		Book nonExistantBook = new Book(27L,"Test title",new HashSet<>());
 		
-		assertThatThrownBy(() ->  bookstoreManager.delete(nonExistantBook))
+//		bookstoreManager.deleteBook(17);
+		assertThatThrownBy(() ->  bookstoreManager.deleteBook(17))
 			.isInstanceOf(BookstorePersistenceException.class);
 
 		EntityManager em = emFactory.createEntityManager();

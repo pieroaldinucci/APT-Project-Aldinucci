@@ -1,7 +1,7 @@
 package piero.aldinucci.apt.bookstore.view.swing;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.ArgumentMatchers.isA;
+import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.openMocks;
@@ -102,7 +102,7 @@ public class AuthorControllerIT extends AssertJSwingJUnitTestCase{
 	@GUITest
 	public void test_delete_author_error() {
 		GuiActionRunner.execute(() -> controller.allAuthors());
-		doThrow(new BookstorePersistenceException()).when(manager).delete(isA(Author.class));
+		doThrow(new BookstorePersistenceException()).when(manager).deleteAuthor(anyLong());
 		assertThat(window.label("AuthorErrorLabel").text()).isBlank();
 		
 		window.list().selectItem(0);

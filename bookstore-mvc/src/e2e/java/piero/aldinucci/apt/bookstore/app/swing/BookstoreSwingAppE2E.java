@@ -156,10 +156,10 @@ public class BookstoreSwingAppE2E extends AssertJSwingJUnitTestCase{
 	public void test_delete_Author_error() {
 		EntityManager em = emFactory.createEntityManager();
 		em.getTransaction().begin();
-//		Author author = em.find(Author.class, authors.get(2).getId());
-//		em.remove(author);
-		em.createQuery("from Book",Book.class).getResultStream().forEach(b -> em.remove(b));
-		em.createQuery("from Author",Author.class).getResultStream().forEach(a -> em.remove(a));
+		Author author = em.find(Author.class, authors.get(2).getId());
+		em.remove(author);
+//		em.createQuery("from Book",Book.class).getResultStream().forEach(b -> em.remove(b));
+//		em.createQuery("from Author",Author.class).getResultStream().forEach(a -> em.remove(a));
 		em.getTransaction().commit();
 		em.close();
 		
@@ -177,10 +177,10 @@ public class BookstoreSwingAppE2E extends AssertJSwingJUnitTestCase{
 	public void test_delete_Book_error() {
 		EntityManager em = emFactory.createEntityManager();
 		em.getTransaction().begin();
-//		Book book = em.find(Book.class, books.get(2).getId());
-//		em.remove(book);
-		em.createQuery("from Book",Book.class).getResultStream().forEach(b -> em.remove(b));
-		em.createQuery("from Author",Author.class).getResultStream().forEach(a -> em.remove(a));
+		Book book = em.find(Book.class, books.get(2).getId());
+		em.remove(book);
+//		em.createQuery("from Book",Book.class).getResultStream().forEach(b -> em.remove(b));
+//		em.createQuery("from Author",Author.class).getResultStream().forEach(a -> em.remove(a));
 		em.getTransaction().commit();
 		em.close();
 		

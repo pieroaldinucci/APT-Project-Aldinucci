@@ -161,19 +161,23 @@ public class AuthorJPARepositoryTest {
 		Author authorToDelete = persistAuthor("Author to be deleted");
 		
 		entityManager.getTransaction().begin();
-		repository.delete(authorToDelete.getId());
+		Optional<Author> deletedAuthor = repository.delete(authorToDelete.getId());
 		entityManager.getTransaction().commit();
 		
+		assertThat(deletedAuthor).usingRecursiveComparison()
+			.isEqualTo(Optional.of(authorToDelete));
 		assertThat(entityManager.find(Author.class,authorToDelete.getId()))
 			.isNull();
 	}
 	
 	@Test
-	public void test_delete_author_when_not_present_should_not_use_entityManager_to_remove_it() {
+	public void test_delete_author_when_not_present_should_return_empy_optional_and_not_cause_IllegalArgumenException() {
 		assertThatCode(() -> {
 			entityManager.getTransaction().begin();
-			repository.delete(2L);
+			Optional<Author> author = repository.delete(2L);
 			entityManager.getTransaction().commit();
+			
+			assertThat(author).isEmpty();
 		}).doesNotThrowAnyException();
 	}
 

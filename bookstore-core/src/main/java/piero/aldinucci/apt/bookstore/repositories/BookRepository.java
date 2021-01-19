@@ -11,5 +11,5 @@ public interface BookRepository {
 	public Optional<Book> findById(long id);
 	public Book save (Book book);
 	public void update (Book book);
-	public void delete (long id);
+	public Optional<Book> delete (long id);
 }

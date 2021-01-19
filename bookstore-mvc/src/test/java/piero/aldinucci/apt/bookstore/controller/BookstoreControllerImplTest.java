@@ -109,7 +109,7 @@ public class BookstoreControllerImplTest {
 		controller.deleteBook(book);
 		
 		InOrder inOrder = inOrder(manager,bookView, authorView);
-		inOrder.verify(manager).delete(book);
+		inOrder.verify(manager).deleteBook(1L);
 		inOrder.verify(bookView).bookRemoved(book);
 		inOrder.verify(manager).getAllAuthors();
 		inOrder.verify(authorView).showAllAuthors(authors);
@@ -120,7 +120,7 @@ public class BookstoreControllerImplTest {
 	public void test_deleteBook_when_book_doesnt_exist() {
 		Book book = new Book(1L, "test book", new HashSet<>());
 		doThrow(BookstorePersistenceException.class)
-			.when(manager).delete(isA(Book.class));
+			.when(manager).deleteBook(anyLong());
 		List<Book> books = Arrays.asList(new Book(4L,"title",new HashSet<>()));
 		when(manager.getAllBooks()).thenReturn(books);
 		List<Author> authors = Lists.emptyList();
@@ -130,7 +130,7 @@ public class BookstoreControllerImplTest {
 			.doesNotThrowAnyException();
 		
 		InOrder inOrder = inOrder(manager,bookView, authorView);
-		inOrder.verify(manager).delete(book);
+		inOrder.verify(manager).deleteBook(1L);
 		inOrder.verify(bookView).showError("Error while deleting book", book);
 		inOrder.verify(manager).getAllBooks();
 		inOrder.verify(bookView).showAllBooks(books);
@@ -149,7 +149,7 @@ public class BookstoreControllerImplTest {
 		controller.deleteAuthor(author);
 		
 		InOrder inOrder = inOrder(manager,authorView, bookView);
-		inOrder.verify(manager).delete(author);
+		inOrder.verify(manager).deleteAuthor(3L);
 		inOrder.verify(authorView).authorRemoved(author);
 		inOrder.verify(manager).getAllBooks();
 		inOrder.verify(bookView).showAllBooks(books);
@@ -159,7 +159,7 @@ public class BookstoreControllerImplTest {
 	@Test
 	public void test_deleteAuthor_when_author_doesnt_exists() {
 		doThrow(BookstorePersistenceException.class)
-			.when(manager).delete(isA(Author.class));
+			.when(manager).deleteAuthor(anyLong());
 		List<Author> authors = Arrays.asList(new Author(1L,"author",new HashSet<>()));
 		when(manager.getAllAuthors()).thenReturn(authors);
 		List<Book> books = Lists.emptyList();
@@ -170,7 +170,7 @@ public class BookstoreControllerImplTest {
 			.doesNotThrowAnyException();
 		
 		InOrder inOrder = inOrder(manager,authorView, bookView);
-		inOrder.verify(manager).delete(author);
+		inOrder.verify(manager).deleteAuthor(3L);
 		inOrder.verify(authorView).showError("Error while deleting author", author);
 		inOrder.verify(manager).getAllAuthors();
 		inOrder.verify(authorView).showAllAuthors(authors);

@@ -53,7 +53,7 @@ public class BookstoreControllerImpl implements BookstoreController {
 	@Override
 	public void deleteBook(Book book) {
 		try {
-			manager.delete(book);
+			manager.deleteBook(book.getId());
 			bookView.bookRemoved(book);
 		} catch (BookstorePersistenceException e) {
 			LOGGER.error("Controller: Error while deleting book",e);
@@ -67,7 +67,7 @@ public class BookstoreControllerImpl implements BookstoreController {
 	@Override
 	public void deleteAuthor(Author author) {
 		try {
-			manager.delete(author);
+			manager.deleteAuthor(author.getId());
 			authorView.authorRemoved(author);
 		} catch (BookstorePersistenceException e) {
 			LOGGER.error("Controller: Error while deleting author",e);

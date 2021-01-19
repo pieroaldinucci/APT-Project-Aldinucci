@@ -83,34 +83,5 @@ public class BookstoreSwingApp implements Callable<Void> {
 		});
 		return null;
 	}
-	
-	// No Guice
-//	@Override
-//	public Void call() throws Exception {
-//		EventQueue.invokeLater(() -> {
-//			try {
-//				emFactory = getEntityManagerFactory();
-//				BookstoreManagerImpl bookstoreManager = new BookstoreManagerImpl(
-//						new TransactionManagerJPA(emFactory, new RepositoriesJPAFactoryImpl()));
-//
-//				BookstoreControllerImpl controller = new BookstoreControllerImpl(bookstoreManager);
-//				AuthorSwingView authorView = new AuthorSwingView(controller);
-//				BookSwingView bookView = new BookSwingView(controller);
-//				ComposeBookSwingView composeBook = new ComposeBookSwingView(controller);
-//				controller.setAuthorView(authorView);
-//				controller.setBookView(bookView);
-//				controller.setComposeBookView(composeBook);
-//
-//				frame = new BookstoreSwingFrame(authorView, bookView);
-//				
-//				controller.allAuthors();
-//				controller.allBooks();
-//				frame.setVisible(true);
-//			} catch (Exception e) {
-//				e.printStackTrace();
-//			}
-//		});
-//		return null;
-//	}
 
 }

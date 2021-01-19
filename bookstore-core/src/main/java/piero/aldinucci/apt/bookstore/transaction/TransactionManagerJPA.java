@@ -36,8 +36,11 @@ public class TransactionManagerJPA implements TransactionManager {
 			result = code.apply(authorRepository, bookRepository);
 			entityManager.getTransaction().commit();
 		} catch (PersistenceException e) {
-			entityManager.getTransaction().rollback(); //temporary, is useless?
+			entityManager.getTransaction().rollback();
 			throw new BookstorePersistenceException("Error while executing transaction",e);
+		} catch (Exception e) {
+			entityManager.getTransaction().rollback();
+			throw e;
 		} finally {
 			entityManager.close();
 		}

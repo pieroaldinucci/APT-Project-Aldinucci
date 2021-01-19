@@ -137,14 +137,13 @@ public class BookstoreManagerImplTest {
 
 	@Test
 	public void test_delete_author_when_author_not_present() {
-		Author author = new Author(1L, "author to delete", new HashSet<>());
-		when(authorRepository.findById(anyLong())).thenReturn(Optional.empty());
+		when(authorRepository.delete(anyLong())).thenReturn(Optional.empty());
 
-		assertThatThrownBy(() -> bookstoreManager.delete(author))				
-				.isExactlyInstanceOf(BookstorePersistenceException.class)
+		assertThatThrownBy(() -> bookstoreManager.deleteAuthor(1))				
+				.isExactlyInstanceOf(IllegalArgumentException.class)
 				.hasMessage("Could not find author with id: 1");
 
-		verify(authorRepository).findById(1L);
+		verify(authorRepository).delete(1L);
 		verifyNoMoreInteractions(authorRepository);
 		verifyNoInteractions(bookRepository);
 	}
@@ -166,10 +165,10 @@ public class BookstoreManagerImplTest {
 		author.getBooks().add(book2);
 		book1.getAuthors().add(author);
 		book2.getAuthors().add(author);
-		when(authorRepository.findById(anyLong())).thenReturn(Optional.of(author));
+		when(authorRepository.delete(anyLong())).thenReturn(Optional.of(author));
 //		when(authorRepository.delete(anyLong())).thenReturn(author);
 		
-		bookstoreManager.delete(author);
+		bookstoreManager.deleteAuthor(1);
 		
 		InOrder inOrder = inOrder(authorRepository,bookRepository);
 		inOrder.verify(authorRepository).delete(1);
@@ -181,14 +180,13 @@ public class BookstoreManagerImplTest {
 	
 	@Test
 	public void test_delete_book_when_its_not_present() {
-		Book book = new Book(2L, "book to delete", new HashSet<>());
-		when(bookRepository.findById(anyLong())).thenReturn(Optional.empty());
+		when(bookRepository.delete(anyLong())).thenReturn(Optional.empty());
 
-		assertThatThrownBy(() -> bookstoreManager.delete(book))				
-				.isExactlyInstanceOf(BookstorePersistenceException.class)
+		assertThatThrownBy(() -> bookstoreManager.deleteBook(2L))				
+				.isExactlyInstanceOf(IllegalArgumentException.class)
 				.hasMessage("Could not find book with id: 2");
 
-		verify(bookRepository).findById(2);
+		verify(bookRepository).delete(2);
 		verifyNoMoreInteractions(bookRepository);
 		verifyNoInteractions(authorRepository);
 	}
@@ -202,10 +200,10 @@ public class BookstoreManagerImplTest {
 		book.getAuthors().add(author2);
 		author1.getBooks().add(book);
 		author2.getBooks().add(book);
-		when(bookRepository.findById(anyLong())).thenReturn(Optional.of(book));
+		when(bookRepository.delete(anyLong())).thenReturn(Optional.of(book));
 //		when(bookRepository.delete(anyLong())).thenReturn(book);
 		
-		bookstoreManager.delete(book);
+		bookstoreManager.deleteBook(1);
 		
 		InOrder inOrder = inOrder(authorRepository,bookRepository);
 		inOrder.verify(bookRepository).delete(1);

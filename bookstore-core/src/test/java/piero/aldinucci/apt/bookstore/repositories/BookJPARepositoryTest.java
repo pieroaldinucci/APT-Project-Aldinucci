@@ -150,23 +150,26 @@ public class BookJPARepositoryTest {
 	}
 	
 	@Test
-	public void test_delete_book_success() {
+	public void test_delete_book_success_should_return_Optional_of_the_book() {
 		Book bookToDelete = persistBook("Book to be deleted");
 		
 		entityManager.getTransaction().begin();
-		repository.delete(bookToDelete.getId());
+		Optional<Book> deletedBook = repository.delete(bookToDelete.getId());
 		entityManager.getTransaction().commit();
 		
+		assertThat(deletedBook).isEqualTo(Optional.of(bookToDelete));
 		assertThat(entityManager.find(Book.class,bookToDelete.getId()))
 			.isNull();
 	}
 	
 	@Test
-	public void test_delete_book_when_not_present_should_not_try_to_remove_it() {
+	public void test_delete_book_when_not_present_should_return_empty_optional_and_not_thrown_IllegalArgumentException() {
 		assertThatCode(() -> {
 			entityManager.getTransaction().begin();
-			repository.delete(2L);
+			Optional<Book> book = repository.delete(2L);
 			entityManager.getTransaction().commit();
+			
+			assertThat(book).isEmpty();
 		}).doesNotThrowAnyException();
 	}
 	
