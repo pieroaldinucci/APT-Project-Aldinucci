@@ -2,6 +2,7 @@ package piero.aldinucci.apt.bookstore.service;
 
 import java.util.HashSet;
 import java.util.List;
+import java.util.Optional;
 
 import com.google.inject.Inject;
 
@@ -45,11 +46,11 @@ public class BookstoreManagerImpl implements BookstoreManager {
 		transactionManager.doInTransaction((authorR, bookR) -> {
 			Author toDelete = authorR.findById(author.getId()).orElseThrow(
 					() -> new BookstorePersistenceException("Could not find author with id: " + author.getId()));
+			authorR.delete(toDelete.getId());
 			toDelete.getBooks().stream().forEach(b -> {
 				b.getAuthors().remove(toDelete);
 				bookR.update(b);
 			});
-			authorR.delete(toDelete.getId());
 			return null;
 		});
 	}
@@ -59,11 +60,11 @@ public class BookstoreManagerImpl implements BookstoreManager {
 		transactionManager.doInTransaction((authorR, bookR) -> {
 			Book toDelete = bookR.findById(book.getId()).orElseThrow(
 					() -> new BookstorePersistenceException("Could not find book with id: " + book.getId()));
+			bookR.delete(toDelete.getId());
 			toDelete.getAuthors().stream().forEach(a -> {
 				a.getBooks().remove(toDelete);
 				authorR.update(a);
 			});
-			bookR.delete(toDelete.getId());
 			return null;
 		});
 

@@ -1,6 +1,7 @@
 package piero.aldinucci.apt.bookstore.service;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import java.util.HashMap;
 import java.util.HashSet;
@@ -15,6 +16,7 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
+import piero.aldinucci.apt.bookstore.exceptions.BookstorePersistenceException;
 import piero.aldinucci.apt.bookstore.model.Author;
 import piero.aldinucci.apt.bookstore.model.Book;
 import piero.aldinucci.apt.bookstore.repositories.factory.RepositoriesJPAFactoryImpl;
@@ -73,7 +75,7 @@ public class FullServiceLayerIT {
 	}
 	
 	@Test
-	public void test_delete_author() {
+	public void test_delete_author_success() {
 		bookstoreManager.delete(authors.get(0));
 
 		EntityManager em = emFactory.createEntityManager();
@@ -87,7 +89,23 @@ public class FullServiceLayerIT {
 	}
 	
 	@Test
-	public void test_delete_book() {
+	public void test_delete_author_when_author_is_missing() {
+		Author nonExistantAuthor = new Author(27L,"Testname",new HashSet<>());
+		
+		assertThatThrownBy(() ->  bookstoreManager.delete(nonExistantAuthor))
+			.isInstanceOf(BookstorePersistenceException.class);
+
+		EntityManager em = emFactory.createEntityManager();
+		List<Author> authorList = em.createQuery("from Author", Author.class).getResultList();
+		List<Book> bookList = em.createQuery("from Book", Book.class).getResultList();
+		em.close();
+		
+		assertThat(authorList).isEqualTo(authors);
+		assertThat(bookList).isEqualTo(books);
+	}
+	
+	@Test
+	public void test_delete_book_success() {
 		bookstoreManager.delete(books.get(1));
 
 		EntityManager em = emFactory.createEntityManager();
@@ -98,6 +116,22 @@ public class FullServiceLayerIT {
 		assertThat(book).isEqualTo(books.get(0));
 		assertThat(authorList.get(0).getBooks()).containsExactly(book);
 		assertThat(authorList.get(1).getBooks()).isEmpty();
+	}
+	
+	@Test
+	public void test_delete_book_when_is_missing() {
+		Book nonExistantBook = new Book(27L,"Test title",new HashSet<>());
+		
+		assertThatThrownBy(() ->  bookstoreManager.delete(nonExistantBook))
+			.isInstanceOf(BookstorePersistenceException.class);
+
+		EntityManager em = emFactory.createEntityManager();
+		List<Author> authorList = em.createQuery("from Author", Author.class).getResultList();
+		List<Book> bookList = em.createQuery("from Book", Book.class).getResultList();
+		em.close();
+		
+		assertThat(authorList).isEqualTo(authors);
+		assertThat(bookList).isEqualTo(books);
 	}
 	
 	@Test

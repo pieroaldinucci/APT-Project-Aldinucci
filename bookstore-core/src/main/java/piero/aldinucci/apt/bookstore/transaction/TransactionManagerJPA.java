@@ -26,20 +26,20 @@ public class TransactionManagerJPA implements TransactionManager {
 
 	@Override
 	public <R> R doInTransaction(TransactionCode<R> code) {
-		entityManager = emFactory.createEntityManager();
-		AuthorRepository authorRepository = repositoryFactory.createAuthorRepository(getEntityManager());
-		BookRepository bookRepository = repositoryFactory.createBookRepository(getEntityManager());
-		EntityTransaction transaction = getEntityManager().getTransaction();
 		
 		R result = null;
 		try {
-			transaction.begin();
+			entityManager = emFactory.createEntityManager();
+			AuthorRepository authorRepository = repositoryFactory.createAuthorRepository(entityManager);
+			BookRepository bookRepository = repositoryFactory.createBookRepository(entityManager);
+			entityManager.getTransaction().begin();
 			result = code.apply(authorRepository, bookRepository);
-			transaction.commit();
+			entityManager.getTransaction().commit();
 		} catch (PersistenceException e) {
+			entityManager.getTransaction().rollback(); //temporary, is useless?
 			throw new BookstorePersistenceException("Error while executing transaction",e);
 		} finally {
-			getEntityManager().close();
+			entityManager.close();
 		}
 		
 		return result;

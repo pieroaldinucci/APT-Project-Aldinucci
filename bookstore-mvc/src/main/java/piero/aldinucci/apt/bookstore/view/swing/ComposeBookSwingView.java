@@ -55,6 +55,7 @@ public class ComposeBookSwingView extends JDialog implements ComposeBookView {
 	 */
 	@Inject
 	public ComposeBookSwingView(@Assisted BookstoreController controller) {
+		setTitle("Compose Book");
 		this.controller = controller;
 		
 		setDefaultCloseOperation(HIDE_ON_CLOSE);

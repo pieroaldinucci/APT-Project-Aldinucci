@@ -11,8 +11,8 @@
 		transaction-type="RESOURCE_LOCAL">
 
 		<properties>
-			<property name="javax.persistence.schema-generation.database.action" value="create"/>
-			<property name="javax.persistence.schema-generation.create-database-schemas" value="true"/>
+			<property name="javax.persistence.schema-generation.database.action" value="validate"/>
+			<property name="javax.persistence.create-database-schemas" value="false"/>
 		
 			<property name="javax.persistence.jdbc.url"
 				value="jdbc:postgresql://localhost:5432/projectAPTTestDb" />

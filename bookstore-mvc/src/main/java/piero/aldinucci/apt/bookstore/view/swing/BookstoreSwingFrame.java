@@ -20,6 +20,7 @@ public class BookstoreSwingFrame extends JFrame {
 	 * Create the frame.
 	 */
 	public BookstoreSwingFrame(JPanel authorPanel, JPanel bookPanel) {
+		setTitle("Bookstore View");
 		setDefaultCloseOperation(EXIT_ON_CLOSE);
 		setBounds(100, 100, 450, 300);
 		contentPane = new JPanel();

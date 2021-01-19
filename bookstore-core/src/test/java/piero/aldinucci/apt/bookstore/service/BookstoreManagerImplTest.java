@@ -172,9 +172,9 @@ public class BookstoreManagerImplTest {
 		bookstoreManager.delete(author);
 		
 		InOrder inOrder = inOrder(authorRepository,bookRepository);
+		inOrder.verify(authorRepository).delete(1);
 		inOrder.verify(bookRepository).update(book1);
 		inOrder.verify(bookRepository).update(book2);
-		inOrder.verify(authorRepository).delete(1);
 		assertThat(book1.getAuthors()).isEmpty();
 		assertThat(book2.getAuthors()).isEmpty();
 	}
@@ -208,9 +208,9 @@ public class BookstoreManagerImplTest {
 		bookstoreManager.delete(book);
 		
 		InOrder inOrder = inOrder(authorRepository,bookRepository);
+		inOrder.verify(bookRepository).delete(1);
 		inOrder.verify(authorRepository).update(author1);
 		inOrder.verify(authorRepository).update(author2);
-		inOrder.verify(bookRepository).delete(1);
 		assertThat(author1.getBooks()).isEmpty();
 		assertThat(author2.getBooks()).isEmpty();
 	}
