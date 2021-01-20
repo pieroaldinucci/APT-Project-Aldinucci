@@ -7,11 +7,13 @@ import java.util.concurrent.Callable;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import com.google.inject.Guice;
 import com.google.inject.Injector;
 
 import picocli.CommandLine;
-import picocli.CommandLine.ArgGroup;
 import picocli.CommandLine.Command;
 import picocli.CommandLine.Option;
 import piero.aldinucci.apt.bookstore.app.guice.modules.BookstoreControllerSwingModule;
@@ -24,6 +26,8 @@ import piero.aldinucci.apt.bookstore.view.swing.BookstoreSwingFrame;
 @Command(mixinStandardHelpOptions = true)
 public class BookstoreSwingApp implements Callable<Void> {
 
+	private static final Logger LOGGER = LogManager.getLogger();
+	
 	@Option(names = { "--postgres-host" }, description = { "Postgresql host address" })
 	private String host = "localhost";
 
@@ -50,11 +54,17 @@ public class BookstoreSwingApp implements Callable<Void> {
 		String propertyJdbcUrl = "jdbc:postgresql://" + host + ":" + port + "/" + databaseName;
 
 		HashMap<String, String> propertiesJPA = new HashMap<>();
-		propertiesJPA.put("javax.persistence.jdbc.user", userName);
-		propertiesJPA.put("javax.persistence.jdbc.password", password);
 		propertiesJPA.put("javax.persistence.jdbc.url", propertyJdbcUrl);
+		
+		if (userName != null)
+			propertiesJPA.put("javax.persistence.jdbc.user", userName);
+		
+		if(password != null) 
+			propertiesJPA.put("javax.persistence.jdbc.password", password);
+		
 		if (createDb)
 			propertiesJPA.put("javax.persistence.schema-generation.database.action", "create");
+		
 		return Persistence.createEntityManagerFactory("apt.project.bookstore", propertiesJPA);
 	}
 
@@ -73,7 +83,7 @@ public class BookstoreSwingApp implements Callable<Void> {
 				controller.allBooks();
 				frame.setVisible(true);
 			} catch (Exception e) {
-				e.printStackTrace();
+				LOGGER.fatal(e);
 			}
 		});
 		return null;
