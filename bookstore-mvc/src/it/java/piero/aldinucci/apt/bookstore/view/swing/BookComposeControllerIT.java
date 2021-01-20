@@ -1,7 +1,7 @@
 package piero.aldinucci.apt.bookstore.view.swing;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.ArgumentMatchers.isA;
+import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -30,6 +30,7 @@ import piero.aldinucci.apt.bookstore.exceptions.BookstorePersistenceException;
 import piero.aldinucci.apt.bookstore.model.Author;
 import piero.aldinucci.apt.bookstore.model.Book;
 import piero.aldinucci.apt.bookstore.service.BookstoreManager;
+import piero.aldinucci.apt.bookstore.view.AuthorView;
 
 
 @RunWith(GUITestRunner.class)
@@ -37,6 +38,9 @@ public class BookComposeControllerIT extends AssertJSwingJUnitTestCase{
 	
 	@Mock
 	private BookstoreManager manager;
+	
+	@Mock
+	private AuthorView authorView;
 		
 	private FrameFixture window;
 	private DialogFixture dialog;
@@ -56,6 +60,7 @@ public class BookComposeControllerIT extends AssertJSwingJUnitTestCase{
 			ComposeBookSwingView composeBookView = new ComposeBookSwingView(controller);
 			controller.setBookView(bookView);
 			controller.setComposeBookView(composeBookView);
+			controller.setAuthorView(authorView);
 			
 			dialog = new DialogFixture(robot(),composeBookView);
 			JFrame bookFrame = new JFrame();
@@ -150,7 +155,7 @@ public class BookComposeControllerIT extends AssertJSwingJUnitTestCase{
 	@GUITest
 	public void test_delete_book_error() {
 		GuiActionRunner.execute(() -> controller.allBooks());
-		doThrow(new BookstorePersistenceException()).when(manager).delete(isA(Book.class));
+		doThrow(new BookstorePersistenceException()).when(manager).deleteBook(anyLong());
 		window.list().selectItem(0);
 		assertThat(window.label("BookErrorLabel").text()).isBlank();
 		

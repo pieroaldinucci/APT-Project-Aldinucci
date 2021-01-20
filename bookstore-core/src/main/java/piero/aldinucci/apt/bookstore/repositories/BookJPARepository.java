@@ -5,7 +5,6 @@ import java.util.Optional;
 
 import javax.persistence.EntityManager;
 
-import piero.aldinucci.apt.bookstore.exceptions.BookstorePersistenceException;
 import piero.aldinucci.apt.bookstore.model.Book;
 
 public class BookJPARepository implements BookRepository{
@@ -35,17 +34,18 @@ public class BookJPARepository implements BookRepository{
 
 	@Override
 	public void update(Book book) {
-		Book oldBook = entityManager.find(Book.class, book.getId());
-		if (oldBook == null)
-			throw new BookstorePersistenceException("Cannot find book to update with id: "+book.getId());
-		entityManager.merge(book);
+		if (book.getId() == null)
+			throw new IllegalArgumentException("Cannot update a book with null id");
+		if (entityManager.find(Book.class, book.getId()) != null)
+			entityManager.merge(book);
 	}
 
 	@Override
-	public void delete(long id) {
+	public Optional<Book> delete(long id) {
 		Book book = entityManager.find(Book.class, id);
 		if (book != null)
 			entityManager.remove(book);
+		return Optional.ofNullable(book);
 	}
 
 }

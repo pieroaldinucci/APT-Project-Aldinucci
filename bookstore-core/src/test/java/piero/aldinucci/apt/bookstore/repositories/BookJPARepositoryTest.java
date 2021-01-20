@@ -16,7 +16,6 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import piero.aldinucci.apt.bookstore.exceptions.BookstorePersistenceException;
 import piero.aldinucci.apt.bookstore.model.Author;
 import piero.aldinucci.apt.bookstore.model.Book;
 
@@ -137,36 +136,51 @@ public class BookJPARepositoryTest {
 	}
 	
 	@Test
-	public void test_update_with_non_existant_id_should_throw_and_not_persist() {
-		Book modifiedBook = new Book(1L, "modified title", new HashSet<>());
+	public void test_update_with_null_id_should_throw_IllegalArgumentException() {
+		Book modifiedBook = new Book(null, "modified title", new HashSet<>());
 		
 		entityManager.getTransaction().begin();
 		assertThatThrownBy(() -> repository.update(modifiedBook))
-			.isExactlyInstanceOf(BookstorePersistenceException.class)
-			.hasMessage("Cannot find book to update with id: 1");
+			.isExactlyInstanceOf(IllegalArgumentException.class)
+			.hasMessage("Cannot update a book with null id");
 		entityManager.getTransaction().commit();
 		
 		assertThat(entityManager.createQuery("from Book",Book.class).getResultList()).isEmpty();
 	}
 	
 	@Test
-	public void test_delete_book_success() {
+	public void test_update_with_non_existant_id_should_not_save_into_db() {
+		Book nonExistantdBook = new Book(3L, "modified title", new HashSet<>());
+		
+		entityManager.getTransaction().begin();
+		repository.update(nonExistantdBook);
+		entityManager.getTransaction().commit();
+		entityManager.clear();
+		
+		assertThat(entityManager.createQuery("from Book",Book.class).getResultList()).isEmpty();
+	}
+	
+	@Test
+	public void test_delete_book_success_should_return_Optional_of_the_book() {
 		Book bookToDelete = persistBook("Book to be deleted");
 		
 		entityManager.getTransaction().begin();
-		repository.delete(bookToDelete.getId());
+		Optional<Book> deletedBook = repository.delete(bookToDelete.getId());
 		entityManager.getTransaction().commit();
 		
+		assertThat(deletedBook).isEqualTo(Optional.of(bookToDelete));
 		assertThat(entityManager.find(Book.class,bookToDelete.getId()))
 			.isNull();
 	}
 	
 	@Test
-	public void test_delete_book_when_not_present_should_not_try_to_remove_it() {
+	public void test_delete_book_when_not_present_should_return_empty_optional_and_not_thrown_IllegalArgumentException() {
 		assertThatCode(() -> {
 			entityManager.getTransaction().begin();
-			repository.delete(2L);
+			Optional<Book> book = repository.delete(2L);
 			entityManager.getTransaction().commit();
+			
+			assertThat(book).isEmpty();
 		}).doesNotThrowAnyException();
 	}
 	

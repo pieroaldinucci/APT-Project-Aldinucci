@@ -14,6 +14,10 @@
 
 	<dependencies>
 		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+		</dependency>
+		<dependency>
 			<groupId>org.assertj</groupId>
 			<artifactId>assertj-core</artifactId>
 		</dependency>
@@ -38,8 +42,16 @@
 			<artifactId>mockito-core</artifactId>
 		</dependency>
 		<dependency>
-    		<groupId>org.hsqldb</groupId>
-    		<artifactId>hsqldb</artifactId>
+			<groupId>org.hsqldb</groupId>
+			<artifactId>hsqldb</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>com.google.inject</groupId>
+			<artifactId>guice</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>com.google.inject.extensions</groupId>
+			<artifactId>guice-assistedinject</artifactId>
 		</dependency>
 	</dependencies>
 
@@ -53,45 +65,22 @@
 			<plugin>
 				<groupId>io.fabric8</groupId>
 				<artifactId>docker-maven-plugin</artifactId>
-				<configuration>
-					<showLogs>true</showLogs>
-					<images>
-						<image>
-							<alias>app-postgres</alias>
-							<name>postgres:13.1</name>
-							<run>
-								<ports>
-									<port>5432:5432</port>
-								</ports>
-								<env>
-									<POSTGRES_USER>testUser</POSTGRES_USER>
-									<POSTGRES_PASSWORD>secret</POSTGRES_PASSWORD>
-									<POSTGRES_DB>projectAPTTestDb</POSTGRES_DB>
-								</env>
-								<wait>
-									<log>(?s)\[1\] LOG:  database system is ready to accept connections</log>
-									<time>20000</time>
-								</wait>
-							</run>
-						</image>
-					</images>
-				</configuration>
-				<executions>
-					<execution>
-						<id>docker:start</id>
-						<phase>pre-integration-test</phase>
-						<goals>
-							<goal>start</goal>
-						</goals>
-					</execution>
-					<execution>
-						<id>docker:stop</id>
-						<phase>post-integration-test</phase>
-						<goals>
-							<goal>stop</goal>
-						</goals>
-					</execution>
-				</executions>
+			</plugin>
+			<plugin>
+				<groupId>org.sonarsource.scanner.maven</groupId>
+				<artifactId>sonar-maven-plugin</artifactId>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-failsafe-plugin</artifactId>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-jar-plugin</artifactId>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-assembly-plugin</artifactId>
 			</plugin>
 		</plugins>
 
@@ -113,7 +102,7 @@
 					<configuration>
 						<targetClasses>
 							<param>piero.aldinucci.apt.bookstore.service*</param>
-              				<param>piero.aldinucci.apt.bookstore.repositories*</param>
+							<param>piero.aldinucci.apt.bookstore.repositories*</param>
 							<param>piero.aldinucci.apt.bookstore.transaction*</param>
 						</targetClasses>
 						<targetTests>
@@ -122,6 +111,23 @@
 							<param>piero.aldinucci.apt.bookstore.transaction*</param>
 						</targetTests>
 					</configuration>
+				</plugin>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-assembly-plugin</artifactId>
+					<executions>
+						<execution>
+							<phase>package</phase>
+							<goals>
+								<goal>single</goal>
+							</goals>
+							<configuration>
+								<descriptorRefs>
+									<descriptorRef>jar-with-dependencies</descriptorRef>
+								</descriptorRefs>
+							</configuration>
+						</execution>
+					</executions>
 				</plugin>
 			</plugins>
 		</pluginManagement>

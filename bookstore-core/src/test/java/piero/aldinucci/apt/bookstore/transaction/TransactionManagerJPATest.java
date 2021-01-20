@@ -84,6 +84,7 @@ public class TransactionManagerJPATest {
 		assertThat(bookCaptor.getValue()).usingRecursiveComparison()
 			.isEqualTo(new Book(4L,"title",null));
 		assertThat(author).isSameAs(savedAuthor);
+		assertThat(transactionManager.getEntityManager().getTransaction().isActive()).isFalse();
 		assertThat(transactionManager.getEntityManager().isOpen()).isFalse();
 	}
 	
@@ -100,20 +101,24 @@ public class TransactionManagerJPATest {
 			.hasMessage("Error while executing transaction")
 			.getCause().isInstanceOf(PersistenceException.class);
 		
+		assertThat(transactionManager.getEntityManager().getTransaction().isActive()).isFalse();
 		assertThat(transactionManager.getEntityManager().isOpen()).isFalse();
 	}
 	
 	@Test
-	public void test_non_persistence_related_Exceptions_should_not_be_catched() {
-		IllegalArgumentException iaException = new IllegalArgumentException();
-		doThrow(iaException).when(authorRepository).delete(anyLong());
+	public void test_non_persistence_related_Exceptions_should_be_rethrown_and_transaction_should_be_rolled_back() {
+		Exception runtimeException = new RuntimeException();
+		doThrow(runtimeException).when(authorRepository).delete(anyLong());
 		
 		assertThatThrownBy(() -> {
 			transactionManager.doInTransaction((authorR,bookR) -> {
 				authorR.delete(1L);
 				return null;
 			});
-		}).isSameAs(iaException);
+		}).isSameAs(runtimeException);
+		
+		assertThat(transactionManager.getEntityManager().getTransaction().isActive()).isFalse();
+		assertThat(transactionManager.getEntityManager().isOpen()).isFalse();
 	}
 
 }

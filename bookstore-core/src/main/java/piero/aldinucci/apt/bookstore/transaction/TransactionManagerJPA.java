@@ -2,8 +2,9 @@ package piero.aldinucci.apt.bookstore.transaction;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
-import javax.persistence.EntityTransaction;
 import javax.persistence.PersistenceException;
+
+import com.google.inject.Inject;
 
 import piero.aldinucci.apt.bookstore.exceptions.BookstorePersistenceException;
 import piero.aldinucci.apt.bookstore.repositories.AuthorRepository;
@@ -16,6 +17,7 @@ public class TransactionManagerJPA implements TransactionManager {
 	private RepositoriesJPAFactory repositoryFactory;
 	private EntityManager entityManager;
 
+	@Inject
 	public TransactionManagerJPA(EntityManagerFactory emFactory, RepositoriesJPAFactory repositoriesFactory) {
 		this.emFactory = emFactory;
 		this.repositoryFactory = repositoriesFactory;
@@ -23,20 +25,23 @@ public class TransactionManagerJPA implements TransactionManager {
 
 	@Override
 	public <R> R doInTransaction(TransactionCode<R> code) {
-		entityManager = emFactory.createEntityManager();
-		AuthorRepository authorRepository = repositoryFactory.createAuthorRepository(getEntityManager());
-		BookRepository bookRepository = repositoryFactory.createBookRepository(getEntityManager());
-		EntityTransaction transaction = getEntityManager().getTransaction();
 		
 		R result = null;
 		try {
-			transaction.begin();
+			entityManager = emFactory.createEntityManager();
+			AuthorRepository authorRepository = repositoryFactory.createAuthorRepository(entityManager);
+			BookRepository bookRepository = repositoryFactory.createBookRepository(entityManager);
+			entityManager.getTransaction().begin();
 			result = code.apply(authorRepository, bookRepository);
-			transaction.commit();
+			entityManager.getTransaction().commit();
 		} catch (PersistenceException e) {
+			entityManager.getTransaction().rollback();
 			throw new BookstorePersistenceException("Error while executing transaction",e);
+		} catch (Exception e) {
+			entityManager.getTransaction().rollback();
+			throw e;
 		} finally {
-			getEntityManager().close();
+			entityManager.close();
 		}
 		
 		return result;

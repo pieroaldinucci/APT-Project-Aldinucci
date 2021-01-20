@@ -7,7 +7,6 @@ import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.ArgumentMatchers.isA;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoInteractions;
-import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.openMocks;
 
@@ -34,8 +33,15 @@ import piero.aldinucci.apt.bookstore.view.AuthorView;
 import piero.aldinucci.apt.bookstore.view.BookView;
 import piero.aldinucci.apt.bookstore.view.ComposeBookView;
 
-public class BookstoreControllerWithManagerIT {
+/**
+ * I'm on the edge about this test, it seems almost redundant.
+ * If I can't find something more meaningful to test with it,
+ * this class should be removed.
+ *
+ */
 
+public class BookstoreControllerWithManagerIT {
+	
 	@Mock
 	TransactionManager transactionManager;
 	
@@ -88,7 +94,6 @@ public class BookstoreControllerWithManagerIT {
 		
 		verify(authorView).authorAdded(savedAuthor);
 		verify(authorRepository).save(authorToSave);
-		verifyNoMoreInteractions(authorRepository);
 		verifyNoInteractions(bookRepository);
 	}
 	
@@ -105,8 +110,6 @@ public class BookstoreControllerWithManagerIT {
 		verify(bookView).bookAdded(savedBook);
 		verify(bookRepository).save(bookToSave);
 		verify(authorRepository).update(author);
-		verifyNoMoreInteractions(bookRepository);
-		verifyNoMoreInteractions(authorRepository);
 		assertThat(author.getBooks()).containsExactly(savedBook);
 	}
 	
@@ -117,16 +120,13 @@ public class BookstoreControllerWithManagerIT {
 		Book book = new Book(1L,"title",new HashSet<>());
 		book.getAuthors().add(authorToDelete);
 		authorFound.getBooks().add(book);
-		when(authorRepository.findById(anyLong())).thenReturn(Optional.of(authorFound));
+		when(authorRepository.delete(anyLong())).thenReturn(Optional.of(authorFound));
 		
 		controller.deleteAuthor(authorToDelete);
 		
 		verify(authorView).authorRemoved(authorToDelete);
-		verify(authorRepository).findById(2L);
 		verify(authorRepository).delete(2L);
 		verify(bookRepository).update(book);
-		verifyNoMoreInteractions(authorRepository);
-		verifyNoMoreInteractions(bookRepository);
 		assertThat(book.getAuthors()).isEmpty();
 	}
 	
@@ -137,16 +137,13 @@ public class BookstoreControllerWithManagerIT {
 		Author author = new Author(5L,"name",new HashSet<>());
 		author.getBooks().add(bookToDelete);
 		bookFound.getAuthors().add(author);
-		when(bookRepository.findById(anyLong())).thenReturn(Optional.of(bookFound));
+		when(bookRepository.delete(anyLong())).thenReturn(Optional.of(bookFound));
 		
 		controller.deleteBook(bookToDelete);
 		
 		verify(bookView).bookRemoved(bookToDelete);
-		verify(bookRepository).findById(3L);
 		verify(bookRepository).delete(3L);
 		verify(authorRepository).update(author);
-		verifyNoMoreInteractions(authorRepository);
-		verifyNoMoreInteractions(bookRepository);
 		assertThat(author.getBooks()).isEmpty();
 	}
 

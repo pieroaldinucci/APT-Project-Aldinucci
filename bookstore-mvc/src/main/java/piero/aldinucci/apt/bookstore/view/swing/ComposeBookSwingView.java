@@ -55,6 +55,7 @@ public class ComposeBookSwingView extends JDialog implements ComposeBookView {
 	 */
 	@Inject
 	public ComposeBookSwingView(@Assisted BookstoreController controller) {
+		setTitle("Compose Book");
 		this.controller = controller;
 		
 		setDefaultCloseOperation(HIDE_ON_CLOSE);
@@ -232,6 +233,7 @@ public class ComposeBookSwingView extends JDialog implements ComposeBookView {
 		textField.setText(null);
 		modelAvailableAuthors.clear();
 		modelBookAuthors.clear();
+		okButton.setEnabled(false);
 		authors.stream().forEach(a -> modelAvailableAuthors.addElement(a));
 		setVisible(true);
 	}

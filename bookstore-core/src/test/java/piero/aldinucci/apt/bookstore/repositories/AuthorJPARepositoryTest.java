@@ -16,7 +16,6 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import piero.aldinucci.apt.bookstore.exceptions.BookstorePersistenceException;
 import piero.aldinucci.apt.bookstore.model.Author;
 import piero.aldinucci.apt.bookstore.model.Book;
 
@@ -144,14 +143,26 @@ public class AuthorJPARepositoryTest {
 	}
 	
 	@Test
-	public void test_update_with_non_existant_id_should_throw_and_not_persist() {
-		Author modifiedAuthor = new Author(1L, "modified name", new HashSet<>());
+	public void test_update_with_null_id_should_throw_IllegalArgumentException() {
+		Author modifiedAuthor = new Author(null, "modified name", new HashSet<>());
 		
 		entityManager.getTransaction().begin();
 		assertThatThrownBy(() -> repository.update(modifiedAuthor))
-			.isExactlyInstanceOf(BookstorePersistenceException.class)
-			.hasMessage("Cannot find author to update with id: 1");
+			.isExactlyInstanceOf(IllegalArgumentException.class)
+			.hasMessage("Cannot update an author with null id");
 		entityManager.getTransaction().commit();
+		
+		assertThat(entityManager.createQuery("from Author",Author.class).getResultList()).isEmpty();
+	}
+	
+	@Test
+	public void test_update_with_non_existant_id_should_not_save_into_db() {
+		Author nonExistantAuthor = new Author(5L, "modified name", new HashSet<>());
+		
+		entityManager.getTransaction().begin();
+		repository.update(nonExistantAuthor);
+		entityManager.getTransaction().commit();
+		entityManager.clear();
 		
 		assertThat(entityManager.createQuery("from Author",Author.class).getResultList()).isEmpty();
 	}
@@ -161,19 +172,23 @@ public class AuthorJPARepositoryTest {
 		Author authorToDelete = persistAuthor("Author to be deleted");
 		
 		entityManager.getTransaction().begin();
-		repository.delete(authorToDelete.getId());
+		Optional<Author> deletedAuthor = repository.delete(authorToDelete.getId());
 		entityManager.getTransaction().commit();
 		
+		assertThat(deletedAuthor).usingRecursiveComparison()
+			.isEqualTo(Optional.of(authorToDelete));
 		assertThat(entityManager.find(Author.class,authorToDelete.getId()))
 			.isNull();
 	}
 	
 	@Test
-	public void test_delete_author_when_not_present_should_not_use_entityManager_to_remove_it() {
+	public void test_delete_author_when_not_present_should_return_empy_optional_and_not_cause_IllegalArgumenException() {
 		assertThatCode(() -> {
 			entityManager.getTransaction().begin();
-			repository.delete(2L);
+			Optional<Author> author = repository.delete(2L);
 			entityManager.getTransaction().commit();
+			
+			assertThat(author).isEmpty();
 		}).doesNotThrowAnyException();
 	}
 

@@ -17,5 +17,6 @@
         <Logger name="org.hibernate" level="error" additivity="false">
             <AppenderRef ref="Console-Appender"/>
         </Logger>
+        
 	</Loggers>
 </Configuration>

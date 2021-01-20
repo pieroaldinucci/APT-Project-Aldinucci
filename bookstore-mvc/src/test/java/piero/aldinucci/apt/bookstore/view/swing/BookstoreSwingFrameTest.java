@@ -37,6 +37,8 @@ public class BookstoreSwingFrameTest extends AssertJSwingJUnitTestCase {
 	@Test
 	@GUITest
 	public void test_Components() {
+		window.requireTitle("Bookstore View");
+		
 		JTabbedPaneFixture tabbedPane = window.tabbedPane("MainPane");
 		tabbedPane.requireTabTitles("Authors", "Books");
 

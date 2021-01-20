@@ -3,6 +3,8 @@ package piero.aldinucci.apt.bookstore.service;
 import java.util.HashSet;
 import java.util.List;
 
+import com.google.inject.Inject;
+
 import piero.aldinucci.apt.bookstore.exceptions.BookstorePersistenceException;
 import piero.aldinucci.apt.bookstore.model.Author;
 import piero.aldinucci.apt.bookstore.model.Book;
@@ -12,6 +14,7 @@ public class BookstoreManagerImpl implements BookstoreManager {
 
 	private TransactionManager transactionManager;
 
+	@Inject
 	public BookstoreManagerImpl(TransactionManager transactionManager) {
 		this.transactionManager = transactionManager;
 	}
@@ -38,29 +41,29 @@ public class BookstoreManagerImpl implements BookstoreManager {
 	}
 
 	@Override
-	public void delete(Author author) {
+	public void deleteAuthor(long id) {
 		transactionManager.doInTransaction((authorR, bookR) -> {
-			Author toDelete = authorR.findById(author.getId()).orElseThrow(
-					() -> new BookstorePersistenceException("Could not find author with id: " + author.getId()));
-			toDelete.getBooks().stream().forEach(b -> {
-				b.getAuthors().remove(toDelete);
+			Author deleted = authorR.delete(id).orElseThrow(() -> 
+				new BookstorePersistenceException("Could not find author with id: " + id));
+			
+			deleted.getBooks().stream().forEach(b -> {
+				b.getAuthors().remove(deleted);
 				bookR.update(b);
 			});
-			authorR.delete(toDelete.getId());
 			return null;
 		});
 	}
 
 	@Override
-	public void delete(Book book) {
+	public void deleteBook(long id) {
 		transactionManager.doInTransaction((authorR, bookR) -> {
-			Book toDelete = bookR.findById(book.getId()).orElseThrow(
-					() -> new BookstorePersistenceException("Could not find book with id: " + book.getId()));
-			toDelete.getAuthors().stream().forEach(a -> {
-				a.getBooks().remove(toDelete);
+			Book deleted = bookR.delete(id).orElseThrow(() -> 
+				new BookstorePersistenceException("Could not find book with id: " + id));
+			
+			deleted.getAuthors().stream().forEach(a -> {
+				a.getBooks().remove(deleted);
 				authorR.update(a);
 			});
-			bookR.delete(toDelete.getId());
 			return null;
 		});
 
