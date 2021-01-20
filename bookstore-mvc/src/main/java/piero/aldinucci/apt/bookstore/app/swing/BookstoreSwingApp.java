@@ -11,6 +11,7 @@ import com.google.inject.Guice;
 import com.google.inject.Injector;
 
 import picocli.CommandLine;
+import picocli.CommandLine.ArgGroup;
 import picocli.CommandLine.Command;
 import picocli.CommandLine.Option;
 import piero.aldinucci.apt.bookstore.app.guice.modules.BookstoreControllerSwingModule;
@@ -32,13 +33,14 @@ public class BookstoreSwingApp implements Callable<Void> {
 	@Option(names = { "--postgres-port" }, description = { "Postgresql host port" })
 	private int port = 5432;
 
-	@Option(names = { "--user" }, description = { "Postgresql username" })
-	private String userName = "testUser";
+	@Option(names = {"-u", "--user" }, description = { "Postgresql username" })
+	private String userName;
 
-	@Option(names = { "--password" }, description = { "Postgresql password" })
-	private String password = "secret";
-
-	private EntityManagerFactory emFactory;
+	@Option(names = {"-p", "--password" }, description = { "Postgresql password" })
+	private String password;
+	
+	@Option(names = {"-c", "--create" }, description = { "Create database if not present" })
+	private boolean createDb;
 
 	public static void main(String[] args) {
 		new CommandLine(new BookstoreSwingApp()).execute(args);
@@ -51,6 +53,8 @@ public class BookstoreSwingApp implements Callable<Void> {
 		propertiesJPA.put("javax.persistence.jdbc.user", userName);
 		propertiesJPA.put("javax.persistence.jdbc.password", password);
 		propertiesJPA.put("javax.persistence.jdbc.url", propertyJdbcUrl);
+		if (createDb)
+			propertiesJPA.put("javax.persistence.schema-generation.database.action", "create");
 		return Persistence.createEntityManagerFactory("apt.project.bookstore", propertiesJPA);
 	}
 
@@ -58,9 +62,8 @@ public class BookstoreSwingApp implements Callable<Void> {
 	public Void call() throws Exception {
 		EventQueue.invokeLater(() -> {			
 			try {
-				emFactory = getEntityManagerFactory();
 				Injector injector = Guice.createInjector(new BookstoreControllerSwingModule(
-						new BookstoreManagerJPAModule(emFactory)));
+						new BookstoreManagerJPAModule(getEntityManagerFactory())));
 				
 				BookstoreControllerImpl controller = injector.getInstance(BookstoreControllerImpl.class);
 				BookstoreSwingFrame frame = new BookstoreSwingFrame(
@@ -75,5 +78,34 @@ public class BookstoreSwingApp implements Callable<Void> {
 		});
 		return null;
 	}
+	
+	//No Guice version
+//	@Override
+//	public Void call() throws Exception {
+//		EventQueue.invokeLater(() -> {			
+//			try {
+//				emFactory = getEntityManagerFactory();
+//				
+//				BookstoreManagerImpl manager = new BookstoreManagerImpl(
+//						new TransactionManagerJPA(emFactory, new RepositoriesJPAFactoryImpl()));
+//				
+//				BookstoreControllerImpl controller = new BookstoreControllerImpl(manager);
+//				AuthorSwingView authorView = new AuthorSwingView(controller);
+//				BookSwingView bookView = new BookSwingView(controller);
+//				ComposeBookSwingView composeBook = new ComposeBookSwingView(controller);
+//				controller.setAuthorView(authorView);
+//				controller.setBookView(bookView);
+//				controller.setComposeBookView(composeBook);
+//				BookstoreSwingFrame frame = new BookstoreSwingFrame(authorView, bookView);
+//				
+//				controller.allAuthors();
+//				controller.allBooks();
+//				frame.setVisible(true);
+//			} catch (Exception e) {
+//				e.printStackTrace();
+//			}
+//		});
+//		return null;
+//	}
 
 }

@@ -14,6 +14,7 @@ import javax.persistence.Persistence;
 import javax.swing.JFrame;
 import javax.swing.JList;
 
+import org.assertj.swing.annotation.GUITest;
 import org.assertj.swing.core.GenericTypeMatcher;
 import org.assertj.swing.core.matcher.JButtonMatcher;
 import org.assertj.swing.finder.WindowFinder;
@@ -52,8 +53,8 @@ public class BookstoreSwingAppE2E extends AssertJSwingJUnitTestCase{
 		
 		populateDatabase();
 		
-		application("piero.aldinucci.apt.bookstore.app.swing.BookstoreSwingApp").start();
-//			.withArgs("--user=testUser", "--password=secret");
+		application("piero.aldinucci.apt.bookstore.app.swing.BookstoreSwingApp")
+			.withArgs("-u=testUser", "-p=secret").start();
 		
 		window = WindowFinder.findFrame(new GenericTypeMatcher<JFrame>(JFrame.class) {
 
@@ -61,14 +62,13 @@ public class BookstoreSwingAppE2E extends AssertJSwingJUnitTestCase{
 			protected boolean isMatching(JFrame frame) {
 				return frame.getTitle().equals("Bookstore View") && frame.isShowing();
 			}
-		}).using(robot());
+		}).using(robot()).focus();
 	}
 	
 	@Override
 	protected void onTearDown() {
 		emFactory.close();
 		window.cleanUp();
-//		window.close();
 	}
 	
 
@@ -104,6 +104,7 @@ public class BookstoreSwingAppE2E extends AssertJSwingJUnitTestCase{
 	}
 
 	@Test
+	@GUITest
 	public void test_on_start_all_entities_are_shown() {
 		window.tabbedPane().selectTab("Authors");
 		
@@ -121,17 +122,19 @@ public class BookstoreSwingAppE2E extends AssertJSwingJUnitTestCase{
 			.anySatisfy(b -> assertThat(b).contains(TITLE_FIXTURE_3));
 	}
 	
+	
 	@Test
+	@GUITest
 	@SuppressWarnings("rawtypes")
-	public void test_add_new_book_with_new_author_success() {
+	public void test_add_new_book_with_new_author() {
 		window.tabbedPane().selectTab("Authors");
 		window.textBox().enterText("new Author");
 		window.button(JButtonMatcher.withText("Add")).click();
+		
 		assertThat(window.list().contents()).anySatisfy(a -> assertThat(a).contains("new Author"));
 		
 		window.tabbedPane().selectTab("Books");
 		window.button(JButtonMatcher.withText("New")).click();
-		
 		DialogFixture dialog = window.dialog();
 		dialog.textBox().enterText("new Book");
 		dialog.list(new GenericTypeMatcher<JList>(JList.class) {
@@ -148,8 +151,31 @@ public class BookstoreSwingAppE2E extends AssertJSwingJUnitTestCase{
 	}
 	
 	@Test
+	@GUITest
+	public void test_delete_Author_success() {
+		window.tabbedPane().selectTab("Authors");
+		JListFixture listFixture = window.list();
+		listFixture.selectItem(Pattern.compile(".*"+NAME_FIXTURE_2+".*"));
+		
+		window.button("DeleteAuthor").click();
+		
+		assertThat(window.list().contents())
+			.anySatisfy(a -> assertThat(a).contains(NAME_FIXTURE_1))
+			.noneSatisfy(a -> assertThat(a).contains(NAME_FIXTURE_2))
+			.anySatisfy(a -> assertThat(a).contains(NAME_FIXTURE_3));
+		
+		window.tabbedPane().selectTab("Books");
+		
+		assertThat(window.list().contents())
+			.anySatisfy(b -> assertThat(b).contains(TITLE_FIXTURE_1, NAME_FIXTURE_1))
+			.anySatisfy(b -> assertThat(b).contains(TITLE_FIXTURE_2, NAME_FIXTURE_1))
+			.anySatisfy(b -> assertThat(b).contains(TITLE_FIXTURE_3))
+			.noneSatisfy(a -> assertThat(a).contains(NAME_FIXTURE_2));
+	}
+	
+	@Test
+	@GUITest
 	public void test_delete_Author_error() {
-		window.focus();
 		window.tabbedPane().selectTab("Authors");
 		JListFixture listFixture = window.list();
 		listFixture.selectItem(Pattern.compile(".*"+NAME_FIXTURE_3+".*"));
@@ -168,9 +194,25 @@ public class BookstoreSwingAppE2E extends AssertJSwingJUnitTestCase{
 			assertThat(a).contains(NAME_FIXTURE_3));
 	}
 	
+	
 	@Test
+	@GUITest
+	public void test_delete_Book_success() {
+		window.tabbedPane().selectTab("Books");
+		JListFixture listFixture = window.list();
+		listFixture.selectItem(Pattern.compile(".*"+TITLE_FIXTURE_1+".*"));
+		
+		window.button("DeleteBook").click();
+		
+		assertThat(window.list().contents())
+			.noneSatisfy(a -> assertThat(a).contains(TITLE_FIXTURE_1))
+			.anySatisfy(a -> assertThat(a).contains(TITLE_FIXTURE_2))
+			.anySatisfy(a -> assertThat(a).contains(TITLE_FIXTURE_3));
+	}
+	
+	@Test
+	@GUITest
 	public void test_delete_Book_error() {
-		window.focus();
 		window.tabbedPane().selectTab("Books");
 		JListFixture listFixture = window.list("BookJList");
 		listFixture.selectItem(Pattern.compile(".*"+TITLE_FIXTURE_3+".*"));

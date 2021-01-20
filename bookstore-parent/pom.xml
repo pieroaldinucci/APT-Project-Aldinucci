@@ -34,13 +34,6 @@
 		<module>../bookstore-mvc</module>
 	</modules>
 
-	<dependencies>
-		<dependency>
-			<groupId>junit</groupId>
-			<artifactId>junit</artifactId>
-		</dependency>
-	</dependencies>
-
 	<dependencyManagement>
 		<dependencies>
 			<dependency>
@@ -59,7 +52,8 @@
 			<dependency>
 				<groupId>org.postgresql</groupId>
 				<artifactId>postgresql</artifactId>
-				<version>42.2.18</version>
+<!-- 				<version>42.2.18</version> -->
+				<version>42.2.14</version>
 			</dependency>
 			<dependency>
 				<groupId>org.hibernate</groupId>
@@ -106,18 +100,6 @@
 	</dependencyManagement>
 
 	<build>
-		<plugins>
-			<plugin>
-				<groupId>org.sonarsource.scanner.maven</groupId>
-				<artifactId>sonar-maven-plugin</artifactId>
-			</plugin>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-failsafe-plugin</artifactId>
-			</plugin>
-		</plugins>
-
-
 		<pluginManagement>
 			<plugins>
 				<plugin>
@@ -261,6 +243,45 @@
 							<goals>
 								<goal>stop</goal>
 							</goals>
+						</execution>
+					</executions>
+				</plugin>
+				
+				<plugin>
+			    	<groupId>org.apache.maven.plugins</groupId>
+			    	<artifactId>maven-jar-plugin</artifactId>
+    				<version>3.2.0</version>
+    				<configuration>
+    					<archive>
+    						<manifest>
+    							<mainClass>piero.aldinucci.apt.bookstore.app.swing.BookstoreSwingApp</mainClass>
+    						</manifest>
+    					</archive>
+    				</configuration>
+				</plugin>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+    				<artifactId>maven-assembly-plugin</artifactId>
+					<version>3.3.0</version>
+				</plugin>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-shade-plugin</artifactId>
+					<version>3.2.4</version>
+					<executions>
+						<execution>
+							<phase>package</phase>
+							<goals>
+								<goal>shade</goal>
+							</goals>
+							<configuration>
+								<minimizeJar>false</minimizeJar>
+								<transformers>
+									<transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
+										<mainClass>piero.aldinucci.apt.bookstore.app.swing.BookstoreSwingApp</mainClass>
+									</transformer>
+								</transformers>
+							</configuration>
 						</execution>
 					</executions>
 				</plugin>

@@ -10,8 +10,10 @@
 	<persistence-unit
 		name="apt.project.bookstore"
 		transaction-type="RESOURCE_LOCAL">
-
+		
 		<description>test version of the persistence unit.</description>
+
+		<provider>org.hibernate.jpa.HibernatePersistenceProvider</provider>
 		
 		<!--  if persistence.xml isn't in the the main folder it cannot found the entities
 			so we have to tell him where to find it -->

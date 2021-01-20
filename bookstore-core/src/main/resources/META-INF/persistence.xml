@@ -10,8 +10,10 @@
 		name="apt.project.bookstore"
 		transaction-type="RESOURCE_LOCAL">
 
+		<provider>org.hibernate.jpa.HibernatePersistenceProvider</provider>
+		
 		<properties>
-			<property name="javax.persistence.schema-generation.database.action" value="validate"/>
+			<property name="javax.persistence.schema-generation.database.action" value="none"/>
 			<property name="javax.persistence.create-database-schemas" value="false"/>
 		
 			<property name="javax.persistence.jdbc.url"
