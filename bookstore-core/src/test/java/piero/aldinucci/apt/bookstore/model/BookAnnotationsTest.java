@@ -19,14 +19,6 @@ public class BookAnnotationsTest {
 	@Before
 	public void setUp() {
 		emFactory = Persistence.createEntityManagerFactory("apt.project.bookstore");
-		
-		EntityManager entityManager = emFactory.createEntityManager();
-		
-		entityManager.getTransaction().begin();
-		entityManager.createQuery("from Book", Book.class).getResultStream()
-			.forEach(b -> entityManager.remove(b));
-		entityManager.getTransaction().commit();
-		entityManager.close();
 	}
 	
 	@After

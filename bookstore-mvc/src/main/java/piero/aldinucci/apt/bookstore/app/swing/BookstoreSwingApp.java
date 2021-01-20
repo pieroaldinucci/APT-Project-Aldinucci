@@ -72,7 +72,8 @@ public class BookstoreSwingApp implements Callable<Void> {
 	public Void call() throws Exception {
 		EventQueue.invokeLater(() -> {			
 			try {
-				Injector injector = Guice.createInjector(new BookstoreControllerSwingModule(
+				Injector injector = Guice.createInjector(
+						new BookstoreControllerSwingModule(
 						new BookstoreManagerJPAModule(getEntityManagerFactory())));
 				
 				BookstoreControllerImpl controller = injector.getInstance(BookstoreControllerImpl.class);

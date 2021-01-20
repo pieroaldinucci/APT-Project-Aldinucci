@@ -34,15 +34,6 @@ public class TransactionManagerJPAIT {
 		propertiesJPA.put("hibernate.dialect", "org.hibernate.dialect.PostgreSQL95Dialect");
 		emFactory = Persistence.createEntityManagerFactory("apt.project.bookstore",propertiesJPA);
 		transactionManager = new TransactionManagerJPA(emFactory,new RepositoriesJPAFactoryImpl());
-		
-		EntityManager em = emFactory.createEntityManager();
-		em.getTransaction().begin();
-		em.createQuery("from Author",Author.class).getResultStream()
-			.forEach(e -> em.remove(e));
-		em.createQuery("from Book",Book.class).getResultStream()
-			.forEach(e -> em.remove(e));
-		em.getTransaction().commit();
-		em.close();
 	}
 	
 	@After

@@ -20,13 +20,6 @@ public class AuthorAnnotationsTest {
 	@Before
 	public void setUp() {
 		emFactory = Persistence.createEntityManagerFactory("apt.project.bookstore");
-		
-		EntityManager entityManager = emFactory.createEntityManager();
-		entityManager.getTransaction().begin();
-		entityManager.createQuery("from Author", Author.class).getResultStream()
-			.forEach(a -> entityManager.remove(a));
-		entityManager.getTransaction().commit();
-		entityManager.close();
 	}
 	
 	@After

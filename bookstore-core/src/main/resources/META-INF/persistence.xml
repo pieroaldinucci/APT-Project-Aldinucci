@@ -18,18 +18,13 @@
 		
 			<property name="javax.persistence.jdbc.url"
 				value="jdbc:postgresql://localhost:5432/projectAPTTestDb" />
-			<!-- 
-			<property name="javax.persistence.jdbc.user" value="testUser" />
-			<property name="javax.persistence.jdbc.password"
-				value="secret" />
-				-->
+
 			<property name="javax.persistence.jdbc.driver"
 				value="org.postgresql.Driver" />
 			<property name="hibernate.dialect" value="org.hibernate.dialect.PostgreSQL95Dialect"/>
 			
 			<property name="hibernate.show_sql" value="false" /> <!-- show SQL logs -->
 			<property name="hibernate.format_sql" value="false" /><!--  format the SQL to make it readable -->
-<!-- 			<property name="hibernate.hbm2ddl.auto" value="update" /> create / create-drop / update -->
 		</properties>
 
 	</persistence-unit>

@@ -30,14 +30,6 @@ public class BookJPARepositoryTest {
 		emFactory = Persistence.createEntityManagerFactory("apt.project.bookstore");
 		entityManager = emFactory.createEntityManager();
 		
-		entityManager.getTransaction().begin();
-		entityManager.createQuery("from Author",Author.class).getResultStream()
-			.forEach(e -> entityManager.remove(e));
-		entityManager.createQuery("from Book",Book.class).getResultStream()
-			.forEach(e -> entityManager.remove(e));
-		entityManager.getTransaction().commit();
-		entityManager.clear();
-		
 		repository = new BookJPARepository(entityManager);
 	}
 	

@@ -38,15 +38,6 @@ public class FullServiceLayerIT {
 		propertiesJPA.put("hibernate.dialect", "org.hibernate.dialect.PostgreSQL95Dialect");
 		emFactory = Persistence.createEntityManagerFactory("apt.project.bookstore",propertiesJPA);
 		
-		EntityManager entityManager = emFactory.createEntityManager();
-		entityManager.getTransaction().begin();
-		entityManager.createQuery("from Author",Author.class).getResultStream()
-			.forEach(e -> entityManager.remove(e));
-		entityManager.createQuery("from Book",Book.class).getResultStream()
-			.forEach(e -> entityManager.remove(e));
-		entityManager.getTransaction().commit();
-		entityManager.close();
-		
 		bookstoreManager = new BookstoreManagerImpl(new TransactionManagerJPA(
 				emFactory,new RepositoriesJPAFactoryImpl()));
 		
