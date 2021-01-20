@@ -233,6 +233,7 @@ public class ComposeBookSwingView extends JDialog implements ComposeBookView {
 		textField.setText(null);
 		modelAvailableAuthors.clear();
 		modelBookAuthors.clear();
+		okButton.setEnabled(false);
 		authors.stream().forEach(a -> modelAvailableAuthors.addElement(a));
 		setVisible(true);
 	}

@@ -127,7 +127,7 @@ public class ComposeBookSwingViewTest extends AssertJSwingJUnitTestCase {
 	@Test
 	@GUITest
 	public void test_composeNewBook_should_clear_all_components_and_update_the_available_authors_list() {
-		dialogFixture.textBox().setText("Not Empty");
+		dialogFixture.textBox().enterText("Not Empty");
 		GuiActionRunner.execute(() -> {
 			composeBookView.getModelBookAuthors().addElement(new Author(5L,"Isaac",new HashSet<>()));
 			composeBookView.getModelBookAuthors().addElement(new Author(3L,"Clarke",new HashSet<>()));
@@ -140,19 +140,22 @@ public class ComposeBookSwingViewTest extends AssertJSwingJUnitTestCase {
 		assertThat(composeBookView.getModelBookAuthors().toArray()).isEmpty();
 		assertThat(composeBookView.getModelAvailableAuthors().toArray()).containsExactly(author1, author2);
 		dialogFixture.textBox().requireEmpty();
+		dialogFixture.button(JButtonMatcher.withText("OK")).requireDisabled();
 	}
 	
 	@Test
 	@GUITest
 	public void test_writing_title_should_enable_or_disable_OK_button() {
+		JButtonFixture okButton = dialogFixture.button(JButtonMatcher.withText("OK"));
 		dialogFixture.textBox(TITLE_TEXT_FIELD).enterText("A title");
-		dialogFixture.button(JButtonMatcher.withText("OK")).requireEnabled();
+		
+		okButton.requireEnabled();
 		
 		dialogFixture.textBox(TITLE_TEXT_FIELD).deleteText();
-		dialogFixture.button(JButtonMatcher.withText("OK")).requireDisabled();
+		okButton.requireDisabled();
 		
 		dialogFixture.textBox(TITLE_TEXT_FIELD).enterText("   ");
-		dialogFixture.button(JButtonMatcher.withText("OK")).requireDisabled();
+		okButton.requireDisabled();
 	}
 
 	@Test

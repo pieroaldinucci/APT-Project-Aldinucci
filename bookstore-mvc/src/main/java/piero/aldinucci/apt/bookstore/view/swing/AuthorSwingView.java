@@ -155,6 +155,7 @@ public class AuthorSwingView extends JPanel implements AuthorView {
 		authorListModel.addElement(author);
 		clearErrorLabel();
 		nameTextField.setText("");
+		btnAddAuthor.setEnabled(false);
 	}
 
 	@Override
