@@ -17,7 +17,6 @@ import org.junit.Before;
 import org.junit.Test;
 
 import piero.aldinucci.apt.bookstore.model.Author;
-import piero.aldinucci.apt.bookstore.model.Book;
 
 public class AuthorJPARepositoryTest {
 
@@ -82,6 +81,7 @@ public class AuthorJPARepositoryTest {
 	@Test
 	public void test_save_author_should_return_an_object_in_persistance_context_with_updated_id() {
 		Author authorToSave = new Author(null, "new Author", new HashSet<>());
+		EntityManager em2 = emFactory.createEntityManager();
 		
 		entityManager.getTransaction().begin();
 		Author savedAuthor = repository.save(authorToSave);
@@ -89,19 +89,10 @@ public class AuthorJPARepositoryTest {
 		
 		assertThat(savedAuthor).isNotNull();
 		assertThat(entityManager.contains(savedAuthor)).isTrue();
-		
-		EntityManager em2 = emFactory.createEntityManager();
 		Author persistedAuthor = em2.find(Author.class, savedAuthor.getId());
 		assertThat(persistedAuthor).usingRecursiveComparison().isEqualTo(savedAuthor);
-		em2.close();
-		
 		assertThat(savedAuthor).isNotSameAs(authorToSave);
-		
-//		assertThatThrownBy(() -> {
-//			entityManager.getTransaction().begin();
-//			savedAuthor.getBooks().add(new Book());
-//			entityManager.getTransaction().commit();
-//		}).isInstanceOf(RollbackException.class);
+		em2.close();
 	}
 	
 	@Test
@@ -129,8 +120,7 @@ public class AuthorJPARepositoryTest {
 		EntityManager em2 = emFactory.createEntityManager();
 		Author found = em2.find(Author.class, persistedAuthor.getId());
 		assertThat(found).usingRecursiveComparison().isEqualTo(modifiedAuthor);
-//		assertThat(modifiedAuthor).usingRecursiveComparison().isEqualTo(persistedAuthor);
-//		assertThat(entityManager.contains(modifiedAuthor)).isFalse();
+		assertThat(entityManager.contains(modifiedAuthor)).isFalse();
 		em2.close();
 	}
 	
