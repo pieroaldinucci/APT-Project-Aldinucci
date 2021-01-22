@@ -152,25 +152,6 @@
 								</sources>
 							</configuration>
 						</execution>
-						<!-- Right now it\resources it's not used, so it should be removed.
-							the initial purpose was to have a difference persistence.xml for
-							integration tests, but I didn't find a way to change the priority 
-							of the directories, so it always uses the one in test\resources.
-						-->
-						<execution>
-							<id>add-test-resource</id>
-							<phase>generate-test-resources</phase>
-							<goals>
-								<goal>add-test-resource</goal>
-							</goals>
-							<configuration>
-								<resources>
-									<resource>
-										<directory>src/it/resources</directory>
-									</resource>
-								</resources>
-							</configuration>
-						</execution>
 					</executions>
 				</plugin>
 				<plugin>
@@ -268,18 +249,14 @@
 				<plugin>
 					<groupId>org.apache.maven.plugins</groupId>
 					<artifactId>maven-javadoc-plugin</artifactId>
-					<version>3.2.0</version>
+					<!-- Higher versions will give errors on Java 8  -->
+					<version>3.0.1</version>
 					<executions>
 				    	<execution>
 				    		<id>attach-javadoc</id>
 							<goals>
 								<goal>jar</goal>
 							</goals>
- 							<configuration>
-							<!-- Needed four source compatibility,
-							without it it will give an error during build -->
- 								<release>8</release>
- 							</configuration>
 						</execution>
 					</executions>
 				</plugin>
