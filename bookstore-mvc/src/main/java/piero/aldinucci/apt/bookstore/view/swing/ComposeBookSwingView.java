@@ -52,6 +52,8 @@ public class ComposeBookSwingView extends JDialog implements ComposeBookView {
 
 	/**
 	 * Create the dialog.
+	 * 
+	 * @param controller unit for the MVC architecture.
 	 */
 	@Inject
 	public ComposeBookSwingView(@Assisted BookstoreController controller) {

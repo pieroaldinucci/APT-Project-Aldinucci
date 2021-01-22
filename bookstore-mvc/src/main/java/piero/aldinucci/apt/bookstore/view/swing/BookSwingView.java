@@ -43,6 +43,8 @@ public class BookSwingView extends JPanel implements BookView {
 
 	/**
 	 * Create the panel.
+	 * 
+	 * @param controller unit for the MVC architecture.
 	 */
 	@Inject
 	public BookSwingView(@Assisted BookstoreController controller) {

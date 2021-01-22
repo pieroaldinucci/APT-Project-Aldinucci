@@ -45,6 +45,8 @@ public class AuthorSwingView extends JPanel implements AuthorView {
 
 	/**
 	 * Create the panel.
+	 * 
+	 * @param controller unit for the MVC architecture.
 	 */
 	@Inject
 	public AuthorSwingView(@Assisted BookstoreController controller) {

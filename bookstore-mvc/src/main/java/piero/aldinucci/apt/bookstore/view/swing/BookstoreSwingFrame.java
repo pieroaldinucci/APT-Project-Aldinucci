@@ -18,6 +18,9 @@ public class BookstoreSwingFrame extends JFrame {
 
 	/**
 	 * Create the frame.
+	 * 
+	 * @param authorPanel view class for authors of the MVC architecture
+	 * @param bookPanel view class for books of the MVC architecture
 	 */
 	public BookstoreSwingFrame(JPanel authorPanel, JPanel bookPanel) {
 		setTitle("Bookstore View");

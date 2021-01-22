@@ -15,7 +15,7 @@
 
 		<provider>org.hibernate.jpa.HibernatePersistenceProvider</provider>
 		
-		<!--  if persistence.xml isn't in the the main folder it cannot found the entities
+		<!--  if persistence.xml isn't in the the main folder it cannot fiund the entities
 			so we have to tell him where to find it -->
 		<class>piero.aldinucci.apt.bookstore.model.Book</class>
 		<class>piero.aldinucci.apt.bookstore.model.Author</class>
