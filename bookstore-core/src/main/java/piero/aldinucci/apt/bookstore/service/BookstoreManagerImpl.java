@@ -10,10 +10,19 @@ import piero.aldinucci.apt.bookstore.model.Author;
 import piero.aldinucci.apt.bookstore.model.Book;
 import piero.aldinucci.apt.bookstore.transaction.TransactionManager;
 
+/**
+ * 
+ * @author Piero Aldinucci
+ *
+ */
 public class BookstoreManagerImpl implements BookstoreManager {
 
 	private TransactionManager transactionManager;
 
+	/**
+	 * 
+	 * @param transactionManager it's used to perform CRUD operation within the database. 
+	 */
 	@Inject
 	public BookstoreManagerImpl(TransactionManager transactionManager) {
 		this.transactionManager = transactionManager;

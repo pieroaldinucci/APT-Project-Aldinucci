@@ -11,12 +11,23 @@ import piero.aldinucci.apt.bookstore.repositories.AuthorRepository;
 import piero.aldinucci.apt.bookstore.repositories.BookRepository;
 import piero.aldinucci.apt.bookstore.repositories.factory.RepositoriesJPAFactory;
 
+/**
+ * 
+ * @author Piero Aldinucci
+ *
+ */
 public class TransactionManagerJPA implements TransactionManager {
-	
+
 	private EntityManagerFactory emFactory;
 	private RepositoriesJPAFactory repositoryFactory;
 	private EntityManager entityManager;
 
+	/**
+	 * 
+	 * @param emFactory           needed to create EntityManagers for the
+	 *                            repositories factory.
+	 * @param repositoriesFactory used to create instances of entity repositories.
+	 */
 	@Inject
 	public TransactionManagerJPA(EntityManagerFactory emFactory, RepositoriesJPAFactory repositoriesFactory) {
 		this.emFactory = emFactory;
@@ -25,7 +36,7 @@ public class TransactionManagerJPA implements TransactionManager {
 
 	@Override
 	public <R> R doInTransaction(TransactionCode<R> code) {
-		
+
 		R result = null;
 		try {
 			entityManager = emFactory.createEntityManager();
@@ -36,14 +47,14 @@ public class TransactionManagerJPA implements TransactionManager {
 			entityManager.getTransaction().commit();
 		} catch (PersistenceException e) {
 			entityManager.getTransaction().rollback();
-			throw new BookstorePersistenceException("Error while executing transaction",e);
+			throw new BookstorePersistenceException("Error while executing transaction", e);
 		} catch (Exception e) {
 			entityManager.getTransaction().rollback();
 			throw e;
 		} finally {
 			entityManager.close();
 		}
-		
+
 		return result;
 	}
 

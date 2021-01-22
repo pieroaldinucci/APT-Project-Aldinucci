@@ -11,6 +11,8 @@
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<maven.compiler.source>1.8</maven.compiler.source>
 		<maven.compiler.target>1.8</maven.compiler.target>
+		<!-- This property will be changed to true if Java 9 or more is detected.
+			It's used to activate Coveralls plugin only when running Java 8 -->
 		<jdk9-or-more>false</jdk9-or-more>
 		<sonar.exclusions>**/model/*.java</sonar.exclusions>
 		<sonar.coverage.exclusions>
@@ -273,6 +275,11 @@
 							<goals>
 								<goal>jar</goal>
 							</goals>
+ 							<configuration>
+							<!-- Needed four source compatibility,
+							without it it will give an error during build -->
+ 								<release>8</release>
+ 							</configuration>
 						</execution>
 					</executions>
 				</plugin>

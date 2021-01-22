@@ -7,10 +7,19 @@ import javax.persistence.EntityManager;
 
 import piero.aldinucci.apt.bookstore.model.Author;
 
+/**
+ * 
+ *
+ */
+
 public class AuthorJPARepository implements AuthorRepository{
 
 	private EntityManager entityManager;
 
+	/**
+	 * 
+	 * @param entityManager the interface used to interact wit the persistence context.
+	 */
 	public AuthorJPARepository(EntityManager entityManager) {
 		this.entityManager = entityManager;
 	}
