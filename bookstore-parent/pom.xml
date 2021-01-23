@@ -35,6 +35,7 @@
 	<modules>
 		<module>../bookstore-core</module>
 		<module>../bookstore-mvc</module>
+		<module>../bookstore-app</module>
 	</modules>
 
 	<dependencyManagement>
