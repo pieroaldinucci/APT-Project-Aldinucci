@@ -11,10 +11,19 @@ import piero.aldinucci.apt.bookstore.service.BookstoreManagerImpl;
 import piero.aldinucci.apt.bookstore.transaction.TransactionManager;
 import piero.aldinucci.apt.bookstore.transaction.TransactionManagerJPA;
 
+/**
+ * 
+ * @author Piero Aldinucci
+ *
+ */
 public class BookstoreManagerJPAModule extends AbstractModule{
 	
 	private EntityManagerFactory emFactory;
 
+	/**
+	 * 
+	 * @param emFactory needed to create an instance of BookstoreManagerImpl
+	 */
 	public BookstoreManagerJPAModule(EntityManagerFactory emFactory) {
 		super();
 		this.emFactory = emFactory;

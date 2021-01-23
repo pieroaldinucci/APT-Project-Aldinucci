@@ -24,21 +24,36 @@ import piero.aldinucci.apt.bookstore.model.Book;
 import piero.aldinucci.apt.bookstore.view.BookView;
 import java.awt.Color;
 
+/**
+ * 
+ * @author Piero Aldinucci
+ *
+ */
 public class BookSwingView extends JPanel implements BookView {
 
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-
+	/**
+	 * 
+	 */
 	private transient BookstoreController controller;
-
+	/**
+	 * 
+	 */
 	private DefaultListModel<Book> bookModelList;
-
+	/**
+	 * 
+	 */
 	private JButton btnDelete;
-
+	/**
+	 * 
+	 */
 	private JList<Book> bookJList;
-
+	/**
+	 * 
+	 */
 	private JLabel errorLabel;
 
 	/**
@@ -49,7 +64,7 @@ public class BookSwingView extends JPanel implements BookView {
 	@Inject
 	public BookSwingView(@Assisted BookstoreController controller) {
 		this.controller = controller;
-		
+
 		GridBagLayout gridBagLayout = new GridBagLayout();
 		gridBagLayout.columnWidths = new int[] { 30, 150, 150, 30, 0 };
 		gridBagLayout.rowHeights = new int[] { 30, 100, 30, 30, 0 };
@@ -64,6 +79,9 @@ public class BookSwingView extends JPanel implements BookView {
 
 	}
 
+	/**
+	 * 
+	 */
 	private void createErrorLabel() {
 		errorLabel = new JLabel("");
 		errorLabel.setForeground(Color.RED);
@@ -76,6 +94,9 @@ public class BookSwingView extends JPanel implements BookView {
 		add(errorLabel, gbclblNewLabel);
 	}
 
+	/**
+	 * 
+	 */
 	private void createDeleteButton() {
 		btnDelete = new JButton("Delete");
 		btnDelete.addActionListener(e -> {
@@ -91,6 +112,9 @@ public class BookSwingView extends JPanel implements BookView {
 		add(btnDelete, gbcbtnDelete);
 	}
 
+	/**
+	 * 
+	 */
 	private void createNewButton() {
 		JButton btnNewButton = new JButton("New");
 		btnNewButton.setName("NewBook");
@@ -102,6 +126,9 @@ public class BookSwingView extends JPanel implements BookView {
 		add(btnNewButton, gbcbtnNewButton);
 	}
 
+	/**
+	 * 
+	 */
 	private void createList() {
 		bookModelList = new DefaultListModel<>();
 		bookJList = new JList<>();
@@ -129,9 +156,15 @@ public class BookSwingView extends JPanel implements BookView {
 		add(bookJList, gbclist);
 	}
 
+	/**
+	 * Generate a string to be displayed in the book list
+	 * 
+	 * @param book object to be displayed
+	 * @return resulting string
+	 */
 	private String getDisplayString(Book book) {
-		return book.toString()+"; Authors: "+book.getAuthors().stream()
-				.map(Author::getName).collect(Collectors.joining(" - "));
+		return book.toString() + "; Authors: "
+				+ book.getAuthors().stream().map(Author::getName).collect(Collectors.joining(" - "));
 	}
 
 	@Override
@@ -146,7 +179,6 @@ public class BookSwingView extends JPanel implements BookView {
 		clearErrorLabel();
 	}
 
-
 	@Override
 	public void bookRemoved(Book book) {
 		bookModelList.removeElement(book);
@@ -155,13 +187,21 @@ public class BookSwingView extends JPanel implements BookView {
 
 	@Override
 	public void showError(String message, Book book) {
-		errorLabel.setText(message+": "+book);
+		errorLabel.setText(message + ": " + book);
 	}
 
+	/**
+	 * Made for testing purposes
+	 * 
+	 * @return underlying model list of alla vailable books
+	 */
 	DefaultListModel<Book> getBookModelList() {
 		return bookModelList;
 	}
 
+	/**
+	 * 
+	 */
 	private void clearErrorLabel() {
 		errorLabel.setText(" ");
 	}

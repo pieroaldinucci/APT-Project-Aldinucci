@@ -16,10 +16,19 @@ import piero.aldinucci.apt.bookstore.view.swing.AuthorSwingView;
 import piero.aldinucci.apt.bookstore.view.swing.BookSwingView;
 import piero.aldinucci.apt.bookstore.view.swing.ComposeBookSwingView;
 
+/**
+ * 
+ * @author Piero Aldinucci
+ *
+ */
 public class BookstoreControllerSwingModule extends AbstractModule{
 	
 	private AbstractModule serviceLayerModule;
 
+	/**
+	 * 
+	 * @param serviceLayerModule a module that can create an instance of BookStoreManager
+	 */
 	public BookstoreControllerSwingModule(AbstractModule serviceLayerModule) {
 		super();
 		this.serviceLayerModule = serviceLayerModule;

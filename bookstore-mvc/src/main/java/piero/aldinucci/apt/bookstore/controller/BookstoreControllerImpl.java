@@ -13,6 +13,11 @@ import piero.aldinucci.apt.bookstore.view.AuthorView;
 import piero.aldinucci.apt.bookstore.view.BookView;
 import piero.aldinucci.apt.bookstore.view.ComposeBookView;
 
+/**
+ * 
+ * @author Piero Aldinucci
+ *
+ */
 public class BookstoreControllerImpl implements BookstoreController {
 
 	private static final Logger LOGGER = LogManager.getLogger();
@@ -28,6 +33,10 @@ public class BookstoreControllerImpl implements BookstoreController {
 	
 	private BookstoreManager manager;
 	
+	/**
+	 * 
+	 * @param manager the service layer that handles interaction with the underlying DBS
+	 */
 	@Inject
 	public BookstoreControllerImpl(BookstoreManager manager) {
 		this.manager = manager;
@@ -89,34 +98,64 @@ public class BookstoreControllerImpl implements BookstoreController {
 		bookView.bookAdded(manager.newBook(book));
 	}
 	
+	/**
+	 * 
+	 */
 	private void showAllAuthors() {
 		authorView.showAllAuthors(manager.getAllAuthors());
 	}
 	
+	/**
+	 * 
+	 */
 	private void showAllBooks() {
 		bookView.showAllBooks(manager.getAllBooks());
 	}
 
+	/**
+	 * 
+	 * @param composeBookView view to manage
+	 */
 	public void setComposeBookView(ComposeBookView composeBookView) {
 		this.composeBookView = composeBookView;
 	}
 
+	/**
+	 * 
+	 * @param bookView  view to manage
+	 */
 	public void setBookView(BookView bookView) {
 		this.bookView = bookView;
 	}
 
+	/**
+	 * 
+	 * @param authorView  view to manage
+	 */
 	public void setAuthorView(AuthorView authorView) {
 		this.authorView = authorView;
 	}
 	
+	/**
+	 * 
+	 * @return managed view
+	 */
 	public AuthorView getAuthorView() {
 		return authorView;
 	}
 	
+	/**
+	 * 
+	 * @return managed view
+	 */
 	public BookView getBookView() {
 		return bookView;
 	}
 	
+	/**
+	 * 
+	 * @return managed view
+	 */
 	public ComposeBookView getComposeBookView() {
 		return composeBookView;
 	}

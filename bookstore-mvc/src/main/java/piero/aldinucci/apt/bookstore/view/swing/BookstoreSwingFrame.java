@@ -8,12 +8,20 @@ import javax.swing.JTabbedPane;
 import javax.swing.SwingConstants;
 import javax.swing.border.EmptyBorder;
 
+/**
+ * 
+ * @author Piero Aldinucci
+ *
+ */
 public class BookstoreSwingFrame extends JFrame {
 
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
+	/**
+	 * 
+	 */
 	private JPanel contentPane;
 
 	/**
