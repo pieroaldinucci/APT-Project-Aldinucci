@@ -9,6 +9,11 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToMany;
 
+/**
+ * 
+ *
+ */
+
 @Entity
 public class Author {
 
@@ -21,35 +26,68 @@ public class Author {
 	@ManyToMany(fetch = FetchType.EAGER)
 	private Set<Book> books;
 
+	/**
+	 * Constructor without argument, needed by JPA Entity.
+	 */
 	public Author() {
 	}
 
+	/**
+	 * 
+	 * @param id The identifier and primary key of the model. 
+	 * @param name Descriptive name of the Author
+	 * @param books Collection of all books wrote by the author.
+	 */
 	public Author(Long id, String name, Set<Book> books) {
 		this.id = id;
 		this.name = name;
 		this.books = books;
 	}
-
+	
+	/**
+	 * 
+	 * @return identifier of the entity
+	 */
 	public Long getId() {
 		return id;
 	}
-
+	
+	/**
+	 * 
+	 * @param id identifier of the entity
+	 */
 	public void setId(Long id) {
 		this.id = id;
 	}
 
+	/**
+	 * 
+	 * @return descriptive name
+	 */
 	public String getName() {
 		return name;
 	}
 
+	/**
+	 * 
+	 * @param name descriptive name
+	 */
 	public void setName(String name) {
 		this.name = name;
 	}
 
+	/**
+	 * 
+	 * @return Collection of Books wrote by the author
+	 */
 	public Set<Book> getBooks() {
 		return books;
 	}
 
+	/**
+	 * 
+	 * @param books Collection of Books wrote by the author
+	 */
 	public void setBooks(Set<Book> books) {
 		this.books = books;
 	}

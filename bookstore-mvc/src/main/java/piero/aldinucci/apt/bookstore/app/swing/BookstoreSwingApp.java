@@ -23,6 +23,11 @@ import piero.aldinucci.apt.bookstore.view.swing.AuthorSwingView;
 import piero.aldinucci.apt.bookstore.view.swing.BookSwingView;
 import piero.aldinucci.apt.bookstore.view.swing.BookstoreSwingFrame;
 
+/**
+ * 
+ * @author Piero Aldinucci
+ *
+ */
 @Command(mixinStandardHelpOptions = true)
 public class BookstoreSwingApp implements Callable<Void> {
 
@@ -43,13 +48,21 @@ public class BookstoreSwingApp implements Callable<Void> {
 	@Option(names = {"-p", "--password" }, description = { "Postgresql password" })
 	private String password;
 	
-	@Option(names = {"-c", "--create" }, description = { "Create database if not present" })
+	@Option(names = {"-c", "--create" }, description = { "Create database tables if not present" })
 	private boolean createDb;
 
+	/**
+	 * 
+	 * @param args command line arguments
+	 */
 	public static void main(String[] args) {
 		new CommandLine(new BookstoreSwingApp()).execute(args);
 	}
-
+	
+	/**
+	 * 
+	 * @return an instance of the persistence context interface
+	 */
 	private EntityManagerFactory getEntityManagerFactory() {
 		String propertyJdbcUrl = "jdbc:postgresql://" + host + ":" + port + "/" + databaseName;
 
@@ -89,34 +102,5 @@ public class BookstoreSwingApp implements Callable<Void> {
 		});
 		return null;
 	}
-	
-	//No Guice version
-//	@Override
-//	public Void call() throws Exception {
-//		EventQueue.invokeLater(() -> {			
-//			try {
-//				emFactory = getEntityManagerFactory();
-//				
-//				BookstoreManagerImpl manager = new BookstoreManagerImpl(
-//						new TransactionManagerJPA(emFactory, new RepositoriesJPAFactoryImpl()));
-//				
-//				BookstoreControllerImpl controller = new BookstoreControllerImpl(manager);
-//				AuthorSwingView authorView = new AuthorSwingView(controller);
-//				BookSwingView bookView = new BookSwingView(controller);
-//				ComposeBookSwingView composeBook = new ComposeBookSwingView(controller);
-//				controller.setAuthorView(authorView);
-//				controller.setBookView(bookView);
-//				controller.setComposeBookView(composeBook);
-//				BookstoreSwingFrame frame = new BookstoreSwingFrame(authorView, bookView);
-//				
-//				controller.allAuthors();
-//				controller.allBooks();
-//				frame.setVisible(true);
-//			} catch (Exception e) {
-//				e.printStackTrace();
-//			}
-//		});
-//		return null;
-//	}
 
 }

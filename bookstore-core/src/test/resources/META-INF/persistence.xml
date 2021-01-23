@@ -8,14 +8,14 @@
 
 
 	<persistence-unit
-		name="apt.project.bookstore"
+		name="apt.project.bookstore.unitTest"
 		transaction-type="RESOURCE_LOCAL">
 		
-		<description>test version of the persistence unit.</description>
+		<description>unit test version of the persistence unit.</description>
 
 		<provider>org.hibernate.jpa.HibernatePersistenceProvider</provider>
 		
-		<!--  if persistence.xml isn't in the the main folder it cannot found the entities
+		<!--  if persistence.xml isn't in the the main folder it cannot fiund the entities
 			so we have to tell him where to find it -->
 		<class>piero.aldinucci.apt.bookstore.model.Book</class>
 		<class>piero.aldinucci.apt.bookstore.model.Author</class>
@@ -24,7 +24,8 @@
 
 			<property name="javax.persistence.schema-generation.database.action" value="drop-and-create"/>
 
-			<property name="javax.persistence.schema-generation.create-database-schemas" value="true"/>
+			<!-- no need to generate schemas because we create containers on the fly during tests -->
+			<property name="javax.persistence.schema-generation.create-database-schemas" value="false"/>
 
 			<property name="javax.persistence.jdbc.url" value="jdbc:hsqldb:mem:unit-testing-jpa" />
 			<property name="javax.persistence.jdbc.driver" value="org.hsqldb.jdbcDriver" />
@@ -32,13 +33,41 @@
 			<property name="javax.persistence.jdbc.user" value="testUser" />
 			<property name="javax.persistence.jdbc.password" value="secret" />
 
+ 			<!-- no need of SQL logs because when needed we'll show them with log4j -->
+			<property name="hibernate.show_sql" value="false" />
+			<!--  format the SQL to make it readable, useful also when using log4j -->
+			<property name="hibernate.format_sql" value="true" />
+			<!--  statistics give metrics on hibernate perfomance -->
+			<property name="hibernate.generate_statistics" value="false"/>
+		</properties>
 
-			<property name="hibernate.show_sql" value="false" /> <!-- show SQL logs -->
-			<property name="hibernate.format_sql" value="true" /><!--  format the SQL to make it readable -->
-			<!-- 
-			<property name="hibernate.generate.statistics" value="true"/>
-			-->			
+
+	</persistence-unit>
+	
+		<persistence-unit
+		name="apt.project.bookstore.integrationTest"
+		transaction-type="RESOURCE_LOCAL">
+		
+		<description>integration test version of the persistence unit.</description>
+
+		<provider>org.hibernate.jpa.HibernatePersistenceProvider</provider>
+
+		<class>piero.aldinucci.apt.bookstore.model.Book</class>
+		<class>piero.aldinucci.apt.bookstore.model.Author</class>
+		
+		<properties>
+
+			<property name="javax.persistence.schema-generation.database.action" value="drop-and-create"/>
+			<property name="javax.persistence.jdbc.url" value="jdbc:postgresql://localhost:5432/projectAPTTestDb" />
+			<property name="javax.persistence.jdbc.driver" value="org.postgresql.Driver" />
+			<property name="hibernate.dialect" value="org.hibernate.dialect.PostgreSQL95Dialect"/>
+			<property name="javax.persistence.jdbc.user" value="testUser" />
+			<property name="javax.persistence.jdbc.password" value="secret" />
+
+			<property name="hibernate.show_sql" value="false" /> 
+			<property name="hibernate.format_sql" value="true" />
 		</properties>
 
 	</persistence-unit>
+
 </persistence>

@@ -11,13 +11,15 @@
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<maven.compiler.source>1.8</maven.compiler.source>
 		<maven.compiler.target>1.8</maven.compiler.target>
+		<!-- This property will be changed to true if Java 9 or more is detected.
+			It's used to activate Coveralls plugin only when running Java 8 -->
 		<jdk9-or-more>false</jdk9-or-more>
 		<sonar.exclusions>**/model/*.java</sonar.exclusions>
 		<sonar.coverage.exclusions>
 			**/exceptions/*.*,
 			**/app/swing/*.*
 		</sonar.coverage.exclusions>
-		<sonar.issue.ignore.multicriteria>e1,e2,e4</sonar.issue.ignore.multicriteria>
+		<sonar.issue.ignore.multicriteria>e1,e2,e3</sonar.issue.ignore.multicriteria>
 		<!-- Rule: inheritance depth larger than 5 -->
 		<sonar.issue.ignore.multicriteria.e1.ruleKey>java:S110</sonar.issue.ignore.multicriteria.e1.ruleKey>
 		<sonar.issue.ignore.multicriteria.e1.resourceKey>**/*.java</sonar.issue.ignore.multicriteria.e1.resourceKey>
@@ -25,8 +27,8 @@
 		<sonar.issue.ignore.multicriteria.e2.ruleKey>java:S2699</sonar.issue.ignore.multicriteria.e2.ruleKey>
 		<sonar.issue.ignore.multicriteria.e2.resourceKey>**/*.java</sonar.issue.ignore.multicriteria.e2.resourceKey>
 		<!-- Class names for *E2E test classes -->
-		<sonar.issue.ignore.multicriteria.e4.ruleKey>java:S3577</sonar.issue.ignore.multicriteria.e4.ruleKey>
-		<sonar.issue.ignore.multicriteria.e4.resourceKey>**/app/swing/*.java</sonar.issue.ignore.multicriteria.e4.resourceKey>
+		<sonar.issue.ignore.multicriteria.e3.ruleKey>java:S3577</sonar.issue.ignore.multicriteria.e3.ruleKey>
+		<sonar.issue.ignore.multicriteria.e3.resourceKey>**/app/swing/*.java</sonar.issue.ignore.multicriteria.e3.resourceKey>
 		
 	</properties>
 
@@ -53,7 +55,8 @@
 			<dependency>
 				<groupId>org.postgresql</groupId>
 				<artifactId>postgresql</artifactId>
-				<version>42.2.14</version>
+				<!-- Version 42.2.18 can give errors of classes not found after installation -->
+				<version>42.2.14</version> 
 			</dependency>
 			<dependency>
 				<groupId>org.hibernate</groupId>
@@ -147,20 +150,6 @@
 									<source>src/it/java</source>
 									<source>src/e2e/java</source>
 								</sources>
-							</configuration>
-						</execution>
-						<execution>
-							<id>add-test-resource</id>
-							<phase>generate-test-resources</phase>
-							<goals>
-								<goal>add-test-resource</goal>
-							</goals>
-							<configuration>
-								<resources>
-									<resource>
-										<directory>src/it/resources</directory>
-									</resource>
-								</resources>
 							</configuration>
 						</execution>
 					</executions>
@@ -257,32 +246,11 @@
     				<artifactId>maven-assembly-plugin</artifactId>
 					<version>3.3.0</version>
 				</plugin>
-				<!-- Not used: to be removed -->
-				<plugin>
-					<groupId>org.apache.maven.plugins</groupId>
-					<artifactId>maven-shade-plugin</artifactId>
-					<version>3.2.4</version>
-					<executions>
-						<execution>
-							<phase>package</phase>
-							<goals>
-								<goal>shade</goal>
-							</goals>
-							<configuration>
-								<minimizeJar>false</minimizeJar>
-								<transformers>
-									<transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
-										<mainClass>piero.aldinucci.apt.bookstore.app.swing.BookstoreSwingApp</mainClass>
-									</transformer>
-								</transformers>
-							</configuration>
-						</execution>
-					</executions>
-				</plugin>
 				<plugin>
 					<groupId>org.apache.maven.plugins</groupId>
 					<artifactId>maven-javadoc-plugin</artifactId>
-					<version>3.2.0</version>
+					<!-- Higher versions will give errors on Java 8  -->
+					<version>3.0.1</version>
 					<executions>
 				    	<execution>
 				    		<id>attach-javadoc</id>
@@ -304,6 +272,14 @@
     						</goals>
     					</execution>
     				</executions>
+				</plugin>
+				<plugin>
+					<groupId>org.codehaus.mojo</groupId>
+					<artifactId>exec-maven-plugin</artifactId>
+					<version>1.6.0</version>
+					<configuration>
+						<skip>${jdk9-or-more}</skip>
+					</configuration>
 				</plugin>
 			</plugins>
 		</pluginManagement>

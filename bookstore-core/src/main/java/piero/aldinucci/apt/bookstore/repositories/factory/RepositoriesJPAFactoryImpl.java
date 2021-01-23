@@ -7,6 +7,12 @@ import piero.aldinucci.apt.bookstore.repositories.AuthorRepository;
 import piero.aldinucci.apt.bookstore.repositories.BookJPARepository;
 import piero.aldinucci.apt.bookstore.repositories.BookRepository;
 
+/**
+ * 
+ * @author Piero Aldinucci
+ *
+ */
+
 public class RepositoriesJPAFactoryImpl implements RepositoriesJPAFactory {
 
 	@Override

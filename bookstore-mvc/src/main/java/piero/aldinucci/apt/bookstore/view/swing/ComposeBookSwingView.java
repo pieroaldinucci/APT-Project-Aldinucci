@@ -29,29 +29,62 @@ import piero.aldinucci.apt.bookstore.model.Author;
 import piero.aldinucci.apt.bookstore.model.Book;
 import piero.aldinucci.apt.bookstore.view.ComposeBookView;
 
+/**
+ * 
+ * @author Piero Aldinucci
+ *
+ */
 public class ComposeBookSwingView extends JDialog implements ComposeBookView {
 
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-
+	/**
+	 * 
+	 */
 	private transient BookstoreController controller;
-	
+	/**
+	 * 
+	 */
 	private final JPanel contentPanel = new JPanel();
+	/**
+	 * 
+	 */
 	private JTextField textField;
-
+	/**
+	 * 
+	 */
 	private DefaultListModel<Author> modelAvailableAuthors;
+	/**
+	 * 
+	 */
 	private DefaultListModel<Author> modelBookAuthors;
+	/**
+	 * 
+	 */
 	private JButton addAuthorButton;
+	/**
+	 * 
+	 */
 	private JButton removeAuthorButton;
+	/**
+	 * 
+	 */
 	private JList<Author> availableAuthors;
+	/**
+	 * 
+	 */
 	private JList<Author> bookAuthors;
-
+	/**
+	 * 
+	 */
 	private JButton okButton;
 
 	/**
 	 * Create the dialog.
+	 * 
+	 * @param controller unit for the MVC architecture.
 	 */
 	@Inject
 	public ComposeBookSwingView(@Assisted BookstoreController controller) {
@@ -80,7 +113,10 @@ public class ComposeBookSwingView extends JDialog implements ComposeBookView {
 		createRemoveAuthorButton();
 		createExitButtonPane();
 	}
-
+	
+	/**
+	 * 
+	 */
 	private void createExitButtonPane() {
 		JPanel buttonPane = new JPanel();
 		buttonPane.setLayout(new FlowLayout(FlowLayout.RIGHT));
@@ -89,6 +125,10 @@ public class ComposeBookSwingView extends JDialog implements ComposeBookView {
 		createCancelButton(buttonPane);
 	}
 
+	/**
+	 * 
+	 * @param buttonPane panel where the button should be created
+	 */
 	private void createCancelButton(JPanel buttonPane) {
 		JButton cancelButton = new JButton("Cancel");
 		cancelButton.addActionListener(e -> setVisible(false));
@@ -96,6 +136,10 @@ public class ComposeBookSwingView extends JDialog implements ComposeBookView {
 		buttonPane.add(cancelButton);
 	}
 
+	/**
+	 * 
+	 * @param buttonPane panel where the button should be created
+	 */
 	private void createOKButton(JPanel buttonPane) {
 		okButton = new JButton("OK");
 		okButton.addActionListener(e -> {
@@ -110,6 +154,9 @@ public class ComposeBookSwingView extends JDialog implements ComposeBookView {
 		getRootPane().setDefaultButton(okButton);
 	}
 
+	/**
+	 * 
+	 */
 	private void createRemoveAuthorButton() {
 		removeAuthorButton = new JButton(">");
 		removeAuthorButton.addActionListener(e -> {
@@ -126,6 +173,9 @@ public class ComposeBookSwingView extends JDialog implements ComposeBookView {
 		contentPanel.add(removeAuthorButton, gbcbutton);
 	}
 
+	/**
+	 * 
+	 */
 	private void createDescriptionLabels() {
 		JLabel lblTitle = new JLabel("Title");
 		GridBagConstraints gbclblTitle = new GridBagConstraints();
@@ -152,6 +202,9 @@ public class ComposeBookSwingView extends JDialog implements ComposeBookView {
 		contentPanel.add(lblAuthors, gbclblAuthors);
 	}
 
+	/**
+	 * 
+	 */
 	private void createAvailableAuthorsList() {
 		modelAvailableAuthors = new DefaultListModel<>();
 		availableAuthors = new JList<>();
@@ -168,6 +221,9 @@ public class ComposeBookSwingView extends JDialog implements ComposeBookView {
 		contentPanel.add(availableAuthors, gbcavailableAuthors);
 	}
 
+	/**
+	 * 
+	 */
 	private void createAddAuthorButton() {
 		addAuthorButton = new JButton("<");
 		addAuthorButton.addActionListener(e -> {
@@ -184,6 +240,9 @@ public class ComposeBookSwingView extends JDialog implements ComposeBookView {
 		contentPanel.add(addAuthorButton, gbcbutton);
 	}
 
+	/**
+	 * 
+	 */
 	private void createBookAuthorsList() {
 		modelBookAuthors = new DefaultListModel<>();
 		bookAuthors = new JList<>();
@@ -200,6 +259,9 @@ public class ComposeBookSwingView extends JDialog implements ComposeBookView {
 		contentPanel.add(bookAuthors, gbcbookAuthors);
 	}
 
+	/**
+	 * 
+	 */
 	private void createTextField() {
 		textField = new JTextField();
 		textField.addKeyListener(new KeyAdapter() {
@@ -219,10 +281,18 @@ public class ComposeBookSwingView extends JDialog implements ComposeBookView {
 		textField.setColumns(10);
 	}
 
+	/**
+	 * Made specifically for testing purposes
+	 * @return Underlying model list for available authors
+	 */
 	DefaultListModel<Author> getModelAvailableAuthors() {
 		return modelAvailableAuthors;
 	}
 
+	/**
+	 * Made specifically for testing purposes
+	 * @return underlying model list for authors that should be contained in the composed book
+	 */
 	DefaultListModel<Author> getModelBookAuthors() {
 		return modelBookAuthors;
 	}

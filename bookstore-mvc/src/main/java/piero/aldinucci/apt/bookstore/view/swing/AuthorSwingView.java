@@ -26,6 +26,11 @@ import com.google.inject.assistedinject.Assisted;
 
 import java.awt.Color;
 
+/**
+ * 
+ * @author Piero Aldinucci
+ *
+ */
 public class AuthorSwingView extends JPanel implements AuthorView {
 	/**
 	 * 
@@ -33,23 +38,42 @@ public class AuthorSwingView extends JPanel implements AuthorView {
 	private static final long serialVersionUID = 1L;
 
 	private transient BookstoreController controller;
+	/**
+	 * 
+	 */
 	private JTextField nameTextField;
+	/**
+	 * 
+	 */
 	private JButton btnAddAuthor;
-	private DefaultListModel<Author> authorListModel;
-
-	private JList<Author> authorList;
-
+	/**
+	 * 
+	 */
 	private JButton btnDeleteAuthor;
-
+	/**
+	 * 
+	 */
 	private JLabel errorLabel;
 
 	/**
+	 * 
+	 */
+	private DefaultListModel<Author> authorListModel;
+
+	/**
+	 * 
+	 */
+	private JList<Author> authorList;
+
+	/**
 	 * Create the panel.
+	 * 
+	 * @param controller unit for the MVC architecture.
 	 */
 	@Inject
 	public AuthorSwingView(@Assisted BookstoreController controller) {
 		this.controller = controller;
-		
+
 		GridBagLayout gridBagLayout = new GridBagLayout();
 		gridBagLayout.columnWidths = new int[] { 20, 200, 30, 20 };
 		gridBagLayout.rowHeights = new int[] { 27, 20, 90, 30, 21, 0 };
@@ -66,6 +90,9 @@ public class AuthorSwingView extends JPanel implements AuthorView {
 
 	}
 
+	/**
+	 * 
+	 */
 	private void createErrorLabel() {
 		errorLabel = new JLabel(" ");
 		errorLabel.setForeground(Color.RED);
@@ -77,6 +104,9 @@ public class AuthorSwingView extends JPanel implements AuthorView {
 		add(errorLabel, gbclabel);
 	}
 
+	/**
+	 * 
+	 */
 	private void createDeleteButton() {
 		btnDeleteAuthor = new JButton("Delete");
 		btnDeleteAuthor.addActionListener(e -> controller.deleteAuthor(authorList.getSelectedValue()));
@@ -89,6 +119,9 @@ public class AuthorSwingView extends JPanel implements AuthorView {
 		add(btnDeleteAuthor, gbcbtnDelete);
 	}
 
+	/**
+	 * 
+	 */
 	private void createList() {
 		authorListModel = new DefaultListModel<>();
 		authorList = new JList<>(authorListModel);
@@ -103,9 +136,13 @@ public class AuthorSwingView extends JPanel implements AuthorView {
 		add(authorList, gbclist);
 	}
 
+	/**
+	 * 
+	 */
 	private void createAddButton() {
 		btnAddAuthor = new JButton("Add");
-		btnAddAuthor.addActionListener(e -> controller.newAuthor(new Author(null, nameTextField.getText(), new HashSet<>())));
+		btnAddAuthor.addActionListener(
+				e -> controller.newAuthor(new Author(null, nameTextField.getText(), new HashSet<>())));
 		btnAddAuthor.setEnabled(false);
 		btnAddAuthor.setName("AddAuthor");
 		GridBagConstraints gbcbtnAdd = new GridBagConstraints();
@@ -115,6 +152,9 @@ public class AuthorSwingView extends JPanel implements AuthorView {
 		add(btnAddAuthor, gbcbtnAdd);
 	}
 
+	/**
+	 * 
+	 */
 	private void createTextField() {
 		nameTextField = new JTextField();
 		nameTextField.addKeyListener(new KeyAdapter() {
@@ -133,6 +173,9 @@ public class AuthorSwingView extends JPanel implements AuthorView {
 		nameTextField.setColumns(10);
 	}
 
+	/**
+	 * 
+	 */
 	private void createNameLabel() {
 		JLabel lblName = new JLabel("Name");
 		GridBagConstraints gbclblName = new GridBagConstraints();
@@ -170,10 +213,18 @@ public class AuthorSwingView extends JPanel implements AuthorView {
 
 	}
 
+	/**
+	 * Made for testing purposes
+	 * 
+	 * @return underlying author model list
+	 */
 	DefaultListModel<Author> getAuthorListModel() {
 		return authorListModel;
 	}
 
+	/**
+	 * 
+	 */
 	private void clearErrorLabel() {
 		errorLabel.setText("");
 	}

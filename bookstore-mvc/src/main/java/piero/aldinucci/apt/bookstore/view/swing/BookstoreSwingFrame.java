@@ -8,16 +8,27 @@ import javax.swing.JTabbedPane;
 import javax.swing.SwingConstants;
 import javax.swing.border.EmptyBorder;
 
+/**
+ * 
+ * @author Piero Aldinucci
+ *
+ */
 public class BookstoreSwingFrame extends JFrame {
 
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
+	/**
+	 * 
+	 */
 	private JPanel contentPane;
 
 	/**
 	 * Create the frame.
+	 * 
+	 * @param authorPanel view class for authors of the MVC architecture
+	 * @param bookPanel view class for books of the MVC architecture
 	 */
 	public BookstoreSwingFrame(JPanel authorPanel, JPanel bookPanel) {
 		setTitle("Bookstore View");
