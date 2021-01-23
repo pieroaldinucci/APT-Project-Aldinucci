@@ -1,6 +1,5 @@
 package piero.aldinucci.apt.bookstore.service;
 
-import java.util.HashSet;
 import java.util.List;
 
 import com.google.inject.Inject;
@@ -86,46 +85,6 @@ public class BookstoreManagerImpl implements BookstoreManager {
 	@Override
 	public List<Book> getAllBooks() {
 		return transactionManager.doInTransaction((authorR, bookR) -> bookR.findAll());
-	}
-
-	@Override
-	public void update(Author author) {
-		transactionManager.doInTransaction((authorR, bookR) -> {
-			Author oldAuthor = authorR.findById(author.getId()).orElseThrow(() -> 
-					new BookstorePersistenceException("Cannot find author to update with id: " + author.getId()));
-			
-			HashSet<Book> fullSet = new HashSet<>(oldAuthor.getBooks());
-			authorR.update(author);
-			
-			fullSet.addAll(author.getBooks());
-			fullSet.stream().forEach(b -> {
-				b.getAuthors().remove(oldAuthor);
-				if (author.getBooks().contains(b))
-					b.getAuthors().add(author);
-				bookR.update(b);
-			});
-			return null;
-		});
-	}
-
-	@Override
-	public void update(Book book) {
-		transactionManager.doInTransaction((authorR, bookR) -> {
-			Book oldBook = bookR.findById(book.getId()).orElseThrow(() -> 
-					new BookstorePersistenceException("Cannot find book to update with id: " + book.getId()));
-			
-			HashSet<Author> fullSet = new HashSet<>(oldBook.getAuthors());
-			bookR.update(book);
-			
-			fullSet.addAll(book.getAuthors());
-			fullSet.stream().forEach(a -> {
-				a.getBooks().remove(oldBook);
-				if (book.getAuthors().contains(a))
-					a.getBooks().add(book);
-				authorR.update(a);
-			});
-			return null;
-		});
 	}
 
 }
