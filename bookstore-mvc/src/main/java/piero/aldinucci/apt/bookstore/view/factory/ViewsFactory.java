@@ -6,6 +6,8 @@ import piero.aldinucci.apt.bookstore.view.BookView;
 import piero.aldinucci.apt.bookstore.view.ComposeBookView;
 
 /**
+ * There's no need to implement this interface, since it's managed
+ * by Google Guice.
  * 
  * @author Piero Aldinucci
  *

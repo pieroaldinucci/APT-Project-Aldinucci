@@ -12,6 +12,7 @@ import piero.aldinucci.apt.bookstore.transaction.TransactionManager;
 import piero.aldinucci.apt.bookstore.transaction.TransactionManagerJPA;
 
 /**
+ * This module is used to get an instance of BookstoreManagerImpl
  * 
  * @author Piero Aldinucci
  *

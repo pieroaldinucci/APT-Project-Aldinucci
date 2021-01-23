@@ -13,15 +13,20 @@ import piero.aldinucci.apt.bookstore.model.Book;
 public interface BookstoreManager {
 	/**
 	 * 
-	 * @param author Author to add in the database
-	 * @return a copy of the Author, outside the persistence context, saved in the database.  
+	 * Save an author with an empty collection of books into the database.
+	 * 
+	 * @param author Author to add in the database, it's book collection must be
+	 *               empty
+	 * @return a copy of the Author, outside the persistence context, saved in the
+	 *         database.
 	 */
 	public Author newAuthor(Author author);
 
 	/**
 	 * 
 	 * @param book Book to add in the database
-	 * @return a copy of the Book, outside the persistence context, saved in the database.
+	 * @return a copy of the Book, outside the persistence context, saved in the
+	 *         database.
 	 */
 	public Book newBook(Book book);
 
@@ -48,16 +53,4 @@ public interface BookstoreManager {
 	 * @return A collection of all the books present in the database.
 	 */
 	public List<Book> getAllBooks();
-
-	/**
-	 * 
-	 * @param author the entity to be updated in the database.
-	 */
-	public void update(Author author);
-
-	/**
-	 * 
-	 * @param book the entity to be updated in the database.
-	 */
-	public void update(Book book);
 }

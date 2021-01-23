@@ -17,6 +17,8 @@ import piero.aldinucci.apt.bookstore.view.swing.BookSwingView;
 import piero.aldinucci.apt.bookstore.view.swing.ComposeBookSwingView;
 
 /**
+ * This module is used to create an instance of BookstoreControllerImpl
+ * and to automatically resolve its circular dependencies.
  * 
  * @author Piero Aldinucci
  *
