@@ -7,7 +7,7 @@ matrix:
       - jdk: openjdk8
         env: MAVEN_ARGS="coveralls:report"
       # coveralls plugin doesn't work with jdk 11 even if it should
-      # assertj-swing will give reflection warnings with jdk11
+      # assertj-swing and guice will give reflection warnings with jdk11
       - jdk: openjdk11
         env: MAVEN_ARGS="sonar:sonar -Dsonar.projectKey=Predictabowl_APT-Project-Aldinucci"
 
@@ -33,8 +33,4 @@ cache:
       
       
 script:
-   #- ./travis-build
-#   - mvn -f bookstore-core/pom.xml clean verify org.pitest:pitest-maven:mutationCoverage $MAVEN_ARGS
-#   - mvn -f bookstore-core/pom.xml clean verify -Pjacoco $MAVEN_ARGS
-#   - mvn -f bookstore-parent/pom.xml clean verify -Pjacoco -Pmutation-test $MAVEN_ARGS
-   - mvn -f bookstore-parent/pom.xml clean verify -Pjacoco -Pe2e-test -Pmutation-test $MAVEN_ARGS
+   - mvn -f bookstore-parent/pom.xml clean verify -Pjacoco,e2e-test,mutation-test $MAVEN_ARGS

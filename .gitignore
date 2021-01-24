@@ -1,5 +1,6 @@
+# From git documentation: 
+# - If there is a separator at the beginning or middle (or both) of the pattern, then the pattern is relative to the directory level of the particular .gitignore file itself.
+ 
 target/
-bookstore-core/target/
-bookstore-mvc/target/
-bookstore-mvc/failed-gui-tests/
+failed-gui-tests/
 *.class
