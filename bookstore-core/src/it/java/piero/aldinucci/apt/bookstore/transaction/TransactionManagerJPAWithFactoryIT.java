@@ -20,7 +20,7 @@ import piero.aldinucci.apt.bookstore.model.Book;
 import piero.aldinucci.apt.bookstore.repositories.factory.RepositoriesJPAFactoryImpl;
 
 
-public class TransactionManagerJPAIT {
+public class TransactionManagerJPAWithFactoryIT {
 
 	private TransactionManager transactionManager;
 	private EntityManagerFactory emFactory;

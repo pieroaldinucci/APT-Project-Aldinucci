@@ -15,7 +15,7 @@ import piero.aldinucci.apt.bookstore.repositories.AuthorRepository;
 import piero.aldinucci.apt.bookstore.repositories.BookJPARepository;
 import piero.aldinucci.apt.bookstore.repositories.BookRepository;
 
-public class RepositoriesJPAFactoryImplTest {
+public class RepositoriesJPAFactoryImplIT {
 
 	
 	private RepositoriesJPAFactoryImpl factory;
@@ -24,7 +24,7 @@ public class RepositoriesJPAFactoryImplTest {
 	
 	@Before
 	public void setUp() {
-		emFactory = Persistence.createEntityManagerFactory("apt.project.bookstore.unitTest");
+		emFactory = Persistence.createEntityManagerFactory("apt.project.bookstore.integrationTest");
 		entityManager = emFactory.createEntityManager();
 
 		factory = new RepositoriesJPAFactoryImpl();

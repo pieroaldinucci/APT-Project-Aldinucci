@@ -18,7 +18,7 @@ import org.junit.Test;
 
 import piero.aldinucci.apt.bookstore.model.Book;
 
-public class BookJPARepositoryTest {
+public class BookJPARepositoryIT {
 
 	private BookJPARepository repository;
 	private EntityManagerFactory emFactory;
@@ -26,7 +26,7 @@ public class BookJPARepositoryTest {
 	
 	@Before
 	public void setUp() {
-		emFactory = Persistence.createEntityManagerFactory("apt.project.bookstore.unitTest");
+		emFactory = Persistence.createEntityManagerFactory("apt.project.bookstore.integrationTest");
 		entityManager = emFactory.createEntityManager();
 		
 		repository = new BookJPARepository(entityManager);

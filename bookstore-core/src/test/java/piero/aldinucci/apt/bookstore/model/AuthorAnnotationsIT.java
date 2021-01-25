@@ -13,13 +13,13 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-public class AuthorAnnotationsTest {
+public class AuthorAnnotationsIT {
 	
 	EntityManagerFactory emFactory;
 	
 	@Before
 	public void setUp() {
-		emFactory = Persistence.createEntityManagerFactory("apt.project.bookstore.unitTest");
+		emFactory = Persistence.createEntityManagerFactory("apt.project.bookstore.integrationTest");
 	}
 	
 	@After

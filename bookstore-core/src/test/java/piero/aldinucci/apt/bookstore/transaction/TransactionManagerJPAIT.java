@@ -31,7 +31,7 @@ import piero.aldinucci.apt.bookstore.repositories.BookRepository;
 import piero.aldinucci.apt.bookstore.repositories.factory.RepositoriesJPAFactory;
 
 
-public class TransactionManagerJPATest {
+public class TransactionManagerJPAIT {
 
 	@Mock
 	private RepositoriesJPAFactory repositoriesFactory;
@@ -49,7 +49,7 @@ public class TransactionManagerJPATest {
 	public void setUp() {
 		openMocks(this);
 		
-		emFactory = Persistence.createEntityManagerFactory("apt.project.bookstore.unitTest");
+		emFactory = Persistence.createEntityManagerFactory("apt.project.bookstore.integrationTest");
 		transactionManager = new TransactionManagerJPA(emFactory,repositoriesFactory);
 		
 		when(repositoriesFactory.createAuthorRepository(any())).thenReturn(authorRepository);
