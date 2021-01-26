@@ -29,7 +29,6 @@
 		<!-- Class names for *E2E test classes -->
 		<sonar.issue.ignore.multicriteria.e3.ruleKey>java:S3577</sonar.issue.ignore.multicriteria.e3.ruleKey>
 		<sonar.issue.ignore.multicriteria.e3.resourceKey>**/app/swing/*.java</sonar.issue.ignore.multicriteria.e3.resourceKey>
-		
 	</properties>
 
 	<modules>
@@ -122,6 +121,18 @@
 	</dependencyManagement>
 
 	<build>
+
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-failsafe-plugin</artifactId>
+			</plugin>
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>build-helper-maven-plugin</artifactId>
+			</plugin>
+		</plugins>
+
 		<pluginManagement>
 			<plugins>
 				<plugin>
