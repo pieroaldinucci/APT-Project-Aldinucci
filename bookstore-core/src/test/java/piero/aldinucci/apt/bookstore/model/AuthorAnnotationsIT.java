@@ -30,10 +30,8 @@ public class AuthorAnnotationsIT {
 	@Test
 	public void test_generatedID() {
 		Author author = new Author(null, "an Author", new HashSet<>());
-		Book book = new Book(null, "a Book", new HashSet<>());
 		EntityManager entityManager = emFactory.createEntityManager();
 		entityManager.getTransaction().begin();
-		entityManager.persist(book);
 		entityManager.persist(author);
 		entityManager.getTransaction().commit();
 		entityManager.close();

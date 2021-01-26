@@ -105,8 +105,8 @@
 								<arguments>
 									<argument>-jar</argument>
 									<argument>${project.build.directory}/${project.artifactId}-${project.version}-jar-with-dependencies.jar</argument>
-									<argument>-u=testUSer</argument>
-									<argument>-p=secret</argument>
+									<argument>-u=${postgres.test.username}</argument>
+									<argument>-p=${postgres.test.password}</argument>
 								</arguments>
 							</configuration>
 						</execution>

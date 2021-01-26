@@ -27,7 +27,7 @@
 			<property name="javax.persistence.jdbc.driver" value="org.postgresql.Driver" />
 			<property name="hibernate.dialect" value="org.hibernate.dialect.PostgreSQL95Dialect"/>
 			<property name="javax.persistence.jdbc.user" value="testUser" />
-			<property name="javax.persistence.jdbc.password" value="secret" />
+			<property name="javax.persistence.jdbc.password" value="password" />
 
  			<!-- no need of SQL logs because when needed we'll show them with log4j -->
 			<property name="hibernate.show_sql" value="false" /> 

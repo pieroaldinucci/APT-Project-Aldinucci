@@ -20,6 +20,8 @@ import piero.aldinucci.apt.bookstore.model.Book;
 
 public class BookJPARepositoryIT {
 
+	private static final String FIXTURE_TITLE1 = "Title1";
+	private static final String FIXTURE_TITLE2 = "Title2";
 	private BookJPARepository repository;
 	private EntityManagerFactory emFactory;
 	private EntityManager entityManager;
@@ -47,8 +49,8 @@ public class BookJPARepositoryIT {
 	
 	@Test
 	public void test_findAll_should_return_list_with_all_entities_in_presistence_context() {
-		Book book1 = persistBook("Title1");
-		Book book2 = persistBook("Title2");
+		Book book1 = persistBook(FIXTURE_TITLE1);
+		Book book2 = persistBook(FIXTURE_TITLE2);
 		
 		entityManager.getTransaction().begin();
 		List<Book> books = repository.findAll();
@@ -69,7 +71,7 @@ public class BookJPARepositoryIT {
 	
 	@Test
 	public void test_findById_when_id_exist_should_return_an_object_inside_presistance_context() {
-		Book pBook = persistBook("test name");
+		Book pBook = persistBook(FIXTURE_TITLE1);
 		
 		Optional<Book> found = repository.findById(pBook.getId());
 		
@@ -80,7 +82,7 @@ public class BookJPARepositoryIT {
 	
 	@Test
 	public void test_save_book_should_return_an_object_in_persistance_context_with_updated_id() {
-		Book bookToSave = new Book(null, "new Book", new HashSet<>());
+		Book bookToSave = new Book(null, FIXTURE_TITLE1, new HashSet<>());
 		EntityManager em2 = emFactory.createEntityManager();
 		
 		entityManager.getTransaction().begin();
@@ -99,7 +101,7 @@ public class BookJPARepositoryIT {
 	
 	@Test
 	public void test_save_new_book_with_an_id_should_throw_exception_and_not_persist() {
-		Book newBook = new Book(1L, "book title", new HashSet<>());
+		Book newBook = new Book(1L, FIXTURE_TITLE1, new HashSet<>());
 		
 		entityManager.getTransaction().begin();
 		assertThatThrownBy(() -> repository.save(newBook))
@@ -112,8 +114,8 @@ public class BookJPARepositoryIT {
 
 	@Test
 	public void test_update_book_with_existing_id() {
-		Book persistedBook = persistBook("title to edit");
-		Book modifiedBook = new Book(persistedBook.getId(), "modified title", new HashSet<>());
+		Book persistedBook = persistBook(FIXTURE_TITLE1);
+		Book modifiedBook = new Book(persistedBook.getId(), FIXTURE_TITLE2, new HashSet<>());
 		
 		entityManager.getTransaction().begin();
 		repository.update(modifiedBook);
@@ -128,7 +130,7 @@ public class BookJPARepositoryIT {
 	
 	@Test
 	public void test_update_with_null_id_should_throw_IllegalArgumentException() {
-		Book modifiedBook = new Book(null, "modified title", new HashSet<>());
+		Book modifiedBook = new Book(null, FIXTURE_TITLE1, new HashSet<>());
 		
 		entityManager.getTransaction().begin();
 		assertThatThrownBy(() -> repository.update(modifiedBook))
@@ -141,7 +143,7 @@ public class BookJPARepositoryIT {
 	
 	@Test
 	public void test_update_with_non_existant_id_should_not_save_into_db() {
-		Book nonExistantdBook = new Book(3L, "modified title", new HashSet<>());
+		Book nonExistantdBook = new Book(3L, FIXTURE_TITLE1, new HashSet<>());
 		
 		entityManager.getTransaction().begin();
 		repository.update(nonExistantdBook);
@@ -153,7 +155,7 @@ public class BookJPARepositoryIT {
 	
 	@Test
 	public void test_delete_book_success_should_return_Optional_of_the_book() {
-		Book bookToDelete = persistBook("Book to be deleted");
+		Book bookToDelete = persistBook(FIXTURE_TITLE1);
 		
 		entityManager.getTransaction().begin();
 		Optional<Book> deletedBook = repository.delete(bookToDelete.getId());

@@ -29,6 +29,11 @@ import piero.aldinucci.apt.bookstore.view.ComposeBookView;
 
 public class BookstoreControllerImplTest {
 	
+	private static final String FIXTURE_NAME_2 = "Author 2";
+	private static final String FIXTURE_NAME_1 = "An Author";
+	private static final String FIXTURE_TITLE_1 = "A book";
+	private static final String FIXTURE_TITLE_2 = "title 2";
+
 	@Mock
 	AuthorView authorView;
 	
@@ -64,7 +69,7 @@ public class BookstoreControllerImplTest {
 	
 	@Test
 	public void test_allBooks() {
-		List<Book> books= Arrays.asList(new Book(), new Book(1L,"title",null));
+		List<Book> books= Arrays.asList(new Book(), new Book(1L,FIXTURE_TITLE_1,null));
 		when(manager.getAllBooks()).thenReturn(books);
 
 		controller.allBooks();
@@ -74,8 +79,8 @@ public class BookstoreControllerImplTest {
 	
 	@Test
 	public void test_newBook() {
-		Book bookToAdd = new Book(null,"A book",new HashSet<>());
-		Book bookAdded = new Book(1L,"A book",new HashSet<>());
+		Book bookToAdd = new Book(null,FIXTURE_TITLE_1,new HashSet<>());
+		Book bookAdded = new Book(1L,FIXTURE_TITLE_1,new HashSet<>());
 		when(manager.newBook(isA(Book.class))).thenReturn(bookAdded);
 		
 		controller.newBook(bookToAdd);
@@ -88,8 +93,8 @@ public class BookstoreControllerImplTest {
 	
 	@Test
 	public void test_newAuthor() {
-		Author author = new Author(null, "An Author", new HashSet<>());
-		Author authorAdded = new Author(2L, "An Author", new HashSet<>());
+		Author author = new Author(null, FIXTURE_NAME_1, new HashSet<>());
+		Author authorAdded = new Author(2L, FIXTURE_NAME_1, new HashSet<>());
 		when(manager.newAuthor(isA(Author.class))).thenReturn(authorAdded);
 		
 		controller.newAuthor(author);
@@ -102,7 +107,7 @@ public class BookstoreControllerImplTest {
 	
 	@Test
 	public void test_deleteBook_successful() {
-		Book book = new Book(1L, "test book", new HashSet<>());
+		Book book = new Book(1L, FIXTURE_TITLE_1, new HashSet<>());
 		List<Author> authors = Lists.emptyList();
 		when(manager.getAllAuthors()).thenReturn(authors);
 		
@@ -118,10 +123,10 @@ public class BookstoreControllerImplTest {
 	
 	@Test
 	public void test_deleteBook_when_book_doesnt_exist() {
-		Book book = new Book(1L, "test book", new HashSet<>());
+		Book book = new Book(1L, FIXTURE_TITLE_1, new HashSet<>());
 		doThrow(BookstorePersistenceException.class)
 			.when(manager).deleteBook(anyLong());
-		List<Book> books = Arrays.asList(new Book(4L,"title",new HashSet<>()));
+		List<Book> books = Arrays.asList(new Book(4L, FIXTURE_TITLE_2,new HashSet<>()));
 		when(manager.getAllBooks()).thenReturn(books);
 		List<Author> authors = Lists.emptyList();
 		when(manager.getAllAuthors()).thenReturn(authors);
@@ -141,8 +146,8 @@ public class BookstoreControllerImplTest {
 	
 	@Test
 	public void test_deleteAuthor() {
-		Author author = new Author(3L, "test author", new HashSet<>());
-		Book book = new Book(2L,"title", new HashSet<>());
+		Author author = new Author(3L, FIXTURE_NAME_1, new HashSet<>());
+		Book book = new Book(2L,FIXTURE_TITLE_1, new HashSet<>());
 		List<Book> books = Lists.list(book);
 		when(manager.getAllBooks()).thenReturn(books);
 		
@@ -160,18 +165,18 @@ public class BookstoreControllerImplTest {
 	public void test_deleteAuthor_when_author_doesnt_exists() {
 		doThrow(BookstorePersistenceException.class)
 			.when(manager).deleteAuthor(anyLong());
-		List<Author> authors = Arrays.asList(new Author(1L,"author",new HashSet<>()));
+		List<Author> authors = Arrays.asList(new Author(1L,FIXTURE_NAME_1,new HashSet<>()));
 		when(manager.getAllAuthors()).thenReturn(authors);
 		List<Book> books = Lists.emptyList();
 		when(manager.getAllBooks()).thenReturn(books);
-		Author author = new Author(3L, "not existant", null);
+		Author nonExistantAuthor = new Author(3L, FIXTURE_NAME_2, null);
 		
-		assertThatCode(() -> controller.deleteAuthor(author))
+		assertThatCode(() -> controller.deleteAuthor(nonExistantAuthor))
 			.doesNotThrowAnyException();
 		
 		InOrder inOrder = inOrder(manager,authorView, bookView);
 		inOrder.verify(manager).deleteAuthor(3L);
-		inOrder.verify(authorView).showError("Error while deleting author", author);
+		inOrder.verify(authorView).showError("Error while deleting author", nonExistantAuthor);
 		inOrder.verify(manager).getAllAuthors();
 		inOrder.verify(authorView).showAllAuthors(authors);
 		inOrder.verify(manager).getAllBooks();
@@ -181,7 +186,7 @@ public class BookstoreControllerImplTest {
 	
 	@Test
 	public void test_ComposeBook() {
-		List<Author> authors = Arrays.asList(new Author(3L,"test name",new HashSet<Book>()));
+		List<Author> authors = Arrays.asList(new Author(3L,FIXTURE_NAME_1,new HashSet<Book>()));
 		when(manager.getAllAuthors()).thenReturn(authors);
 		
 		controller.composeBook();
@@ -189,7 +194,7 @@ public class BookstoreControllerImplTest {
 		verify(composeBookView).composeNewBook(authors);
 	}
 	
-	/* I do believe that is easier and cleaner to just add tests for
+	/* I do believe that is simpler and cleaner to just add tests for
 	 * getters rather than add specific exclusions and suppressions
 	 */
 	@Test

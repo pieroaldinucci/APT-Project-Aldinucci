@@ -34,13 +34,13 @@ public class BookstoreSwingApp implements Callable<Void> {
 	private static final Logger LOGGER = LogManager.getLogger();
 	
 	@Option(names = { "--postgres-host" }, description = { "Postgresql host address" })
-	private String host = "localhost";
+	private String host;// = "localhost";
 
 	@Option(names = { "--db-name" }, description = { "Database name" })
-	private String databaseName = "projectAPTTestDb";
+	private String databaseName;// = "projectAPTTestDb";
 
 	@Option(names = { "--postgres-port" }, description = { "Postgresql host port" })
-	private int port = 5432;
+	private int port;// = 5432;
 
 	@Option(names = {"-u", "--user" }, description = { "Postgresql username" })
 	private String userName;
@@ -50,6 +50,8 @@ public class BookstoreSwingApp implements Callable<Void> {
 	
 	@Option(names = {"-c", "--create" }, description = { "Create database tables if not present" })
 	private boolean createDb;
+
+	private EntityManagerFactory emFactory;
 
 	/**
 	 * 
@@ -65,7 +67,7 @@ public class BookstoreSwingApp implements Callable<Void> {
 	 */
 	private EntityManagerFactory getEntityManagerFactory() {
 		String propertyJdbcUrl = "jdbc:postgresql://" + host + ":" + port + "/" + databaseName;
-
+		
 		HashMap<String, String> propertiesJPA = new HashMap<>();
 		propertiesJPA.put("javax.persistence.jdbc.url", propertyJdbcUrl);
 		
@@ -85,9 +87,10 @@ public class BookstoreSwingApp implements Callable<Void> {
 	public Void call() throws Exception {
 		EventQueue.invokeLater(() -> {			
 			try {
+				emFactory = getEntityManagerFactory();
 				Injector injector = Guice.createInjector(
 						new BookstoreControllerSwingModule(
-						new BookstoreManagerJPAModule(getEntityManagerFactory())));
+						new BookstoreManagerJPAModule(emFactory)));
 				
 				BookstoreControllerImpl controller = injector.getInstance(BookstoreControllerImpl.class);
 				BookstoreSwingFrame frame = new BookstoreSwingFrame(
@@ -98,6 +101,7 @@ public class BookstoreSwingApp implements Callable<Void> {
 				frame.setVisible(true);
 			} catch (Exception e) {
 				LOGGER.fatal(e);
+				emFactory.close();
 			}
 		});
 		return null;

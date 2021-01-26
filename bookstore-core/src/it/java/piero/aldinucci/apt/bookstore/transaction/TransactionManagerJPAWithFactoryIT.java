@@ -22,6 +22,9 @@ import piero.aldinucci.apt.bookstore.repositories.factory.RepositoriesJPAFactory
 
 public class TransactionManagerJPAWithFactoryIT {
 
+	private static final String FIXTURE_NAME_1 = "First Author";
+	private static final String FIXTURE_TITLE_1 = "first book";
+	
 	private TransactionManager transactionManager;
 	private EntityManagerFactory emFactory;
 
@@ -38,7 +41,7 @@ public class TransactionManagerJPAWithFactoryIT {
 	
 	@Test
 	public void test_doInTransaction_should_save_and_update_entities_to_db_inside_transaction() {
-		Author author = (new Author(null, "First Author", new HashSet<>()));
+		Author author = (new Author(null, FIXTURE_NAME_1, new HashSet<>()));
 		EntityManager em = emFactory.createEntityManager();
 		em.getTransaction().begin();
 		em.persist(author);
@@ -46,7 +49,7 @@ public class TransactionManagerJPAWithFactoryIT {
 		em.close();
 		
 		Book book = transactionManager.doInTransaction((authorR, bookR) -> {
-			Book b = new Book(null,"first book",new HashSet<>());
+			Book b = new Book(null,FIXTURE_TITLE_1,new HashSet<>());
 			b.getAuthors().add(author);
 			b = bookR.save(b);
 			author.getBooks().add(b);
@@ -65,7 +68,7 @@ public class TransactionManagerJPAWithFactoryIT {
 	
 	@Test
 	public void test_doInTransaction_should_catch_exception_when_commit_fails() {
-		Author author = new Author(null, "First Author", new HashSet<>());
+		Author author = new Author(null, FIXTURE_NAME_1, new HashSet<>());
 		Book book = new Book(null, "a Book", new HashSet<>());
 		author.getBooks().add(book);
 		

@@ -34,6 +34,12 @@ import piero.aldinucci.apt.bookstore.transaction.TransactionManager;
 
 public class BookstoreManagerImplTest {
 
+
+	private static final String FIXTURE_TITLE_1 = "A book";
+	private static final String FIXTURE_TITLE_2 = "Another book";
+	private static final String FIXTURE_NAME_1 = "First Author";
+	private static final String FIXTURE_NAME_2 = "Second author";
+
 	@Mock
 	private AuthorRepository authorRepository;
 
@@ -57,18 +63,18 @@ public class BookstoreManagerImplTest {
 
 	@Test
 	public void test_newAuthor_should_generate_return_Author_with_db_id() {
-		Author author = new Author(1L, "First Author", new HashSet<>());
-		Author returnedAuthor = new Author(3L, "First Author", new HashSet<>());
+		Author author = new Author(1L, FIXTURE_NAME_1, new HashSet<>());
+		Author returnedAuthor = new Author(3L, FIXTURE_NAME_1, new HashSet<>());
 		when(authorRepository.save(isA(Author.class))).thenReturn(returnedAuthor);
 
 		assertThat(bookstoreManager.newAuthor(author)).isSameAs(returnedAuthor);
-		verify(authorRepository).save(new Author(null, "First Author", new HashSet<>()));
+		verify(authorRepository).save(new Author(null, FIXTURE_NAME_1, new HashSet<>()));
 	}
 
 	@Test
 	public void test_newAuthor_with_not_empty_book_Set_should_throw() {
-		Author author = new Author(null, "First Author", new HashSet<>());
-		Book book = new Book(null, "A book", new HashSet<>());
+		Author author = new Author(null, FIXTURE_NAME_1, new HashSet<>());
+		Book book = new Book(null, FIXTURE_TITLE_1, new HashSet<>());
 		author.getBooks().add(book);
 
 		assertThatThrownBy(() -> bookstoreManager.newAuthor(author)).isInstanceOf(IllegalArgumentException.class)
@@ -78,20 +84,20 @@ public class BookstoreManagerImplTest {
 
 	@Test
 	public void test_newBook_should_create_new_book_and_set_the_id() {
-		Book book = new Book(2L, "A great book", new HashSet<>());
-		Book returnedBook = new Book(1L, "A great book", new HashSet<>());
+		Book book = new Book(2L, FIXTURE_TITLE_1, new HashSet<>());
+		Book returnedBook = new Book(1L, FIXTURE_TITLE_1, new HashSet<>());
 		when(bookRepository.save(isA(Book.class))).thenReturn(returnedBook);
 
 		assertThat(bookstoreManager.newBook(book)).isSameAs(returnedBook);
-		verify(bookRepository).save(new Book(null, "A great book", new HashSet<>()));
+		verify(bookRepository).save(new Book(null, FIXTURE_TITLE_1, new HashSet<>()));
 	}
 
 	@Test
 	public void test_addBook_should_update_all_authors_in_its_Set() {
-		Book book = new Book(null, "3 hands book", null);
-		Author author1 = new Author(1L, "First author", new HashSet<>());
-		Author author2 = new Author(5L, "Second author", new HashSet<>());
-		Book returnedBook = new Book(1L, "4 hands book", new LinkedHashSet<>());
+		Book book = new Book(null, FIXTURE_TITLE_1, null);
+		Author author1 = new Author(1L, FIXTURE_NAME_1, new HashSet<>());
+		Author author2 = new Author(5L, FIXTURE_NAME_2, new HashSet<>());
+		Book returnedBook = new Book(1L, FIXTURE_TITLE_2, new LinkedHashSet<>());
 		returnedBook.getAuthors().add(author1);
 		returnedBook.getAuthors().add(author2);
 		when(bookRepository.save(isA(Book.class))).thenReturn(returnedBook);
@@ -108,8 +114,8 @@ public class BookstoreManagerImplTest {
 
 	@Test
 	public void test_getAllAuthors() {
-		Author author1 = new Author(2L, "Test Author", new HashSet<>());
-		Author author2 = new Author(10L, "2nd Test Author", new HashSet<>());
+		Author author1 = new Author(2L, FIXTURE_NAME_1, new HashSet<>());
+		Author author2 = new Author(10L, FIXTURE_NAME_2, new HashSet<>());
 		when(authorRepository.findAll()).thenReturn(Arrays.asList(author1, author2));
 
 		List<Author> authors = bookstoreManager.getAllAuthors();
@@ -122,8 +128,8 @@ public class BookstoreManagerImplTest {
 
 	@Test
 	public void test_getAllBooks() {
-		Book book1 = new Book(1L, "First book", new HashSet<>());
-		Book book2 = new Book(5L, "Second book", new HashSet<>());
+		Book book1 = new Book(1L, FIXTURE_TITLE_1, new HashSet<>());
+		Book book2 = new Book(5L, FIXTURE_TITLE_2, new HashSet<>());
 		when(bookRepository.findAll()).thenReturn(Arrays.asList(book1, book2));
 
 		List<Book> books = bookstoreManager.getAllBooks();
@@ -157,9 +163,9 @@ public class BookstoreManagerImplTest {
 	 */
 	@Test
 	public void test_delete_author_when_book_set_not_empty() {
-		Author author = new Author(1L, "author to delete", new LinkedHashSet<>());
-		Book book1 = new Book(1L, "test book", new HashSet<>());
-		Book book2 = new Book(3L, "third test book", new HashSet<>());
+		Author author = new Author(1L, FIXTURE_NAME_1, new LinkedHashSet<>());
+		Book book1 = new Book(1L, FIXTURE_TITLE_1, new HashSet<>());
+		Book book2 = new Book(3L, FIXTURE_TITLE_2, new HashSet<>());
 		author.getBooks().add(book1);
 		author.getBooks().add(book2);
 		book1.getAuthors().add(author);
@@ -190,9 +196,9 @@ public class BookstoreManagerImplTest {
 	
 	@Test
 	public void test_delete_book_when_its_set_is_not_empty() {
-		Book book = new Book(1L, "book to delete", new LinkedHashSet<>());
-		Author author1 = new Author(1L, "some guy", new HashSet<>());
-		Author author2 = new Author(3L, "tizio", new HashSet<>());
+		Book book = new Book(1L, FIXTURE_TITLE_1, new LinkedHashSet<>());
+		Author author1 = new Author(1L, FIXTURE_NAME_1, new HashSet<>());
+		Author author2 = new Author(3L, FIXTURE_NAME_2, new HashSet<>());
 		book.getAuthors().add(author1);
 		book.getAuthors().add(author2);
 		author1.getBooks().add(book);

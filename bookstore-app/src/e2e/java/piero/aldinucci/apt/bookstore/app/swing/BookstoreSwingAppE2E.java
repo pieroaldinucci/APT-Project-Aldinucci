@@ -32,6 +32,8 @@ import piero.aldinucci.apt.bookstore.model.Book;
 @RunWith(GUITestRunner.class)
 public class BookstoreSwingAppE2E extends AssertJSwingJUnitTestCase{
 
+	private static final String FIXTURE_JDBC_USERNAME = "testUser";
+	private static final String FIXTURE_JDBC_PASSWORD = "password";
 	private static final String TITLE_FIXTURE_3 = "title 3";
 	private static final String TITLE_FIXTURE_2 = "title 2";
 	private static final String TITLE_FIXTURE_1 = "title 1";
@@ -45,16 +47,21 @@ public class BookstoreSwingAppE2E extends AssertJSwingJUnitTestCase{
 	
 	@Override
 	protected void onSetUp() throws Exception {
+		
 		HashMap<String, String> propertiesJPA = new HashMap<>();
-		propertiesJPA.put("javax.persistence.jdbc.user", "testUser");
-		propertiesJPA.put("javax.persistence.jdbc.password", "secret");
+		propertiesJPA.put("javax.persistence.jdbc.user", FIXTURE_JDBC_USERNAME);
+		propertiesJPA.put("javax.persistence.jdbc.password", FIXTURE_JDBC_PASSWORD);
 		propertiesJPA.put("javax.persistence.schema-generation.database.action", "drop-and-create");
 		emFactory = Persistence.createEntityManagerFactory("apt.project.bookstore",propertiesJPA);
 		
 		populateDatabase();
 		
 		application("piero.aldinucci.apt.bookstore.app.swing.BookstoreSwingApp")
-			.withArgs("-u=testUser", "-p=secret").start();
+			.withArgs("-u="+FIXTURE_JDBC_USERNAME,
+					"-p="+FIXTURE_JDBC_PASSWORD,
+					"--postgres-host=localhost",
+					"--db-name=projectAPTTestDb",
+					"--postgres-port=5432").start();
 		
 		window = WindowFinder.findFrame(new GenericTypeMatcher<JFrame>(JFrame.class) {
 

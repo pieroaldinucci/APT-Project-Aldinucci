@@ -20,6 +20,8 @@ import piero.aldinucci.apt.bookstore.model.Author;
 
 public class AuthorJPARepositoryIT {
 
+	private static final String FIXTURE_NAME_1 = "test name 1";
+	private static final String FIXTURE_NAME_2 = "Test name 2";
 	private AuthorJPARepository repository;
 	private EntityManagerFactory emFactory;
 	private EntityManager entityManager;
@@ -47,8 +49,8 @@ public class AuthorJPARepositoryIT {
 
 	@Test
 	public void test_findAll_should_return_list_with_all_entities_in_presistence_context() {
-		Author author1 = persistAuthor("Person1");
-		Author author2 = persistAuthor("Person2");
+		Author author1 = persistAuthor(FIXTURE_NAME_1);
+		Author author2 = persistAuthor(FIXTURE_NAME_2);
 		
 		entityManager.getTransaction().begin();
 		List<Author> authors = repository.findAll();
@@ -69,7 +71,7 @@ public class AuthorJPARepositoryIT {
 	
 	@Test
 	public void test_findById_when_id_exist_should_return_an_object_inside_presistance_context() {
-		Author pAuthor = persistAuthor("test name");
+		Author pAuthor = persistAuthor(FIXTURE_NAME_1);
 		
 		Optional<Author> found = repository.findById(pAuthor.getId());
 		
@@ -80,7 +82,7 @@ public class AuthorJPARepositoryIT {
 	
 	@Test
 	public void test_save_author_should_return_an_object_in_persistance_context_with_updated_id() {
-		Author authorToSave = new Author(null, "new Author", new HashSet<>());
+		Author authorToSave = new Author(null, FIXTURE_NAME_1, new HashSet<>());
 		EntityManager em2 = emFactory.createEntityManager();
 		
 		entityManager.getTransaction().begin();
@@ -97,7 +99,7 @@ public class AuthorJPARepositoryIT {
 	
 	@Test
 	public void test_save_new_author_with_an_id_should_throw_exception_and_not_persist() {
-		Author newAuthor = new Author(1L, "author name", new HashSet<>());
+		Author newAuthor = new Author(1L, FIXTURE_NAME_1, new HashSet<>());
 		
 		entityManager.getTransaction().begin();
 		assertThatThrownBy(() -> repository.save(newAuthor))
@@ -110,8 +112,8 @@ public class AuthorJPARepositoryIT {
 
 	@Test
 	public void test_update_author_with_existing_id() {
-		Author persistedAuthor = persistAuthor("name to edit");
-		Author modifiedAuthor = new Author(persistedAuthor.getId(), "modified name", new HashSet<>());
+		Author persistedAuthor = persistAuthor(FIXTURE_NAME_1);
+		Author modifiedAuthor = new Author(persistedAuthor.getId(), FIXTURE_NAME_2, new HashSet<>());
 		
 		entityManager.getTransaction().begin();
 		repository.update(modifiedAuthor);
@@ -126,7 +128,7 @@ public class AuthorJPARepositoryIT {
 	
 	@Test
 	public void test_update_with_null_id_should_throw_IllegalArgumentException() {
-		Author modifiedAuthor = new Author(null, "modified name", new HashSet<>());
+		Author modifiedAuthor = new Author(null, FIXTURE_NAME_1, new HashSet<>());
 		
 		entityManager.getTransaction().begin();
 		assertThatThrownBy(() -> repository.update(modifiedAuthor))
@@ -139,7 +141,7 @@ public class AuthorJPARepositoryIT {
 	
 	@Test
 	public void test_update_with_non_existant_id_should_not_save_into_db() {
-		Author nonExistantAuthor = new Author(5L, "modified name", new HashSet<>());
+		Author nonExistantAuthor = new Author(5L, FIXTURE_NAME_1, new HashSet<>());
 		
 		entityManager.getTransaction().begin();
 		repository.update(nonExistantAuthor);
@@ -151,7 +153,7 @@ public class AuthorJPARepositoryIT {
 	
 	@Test
 	public void test_delete_author_success() {
-		Author authorToDelete = persistAuthor("Author to be deleted");
+		Author authorToDelete = persistAuthor(FIXTURE_NAME_1);
 		
 		entityManager.getTransaction().begin();
 		Optional<Author> deletedAuthor = repository.delete(authorToDelete.getId());

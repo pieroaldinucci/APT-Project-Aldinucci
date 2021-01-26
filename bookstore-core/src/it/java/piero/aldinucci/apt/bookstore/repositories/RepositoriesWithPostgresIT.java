@@ -17,6 +17,9 @@ import piero.aldinucci.apt.bookstore.model.Book;
 
 public class RepositoriesWithPostgresIT {
 
+	private static final String FIXTURE_NAME_1 = "new Author";
+	private static final String FIXTURE_TITLE_1 = "A book";
+	
 	private AuthorJPARepository authorRepository;
 	private BookJPARepository bookRepository;
 	private EntityManagerFactory emFactory;
@@ -44,8 +47,8 @@ public class RepositoriesWithPostgresIT {
 	
 	@Test
 	public void test_save_author_with_bookSet_not_empty() {
-		Book bookToSave = new Book(null,"A book",new HashSet<>());
-		Author authorToSave = new Author(null, "new Author", new HashSet<>());
+		Book bookToSave = new Book(null,FIXTURE_TITLE_1,new HashSet<>());
+		Author authorToSave = new Author(null, FIXTURE_NAME_1, new HashSet<>());
 		
 		entityManager.getTransaction().begin();
 		Book savedBook = bookRepository.save(bookToSave);
@@ -107,8 +110,8 @@ public class RepositoriesWithPostgresIT {
 	}
 	
 	public void populateDB() {
-		author = new Author(null, "test name", new HashSet<>());
-		book = new Book(null, "test title", new HashSet<>());
+		author = new Author(null, FIXTURE_NAME_1, new HashSet<>());
+		book = new Book(null, FIXTURE_TITLE_1, new HashSet<>());
 		EntityManager em = emFactory.createEntityManager();
 		em.getTransaction().begin();
 		em.persist(author);

@@ -105,7 +105,6 @@ public class FullServiceLayerIT {
 	@Test
 	public void test_delete_book_when_is_missing() {
 		
-//		bookstoreManager.deleteBook(17);
 		assertThatThrownBy(() ->  bookstoreManager.deleteBook(17))
 			.isInstanceOf(BookstorePersistenceException.class);
 

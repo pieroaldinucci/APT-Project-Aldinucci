@@ -33,6 +33,11 @@ import piero.aldinucci.apt.bookstore.repositories.factory.RepositoriesJPAFactory
 
 public class TransactionManagerJPAIT {
 
+
+	private static final String FIXCTURE_TITLE_1 = "title 1";
+	private static final String FIXCTURE_NAME_1 = "test name";
+	private static final String FIXTURE_NAME_2 = "name 2";
+
 	@Mock
 	private RepositoriesJPAFactory repositoriesFactory;
 	
@@ -65,12 +70,12 @@ public class TransactionManagerJPAIT {
 	public void test_call_to_transactioncode() {
 		ArgumentCaptor<Author> authorCaptor = ArgumentCaptor.forClass(Author.class);
 		ArgumentCaptor<Book> bookCaptor = ArgumentCaptor.forClass(Book.class);
-		Author author = new Author (3L,"test",null); 
+		Author author = new Author (3L,FIXCTURE_NAME_1,null); 
 		when(authorRepository.save(isA(Author.class))).thenReturn(author);
 		
 		Author savedAuthor = transactionManager.doInTransaction((authorR,bookR) -> {
-			bookR.update(new Book(4L,"title",null));
-			return authorR.save(new Author(2L,"name",null));
+			bookR.update(new Book(4L,FIXCTURE_TITLE_1,null));
+			return authorR.save(new Author(2L,FIXTURE_NAME_2,null));
 		});
 				
 		InOrder inOrder = inOrder(authorRepository,bookRepository);
@@ -80,9 +85,9 @@ public class TransactionManagerJPAIT {
 		verifyNoMoreInteractions(bookRepository);
 		
 		assertThat(authorCaptor.getValue()).usingRecursiveComparison()
-			.isEqualTo(new Author(2L,"name",null));
+			.isEqualTo(new Author(2L,FIXTURE_NAME_2,null));
 		assertThat(bookCaptor.getValue()).usingRecursiveComparison()
-			.isEqualTo(new Book(4L,"title",null));
+			.isEqualTo(new Book(4L,FIXCTURE_TITLE_1,null));
 		assertThat(author).isSameAs(savedAuthor);
 		assertThat(transactionManager.getEntityManager().getTransaction().isActive()).isFalse();
 		assertThat(transactionManager.getEntityManager().isOpen()).isFalse();

@@ -29,6 +29,9 @@
 		<!-- Class names for *E2E test classes -->
 		<sonar.issue.ignore.multicriteria.e3.ruleKey>java:S3577</sonar.issue.ignore.multicriteria.e3.ruleKey>
 		<sonar.issue.ignore.multicriteria.e3.resourceKey>**/app/swing/*.java</sonar.issue.ignore.multicriteria.e3.resourceKey>
+		
+		<postgres.test.username>testUser</postgres.test.username>
+		<postgres.test.password>password</postgres.test.password>
 	</properties>
 
 	<modules>
@@ -236,8 +239,8 @@
 										<port>5432:5432</port>
 									</ports>
 									<env>
-										<POSTGRES_USER>testUser</POSTGRES_USER>
-										<POSTGRES_PASSWORD>secret</POSTGRES_PASSWORD>
+										<POSTGRES_USER>${postgres.test.username}</POSTGRES_USER>
+										<POSTGRES_PASSWORD>${postgres.test.password}</POSTGRES_PASSWORD>
 										<POSTGRES_DB>projectAPTTestDb</POSTGRES_DB>
 									</env>
 									<wait>
