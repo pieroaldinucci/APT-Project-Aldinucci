@@ -31,10 +31,16 @@ import piero.aldinucci.apt.bookstore.model.Book;
 @RunWith(GUITestRunner.class)
 public class BookSwingViewTest extends AssertJSwingJUnitTestCase {
 
+	private static final String FIXTURE_TITLE_3 = "third book";
+	private static final String FIXTURE_NAME_2 = "second author";
+	private static final String FIXTURE_NAME_1 = "first author";
+	private static final String FIXTURE_TITLE_2 = "Test Title";
+	private static final String FIXTURE_TITLE_1 = "some Book";
 	private static final String ERROR_LABEL = "BookErrorLabel";
 	private static final String NEW_BOOK_BUTTON = "NewBook";
 	private static final String DELETE_BOOK_BUTTON = "DeleteBook";
 	private static final String BOOK_J_LIST = "BookJList";
+	
 	private JPanelFixture bookPanel;
 	private JFrame frame;
 	private BookSwingView bookView;
@@ -73,7 +79,7 @@ public class BookSwingViewTest extends AssertJSwingJUnitTestCase {
 	@Test
 	@GUITest
 	public void test_delete_button_should_be_enabled_only_when_book_is_selected() {
-		Book book1 = new Book(3L, "some Book", new HashSet<>());
+		Book book1 = new Book(3L, FIXTURE_TITLE_1, new HashSet<>());
 		GuiActionRunner.execute(() -> bookView.getBookModelList().addElement(book1));
 
 		JListFixture bookList = bookPanel.list(BOOK_J_LIST);
@@ -87,8 +93,8 @@ public class BookSwingViewTest extends AssertJSwingJUnitTestCase {
 	@Test
 	public void test_deleteBook_button_should_delegate_to_controller() {
 		DefaultListModel<Book> bookListModel = bookView.getBookModelList();
-		Book book1 = new Book(2L, "Test Title", new HashSet<>());
-		Book book2 = new Book(5L, "Some book", new HashSet<>());
+		Book book1 = new Book(2L, FIXTURE_TITLE_1, new HashSet<>());
+		Book book2 = new Book(5L, FIXTURE_TITLE_2, new HashSet<>());
 		GuiActionRunner.execute(() -> {
 			bookListModel.addElement(book1);
 			bookListModel.addElement(book2);
@@ -112,7 +118,7 @@ public class BookSwingViewTest extends AssertJSwingJUnitTestCase {
 	@Test
 	@GUITest
 	public void test_showError() {
-		Book book = new Book(3L, "Heavy book", new HashSet<Author>());
+		Book book = new Book(3L, FIXTURE_TITLE_1, new HashSet<Author>());
 		
 		GuiActionRunner.execute(() -> {
 			bookView.showError("A random error occured on", book);
@@ -124,9 +130,9 @@ public class BookSwingViewTest extends AssertJSwingJUnitTestCase {
 	@Test
 	@GUITest
 	public void test_books_with_authors_should_be_shown_correctly_on_screen() {
-		Author author1 = new Author(3L, "first author", new HashSet<Book>());
-		Author author2 = new Author(9L, "second author", new HashSet<Book>());
-		Book book = new Book(2L, "A weird book", new LinkedHashSet<>());
+		Author author1 = new Author(3L, FIXTURE_NAME_1, new HashSet<Book>());
+		Author author2 = new Author(9L, FIXTURE_NAME_2, new HashSet<Book>());
+		Book book = new Book(2L, FIXTURE_TITLE_1, new LinkedHashSet<>());
 		book.getAuthors().add(author1);
 		book.getAuthors().add(author2);
 		author1.getBooks().add(book);
@@ -136,15 +142,15 @@ public class BookSwingViewTest extends AssertJSwingJUnitTestCase {
 			bookView.getBookModelList().addElement(book);
 		});
 
-		assertThat(bookPanel.list(BOOK_J_LIST).contents())
-				.containsExactly(book.toString() + "; Authors: first author - second author");
+		assertThat(bookPanel.list(BOOK_J_LIST).contents()).containsExactly(
+				book.toString() + "; Authors: "+FIXTURE_NAME_1+" - "+FIXTURE_NAME_2);
 	}
 	
 	@Test
 	@GUITest
 	public void test_bookAdded_successful_should_also_clear_errors() {
-		Author author = new Author(5L, "the author", new HashSet<>());
-		Book book = new Book(2L, "A new book", new HashSet<>());
+		Author author = new Author(5L, FIXTURE_NAME_1, new HashSet<>());
+		Book book = new Book(2L, FIXTURE_TITLE_1, new HashSet<>());
 		book.getAuthors().add(author);
 		author.getBooks().add(book);
 		
@@ -159,14 +165,14 @@ public class BookSwingViewTest extends AssertJSwingJUnitTestCase {
 	@Test
 	@GUITest
 	public void test_showAllBooks_should_replace_the_Jlist_content() {
-		Book book1 = new Book(2L, "second Book", new HashSet<Author>());
-		Book book2 = new Book(5L, "fifth book", new HashSet<Author>());
+		Book book1 = new Book(2L, FIXTURE_TITLE_1, new HashSet<Author>());
+		Book book2 = new Book(5L, FIXTURE_TITLE_2, new HashSet<Author>());
 		
 		GuiActionRunner.execute(() -> bookView.showAllBooks(Arrays.asList(book1,book2)));
 		
 		assertThat(bookView.getBookModelList().toArray()).containsExactly(book1,book2);
 		
-		Book book3 = new Book(3L,"third book",new HashSet<Author>());
+		Book book3 = new Book(3L,FIXTURE_TITLE_3,new HashSet<Author>());
 		
 		GuiActionRunner.execute(() -> bookView.showAllBooks(Arrays.asList(book3,book2)));			
 		
@@ -176,8 +182,8 @@ public class BookSwingViewTest extends AssertJSwingJUnitTestCase {
 	@Test
 	@GUITest
 	public void test_bookRemoved_successful_should_also_clear_error_label() {
-		Book book1 = new Book(2L, "second Book", new HashSet<Author>());
-		Book book2 = new Book(5L, "fifth book", new HashSet<Author>());
+		Book book1 = new Book(2L, FIXTURE_TITLE_1, new HashSet<Author>());
+		Book book2 = new Book(5L, FIXTURE_TITLE_2, new HashSet<Author>());
 		DefaultListModel<Book> model = bookView.getBookModelList();
 		GuiActionRunner.execute(() -> {
 			model.addElement(book1);
@@ -189,34 +195,5 @@ public class BookSwingViewTest extends AssertJSwingJUnitTestCase {
 		assertThat(model.toArray()).containsExactly(book2);
 		bookPanel.label(ERROR_LABEL).requireText(" ");
 	}
-	
-//	@Test
-//	public void test_createBookView_should_delegate_to_dialog_and_controller_if_book_was_composed() {
-//		Author author1 = new Author(1L, "Mario", null);
-//		Author author2 = new Author(3L, "Luigi", null);
-//		List<Author> authorList = Arrays.asList(author1, author2); 
-//		Book book = new Book(4L, "new book", new HashSet<Author>());
-//		when(newBookDialog.getReturnValue()).thenReturn(Optional.of(book));
-//		ArgumentCaptor<Book> bookCaptor = ArgumentCaptor.forClass(Book.class);
-//		
-//		bookView.showCreateBook(authorList);
-//		
-//		verify(newBookDialog).setAuthorList(authorList);
-//		verify(newBookDialog).setVisible(true); //Is this correct? This method is not defined in this project 
-//		verify(controller).newBook(bookCaptor.capture());
-//		assertThat(bookCaptor.getValue()).isSameAs(book);
-//		verifyNoMoreInteractions(controller);
-//	}
-//	
-//	@Test
-//	public void test_createBookView_should_not_call_controller_if_no_Book_is_Returned() {
-//		when(newBookDialog.getReturnValue()).thenReturn(Optional.empty());
-//		
-//		bookView.showCreateBook(Lists.emptyList());
-//		
-//		verify(newBookDialog).setAuthorList(Lists.emptyList());
-//		verify(newBookDialog).setVisible(true);
-//		verifyNoInteractions(controller);
-//	}
 	
 }

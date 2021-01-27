@@ -10,6 +10,8 @@ import static org.mockito.MockitoAnnotations.openMocks;
 
 import java.util.HashSet;
 import java.util.List;
+import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 import javax.swing.JFrame;
 
@@ -35,6 +37,12 @@ import piero.aldinucci.apt.bookstore.view.ComposeBookView;
 @RunWith(GUITestRunner.class)
 public class AuthorControllerIT extends AssertJSwingJUnitTestCase{
 	
+	private static final String ERROR_LABEL_AUTHOR = "AuthorErrorLabel";
+	private static final String BTN_DELETE_AUTHOR = "DeleteAuthor";
+	private static final String FIXTURE_NAME_1 = "name 1";
+	private static final String FIXTURE_NAME_2 = "name 2";
+	private static final String FIXTURE_NAME_3 = "name 3";
+
 	@Mock
 	private BookstoreManager manager;
 	
@@ -73,9 +81,9 @@ public class AuthorControllerIT extends AssertJSwingJUnitTestCase{
 	
 	
 	private void allAuthorsAndBooksSetup() {
-		Author author1 = new Author(1L, "Arthur", new HashSet<>());
-		Author author2 = new Author(2L, "Isaac", new HashSet<>());
-		Author author3 = new Author(3L, "Newton", new HashSet<>());
+		Author author1 = new Author(1L, FIXTURE_NAME_1, new HashSet<>());
+		Author author2 = new Author(2L, FIXTURE_NAME_2, new HashSet<>());
+		Author author3 = new Author(3L, FIXTURE_NAME_3, new HashSet<>());
 
 		authors = Lists.list(author1,author2,author3);
 		
@@ -85,19 +93,24 @@ public class AuthorControllerIT extends AssertJSwingJUnitTestCase{
 	
 	@Test
 	@GUITest
+	public void test_all_authors() {
+		GuiActionRunner.execute(() -> controller.allAuthors());
+		
+		assertThat(window.list().contents()).containsAll(
+				authors.stream().map(a -> a.toString()).collect(Collectors.toList()));
+	}
+	
+	@Test
+	@GUITest
 	public void test_add_new_Author() {
 		GuiActionRunner.execute(() -> controller.allAuthors());
-		when(manager.newAuthor(isA(Author.class))).thenAnswer(invocation -> {
-			Author author = invocation.getArgument(0, Author.class);
-			author.setId(4L);
-			return author;
-		});
+		when(manager.newAuthor(isA(Author.class))).thenAnswer(invocation ->
+			invocation.getArgument(0, Author.class));
 		
-		window.textBox().enterText("Test a1");
+		window.textBox().enterText("new Author");
 		window.button(JButtonMatcher.withText("Add")).click();
 		
-		Author author = new Author(4L, "Test a1", new HashSet<>());
-		assertThat(window.list().item(3).value()).isEqualTo(author.toString());
+		assertThat(window.list().contents()).anyMatch(s -> s.contains("new Author"));
 	}
 
 	@Test
@@ -106,26 +119,26 @@ public class AuthorControllerIT extends AssertJSwingJUnitTestCase{
 		doNothing().when(manager).deleteAuthor(anyLong());
 		GuiActionRunner.execute(() -> controller.allAuthors());
 
-		window.list().selectItem(0);
-		window.button("DeleteAuthor").click();
+		window.list().selectItem(Pattern.compile(".*"+FIXTURE_NAME_1+".*"));
+		window.button(BTN_DELETE_AUTHOR).click();
 		
-		assertThat(window.list().valueAt(0)).isEqualTo(authors.get(1).toString());
-		assertThat(window.list().valueAt(1)).isEqualTo(authors.get(2).toString());
+		assertThat(window.list().requireItemCount(2).contents())
+			.noneMatch(s -> s.contains(FIXTURE_NAME_1));
 	}
 	
 	@Test
 	@GUITest
 	public void test_delete_author_error() {
-		doNothing().when(manager).deleteAuthor(anyLong());
 		GuiActionRunner.execute(() -> controller.allAuthors());
 		doThrow(new BookstorePersistenceException()).when(manager).deleteAuthor(anyLong());
-		assertThat(window.label("AuthorErrorLabel").text()).isBlank();
+
+		assertThat(window.label(ERROR_LABEL_AUTHOR).text()).isBlank();
 		
-		window.list().selectItem(0);
-		window.button("DeleteAuthor").click();
+		window.list().selectItem(Pattern.compile(".*"+FIXTURE_NAME_2+".*"));
+		window.button(BTN_DELETE_AUTHOR).click();
 		
-		window.list().requireItemCount(3);
-		assertThat(window.label("AuthorErrorLabel").text()).isNotBlank();
+		assertThat(window.label(ERROR_LABEL_AUTHOR).text())
+			.contains(FIXTURE_NAME_2);
 	}
 	
 }

@@ -33,6 +33,9 @@ import piero.aldinucci.apt.bookstore.model.Book;
 @RunWith(GUITestRunner.class)
 public class AuthorSwingViewTest extends AssertJSwingJUnitTestCase {
 
+	private static final String FIXTURE_TITLE_1 = "A book";
+	private static final String FIXTURE_NAME_2 = "Name 2";
+	private static final String FIXTURE_NAME_1 = "Author 1";
 	private static final String AUTHOR_ERROR_LABEL = "AuthorErrorLabel";
 	private static final String DELETE_AUTHOR_BUTTON = "DeleteAuthor";
 	private static final String ADD_AUTHOR_BUTTON = "AddAuthor";
@@ -90,7 +93,7 @@ public class AuthorSwingViewTest extends AssertJSwingJUnitTestCase {
 	public void test_delete_button_enabled_only_when_item_list_is_selected() {
 		DefaultListModel<Author> listModel = authorView.getAuthorListModel();
 		GuiActionRunner.execute(() -> {
-			listModel.addElement(new Author(1L, "Mario", new HashSet<Book>()));
+			listModel.addElement(new Author(1L, FIXTURE_NAME_1, new HashSet<Book>()));
 		});
 
 		authorPanel.list(AUTHOR_LIST).selectItem(0);
@@ -102,8 +105,8 @@ public class AuthorSwingViewTest extends AssertJSwingJUnitTestCase {
 	@Test
 	@GUITest
 	public void test_changing_modelList_should_update_the_Jlist_correctly() {
-		Author author1 = new Author(1L, "Mario", new HashSet<Book>());
-		Author author2 = new Author(3L, "Luigi", new HashSet<Book>());
+		Author author1 = new Author(1L, FIXTURE_NAME_1, new HashSet<Book>());
+		Author author2 = new Author(3L, FIXTURE_NAME_2, new HashSet<Book>());
 
 		GuiActionRunner.execute(() ->{ 
 			authorView.getAuthorListModel().addElement(author1);
@@ -116,8 +119,8 @@ public class AuthorSwingViewTest extends AssertJSwingJUnitTestCase {
 	@Test
 	@GUITest
 	public void test_showAllAuthors_should_replace_all_authors_into_the_list() {
-		Author author1 = new Author(1L, "Mario", new HashSet<Book>());
-		Author author2 = new Author(3L, "Luigi", new HashSet<Book>());
+		Author author1 = new Author(1L, FIXTURE_NAME_1, new HashSet<Book>());
+		Author author2 = new Author(3L, FIXTURE_NAME_2, new HashSet<Book>());
 
 		GuiActionRunner.execute(() -> authorView.showAllAuthors(Arrays.asList(author1, author2)));
 
@@ -131,8 +134,8 @@ public class AuthorSwingViewTest extends AssertJSwingJUnitTestCase {
 	@Test
 	@GUITest
 	public void test_authorAdded_should_clear_text_field_update_the_list_clear_error_and_disable_add_button() {
-		authorPanel.textBox().enterText("John");
-		Author testAuthor = new Author(1L, "John", new HashSet<Book>());
+		authorPanel.textBox().enterText(FIXTURE_NAME_1);
+		Author testAuthor = new Author(1L, FIXTURE_NAME_1, new HashSet<Book>());
 		
 		GuiActionRunner.execute(() -> authorView.authorAdded(testAuthor));
 		
@@ -145,8 +148,8 @@ public class AuthorSwingViewTest extends AssertJSwingJUnitTestCase {
 	@Test
 	@GUITest
 	public void test_authorRemoved_should_update_the_list_and_clear_error() {
-		Author testAuthor = new Author(1L, "Isaac", null);
-		Author testAuthor2 = new Author(4L, "Arthur", null);
+		Author testAuthor = new Author(1L, FIXTURE_NAME_1, null);
+		Author testAuthor2 = new Author(4L, FIXTURE_NAME_2, null);
 		GuiActionRunner.execute(() -> {
 			authorView.getAuthorListModel().addElement(testAuthor);
 			authorView.getAuthorListModel().addElement(testAuthor2);			
@@ -161,8 +164,8 @@ public class AuthorSwingViewTest extends AssertJSwingJUnitTestCase {
 	@Test
 	@GUITest
 	public void text_showError_should_update_error_label() {
-		Author testAuthor = new Author(2L, "test", new HashSet<Book>());
-		testAuthor.getBooks().add(new Book(3L, "A book", null));
+		Author testAuthor = new Author(2L, FIXTURE_NAME_1, new HashSet<Book>());
+		testAuthor.getBooks().add(new Book(3L, FIXTURE_TITLE_1, null));
 		
 		GuiActionRunner.execute(() -> authorView.showError("This is an Error Message!", testAuthor));
 		
@@ -171,19 +174,20 @@ public class AuthorSwingViewTest extends AssertJSwingJUnitTestCase {
 	
 	@Test
 	public void test_clicking_add_button_should_delegate_to_controller() {
-		authorPanel.textBox(NAME_TEXT_FIELD).enterText("Mario");
+		authorPanel.textBox(NAME_TEXT_FIELD).enterText(FIXTURE_NAME_2);
 		authorPanel.button(ADD_AUTHOR_BUTTON).click();
 		
 		ArgumentCaptor<Author> author = ArgumentCaptor.forClass(Author.class);
 		verify(controller).newAuthor(author.capture());
-		assertThat(author.getValue()).usingRecursiveComparison().isEqualTo(new Author(null, "Mario", new HashSet<Book>()));
+		assertThat(author.getValue()).usingRecursiveComparison()
+			.isEqualTo(new Author(null, FIXTURE_NAME_2, new HashSet<Book>()));
 		verifyNoMoreInteractions(controller);
 	}
 	
 	@Test
 	public void test_clicking_delete_button_should_delegate_to_controller() {
-		Author testAuthor = new Author(2L, "test", null);
-		Author testAuthor2 = new Author(3L, "test2", null);
+		Author testAuthor = new Author(2L, FIXTURE_NAME_1, null);
+		Author testAuthor2 = new Author(3L, FIXTURE_NAME_2, null);
 		GuiActionRunner.execute(() -> {
 			authorView.getAuthorListModel().addElement(testAuthor);
 			authorView.getAuthorListModel().addElement(testAuthor2);

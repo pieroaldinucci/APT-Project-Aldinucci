@@ -31,6 +31,10 @@ import piero.aldinucci.apt.bookstore.model.Book;
 @RunWith(GUITestRunner.class)
 public class ComposeBookSwingViewTest extends AssertJSwingJUnitTestCase {
 
+	private static final String FIXTURE_TITLE_1 = "Book!";
+	private static final String FIXTURE_NAME_1 = "test name";
+	private static final String FIXTURE_NAME_2 = "another name";
+	private static final String FIXTURE_NAME_3 = "author name";
 	private static final String BUTTON_REMOVE_AUTHOR = "buttonRemoveAuthor";
 	private static final String BUTTON_ADD_AUTHOR = "buttonAddAuthor";
 	private static final String TITLE_TEXT_FIELD = "titleTextField";
@@ -86,30 +90,31 @@ public class ComposeBookSwingViewTest extends AssertJSwingJUnitTestCase {
 	@Test
 	@GUITest
 	public void test_available_authors_list_correctly_painted_by_model() {
-		Author author1 = new Author(2L, "test name", null);
-		Author author2 = new Author(3L, "another name", null);
+		Author author1 = new Author(2L, FIXTURE_NAME_1, null);
+		Author author2 = new Author(3L, FIXTURE_NAME_2, null);
 
 		GuiActionRunner.execute(() -> {
 			composeBookView.getModelAvailableAuthors().addElement(author1);
 			composeBookView.getModelAvailableAuthors().addElement(author2);
 		});
 
-		assertThat(dialogFixture.list(AUTHOR_JLIST).contents()).containsExactly(author1.toString(), author2.toString());
+		assertThat(dialogFixture.list(AUTHOR_JLIST).contents())
+			.containsExactly(author1.toString(), author2.toString());
 	}
 
 	@Test
 	@GUITest
 	public void test_book_authors_list_correctly_painted_by_model() {
-		Author author1 = new Author(2L, "test name", null);
-		Author author2 = new Author(3L, "another name", null);
+		Author author1 = new Author(2L, FIXTURE_NAME_1, null);
+		Author author2 = new Author(3L, FIXTURE_NAME_2, null);
 
 		GuiActionRunner.execute(() -> {
 			composeBookView.getModelBookAuthors().addElement(author1);
 			composeBookView.getModelBookAuthors().addElement(author2);
 		});
 
-		assertThat(dialogFixture.list(BOOK_AUTHOR_JLIST).contents()).containsExactly(author1.toString(),
-				author2.toString());
+		assertThat(dialogFixture.list(BOOK_AUTHOR_JLIST).contents())
+			.containsExactly(author1.toString(),author2.toString());
 	}
 
 	@Test
@@ -132,13 +137,14 @@ public class ComposeBookSwingViewTest extends AssertJSwingJUnitTestCase {
 			composeBookView.getModelBookAuthors().addElement(new Author(5L,"Isaac",new HashSet<>()));
 			composeBookView.getModelBookAuthors().addElement(new Author(3L,"Clarke",new HashSet<>()));
 		});
-		Author author1 = new Author(2L, "test name", null);
-		Author author2 = new Author(3L, "another name", null);
+		Author author1 = new Author(2L, FIXTURE_NAME_1, null);
+		Author author2 = new Author(3L, FIXTURE_NAME_2, null);
 
 		GuiActionRunner.execute(() -> composeBookView.composeNewBook(Arrays.asList(author1, author2)));
 
 		assertThat(composeBookView.getModelBookAuthors().toArray()).isEmpty();
-		assertThat(composeBookView.getModelAvailableAuthors().toArray()).containsExactly(author1, author2);
+		assertThat(composeBookView.getModelAvailableAuthors().toArray())
+			.containsExactly(author1, author2);
 		dialogFixture.textBox().requireEmpty();
 		dialogFixture.button(JButtonMatcher.withText("OK")).requireDisabled();
 	}
@@ -170,7 +176,7 @@ public class ComposeBookSwingViewTest extends AssertJSwingJUnitTestCase {
 	@GUITest
 	public void test_buttonAddAuthor_should_be_disabled_when_no_Existing_author_is_selected() {
 		GuiActionRunner.execute(() -> composeBookView.getModelAvailableAuthors()
-				.addElement(new Author(2L, "author name", new HashSet<Book>())));
+				.addElement(new Author(2L, FIXTURE_NAME_1, new HashSet<Book>())));
 		JListFixture list = dialogFixture.list(AUTHOR_JLIST);
 		JButtonFixture button = dialogFixture.button(BUTTON_ADD_AUTHOR);
 		list.selectItem(0);
@@ -186,7 +192,8 @@ public class ComposeBookSwingViewTest extends AssertJSwingJUnitTestCase {
 	@GUITest
 	public void test_buttonRemoveAuthor_should_be_disabled_when_no_Book_author_is_selected() {
 		GuiActionRunner.execute(() -> {
-			composeBookView.getModelBookAuthors().addElement(new Author(2L, "author name", new HashSet<Book>()));
+			composeBookView.getModelBookAuthors().addElement(
+					new Author(2L, FIXTURE_NAME_1, new HashSet<Book>()));
 		});
 		JListFixture list = dialogFixture.list(BOOK_AUTHOR_JLIST);
 		JButtonFixture button = dialogFixture.button(BUTTON_REMOVE_AUTHOR);
@@ -202,9 +209,9 @@ public class ComposeBookSwingViewTest extends AssertJSwingJUnitTestCase {
 	@Test
 	@GUITest
 	public void test_buttonAddAuthor_should_move_selected_author_from_right_to_left() {
-		Author author = new Author(2L, "author name", new HashSet<Book>());
-		Author author2 = new Author(3L, "another name", new HashSet<Book>());
-		Author author3 = new Author(8L, "test name", new HashSet<Book>());
+		Author author = new Author(2L, FIXTURE_NAME_1, new HashSet<Book>());
+		Author author2 = new Author(3L, FIXTURE_NAME_2, new HashSet<Book>());
+		Author author3 = new Author(8L, FIXTURE_NAME_3, new HashSet<Book>());
 		GuiActionRunner.execute(() -> {
 			composeBookView.getModelBookAuthors().addElement(author);
 			composeBookView.getModelAvailableAuthors().addElement(author3);
@@ -214,16 +221,18 @@ public class ComposeBookSwingViewTest extends AssertJSwingJUnitTestCase {
 		dialogFixture.list(AUTHOR_JLIST).selectItem(1);
 		dialogFixture.button(BUTTON_ADD_AUTHOR).click();
 
-		assertThat(composeBookView.getModelBookAuthors().toArray()).containsExactlyInAnyOrder(author, author2);
-		assertThat(composeBookView.getModelAvailableAuthors().toArray()).containsExactly(author3);
+		assertThat(composeBookView.getModelBookAuthors().toArray())
+			.containsExactlyInAnyOrder(author, author2);
+		assertThat(composeBookView.getModelAvailableAuthors().toArray())
+			.containsExactly(author3);
 	}
 
 	@Test
 	@GUITest
 	public void test_buttonRemoveAuthor_should_move_selected_author_from_left_to_right() {
-		Author author = new Author(2L, "author name", new HashSet<Book>());
-		Author author2 = new Author(3L, "another name", new HashSet<Book>());
-		Author author3 = new Author(8L, "test name", new HashSet<Book>());
+		Author author = new Author(2L, FIXTURE_NAME_1, new HashSet<Book>());
+		Author author2 = new Author(3L, FIXTURE_NAME_2, new HashSet<Book>());
+		Author author3 = new Author(8L, FIXTURE_NAME_3, new HashSet<Book>());
 		GuiActionRunner.execute(() -> {
 			composeBookView.getModelBookAuthors().addElement(author);
 			composeBookView.getModelBookAuthors().addElement(author2);
@@ -234,15 +243,15 @@ public class ComposeBookSwingViewTest extends AssertJSwingJUnitTestCase {
 		dialogFixture.button(BUTTON_REMOVE_AUTHOR).click();
 
 		assertThat(composeBookView.getModelBookAuthors().toArray()).containsExactly(author2);
-		// right now we don't require any sorting
-		assertThat(composeBookView.getModelAvailableAuthors().toArray()).containsExactlyInAnyOrder(author, author3);
+		assertThat(composeBookView.getModelAvailableAuthors().toArray())
+			.containsExactlyInAnyOrder(author, author3);
 	}
 
 	@Test
 	@GUITest
 	public void test_OKbutton_should_hide_dialog_create_a_book_and_call_controller() {
-		Author author = new Author(2L, "author name", new HashSet<Book>());
-		Author author2 = new Author(5L, "another name", new HashSet<Book>());
+		Author author = new Author(2L, FIXTURE_NAME_1, new HashSet<Book>());
+		Author author2 = new Author(5L, FIXTURE_NAME_2, new HashSet<Book>());
 		HashSet<Author> authors = new HashSet<>();
 		authors.add(author);
 		authors.add(author2);
@@ -251,13 +260,14 @@ public class ComposeBookSwingViewTest extends AssertJSwingJUnitTestCase {
 			composeBookView.getModelBookAuthors().addElement(author2);
 		});
 
-		dialogFixture.textBox(TITLE_TEXT_FIELD).enterText("Book!");
+		dialogFixture.textBox(TITLE_TEXT_FIELD).enterText(FIXTURE_TITLE_1);
 		dialogFixture.button(JButtonMatcher.withText("OK")).click();
 
 		dialogFixture.requireNotVisible();
 		ArgumentCaptor<Book> bookCaptor = ArgumentCaptor.forClass(Book.class);
 		verify(controller).newBook(bookCaptor.capture());
-		assertThat(bookCaptor.getValue()).usingRecursiveComparison().isEqualTo(new Book(null, "Book!", authors));
+		assertThat(bookCaptor.getValue()).usingRecursiveComparison()
+			.isEqualTo(new Book(null, FIXTURE_TITLE_1, authors));
 	}
 
 }

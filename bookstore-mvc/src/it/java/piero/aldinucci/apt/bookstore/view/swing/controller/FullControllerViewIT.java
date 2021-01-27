@@ -1,13 +1,10 @@
 package piero.aldinucci.apt.bookstore.view.swing.controller;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.ArgumentMatchers.isA;
 import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.openMocks;
 
 import java.util.Arrays;
 import java.util.HashSet;
-import java.util.List;
 
 import javax.swing.JFrame;
 
@@ -49,8 +46,6 @@ public class FullControllerViewIT extends AssertJSwingJUnitTestCase{
 	
 	private FrameFixture window;
 	private DialogFixture dialog;
-	private List<Author> authors;
-	private List<Book> books;
 
 	private BookstoreControllerImpl controller;
 
@@ -97,58 +92,37 @@ public class FullControllerViewIT extends AssertJSwingJUnitTestCase{
 
 	
 	private void allAuthorsAndBooksSetup() {
-		Author author1 = new Author(1L, "Arthur", new HashSet<>());
-		Author author2 = new Author(2L, "Isaac", new HashSet<>());
-		Author author3 = new Author(3L, "Newton", new HashSet<>());
-		Book book1 = new Book(11L, "A book", new HashSet<>());
-		Book book2 = new Book(12L, "Manual", new HashSet<>());
-		Book book3 = new Book(13L, "Novel", new HashSet<>());
+		Author author1 = new Author(1L, "Author 1", new HashSet<>());
+		Book book1 = new Book(11L, "Book 2", new HashSet<>());
+		Book book2 = new Book(13L, "Book 2", new HashSet<>());
 		
-		author1.getBooks().add(book3);
-		author2.getBooks().add(book2);
-		author2.getBooks().add(book3);
-		author3.getBooks().add(book1);
-		author3.getBooks().add(book2);
-		book1.getAuthors().add(author3);
-		book2.getAuthors().add(author2);
-		book2.getAuthors().add(author3);
-		book3.getAuthors().add(author1);
-		book3.getAuthors().add(author2);
-		
-		authors = Arrays.asList(author1,author2,author3);
-		books = Arrays.asList(book1,book2,book3);
-		
-		when(manager.getAllAuthors()).thenReturn(authors);
-		when(manager.getAllBooks()).thenReturn(books);
-	}
-	
-	
-	@Test
-	@GUITest
-	public void test_UI_navigation() {
-		when(manager.newAuthor(isA(Author.class)))
-			.thenAnswer(invocation -> (Author) invocation.getArgument(0));
+		when(manager.getAllAuthors()).thenReturn(Arrays.asList(author1));
+		when(manager.getAllBooks()).thenReturn(Arrays.asList(book1,book2));
 		
 		GuiActionRunner.execute(() -> {
-			controller.allBooks();
 			controller.allAuthors();
+			controller.allBooks();
 		});
-		
+	}
+
+	@Test
+	@GUITest
+	public void test_navigate_UI_panels() {
 		window.tabbedPane().selectTab("Books");
-		window.button("DeleteBook").requireDisabled();
-		window.list("BookJList").requireItemCount(3);
-		window.button("NewBook").click();
 		
-		dialog.requireVisible().list("AvailableAuthors").requireItemCount(3);
-		dialog.button(JButtonMatcher.withText("Cancel")).click();
+		window.list("BookJList").requireItemCount(2);
 		dialog.requireNotVisible();
 		
-		window.tabbedPane().selectTab("Authors");
-		window.textBox().enterText("Someone");
-		window.button(JButtonMatcher.withText("Add")).click();
+		window.button(JButtonMatcher.withText("New")).click();
 		
-		assertThat(window.list("AuthorList").requireItemCount(4).item(3).value())
-			.isEqualTo(new Author(null,"Someone",null).toString());
+		dialog.requireVisible().list("AvailableAuthors").requireItemCount(1);
+		
+		dialog.button(JButtonMatcher.withText("Cancel")).click();
+		
+		dialog.requireNotVisible();
+
+		window.tabbedPane().selectTab("Authors");
+		
+		window.list("AuthorList").requireItemCount(1);
 	}
-	
 }

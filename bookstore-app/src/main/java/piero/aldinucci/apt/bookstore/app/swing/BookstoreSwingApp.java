@@ -34,13 +34,13 @@ public class BookstoreSwingApp implements Callable<Void> {
 	private static final Logger LOGGER = LogManager.getLogger();
 	
 	@Option(names = { "--postgres-host" }, description = { "Postgresql host address" })
-	private String host;// = "localhost";
+	private String host = "localhost";
 
 	@Option(names = { "--db-name" }, description = { "Database name" })
-	private String databaseName;// = "projectAPTTestDb";
+	private String databaseName = "projectAPTTestDb";
 
 	@Option(names = { "--postgres-port" }, description = { "Postgresql host port" })
-	private int port;// = 5432;
+	private int port = 5432;
 
 	@Option(names = {"-u", "--user" }, description = { "Postgresql username" })
 	private String userName;
@@ -66,7 +66,8 @@ public class BookstoreSwingApp implements Callable<Void> {
 	 * @return an instance of the persistence context interface
 	 */
 	private EntityManagerFactory getEntityManagerFactory() {
-		String propertyJdbcUrl = "jdbc:postgresql://" + host + ":" + port + "/" + databaseName;
+		String propertyJdbcUrl = "jdbc:postgresql://" + host +
+				":" + port + "/" + databaseName;
 		
 		HashMap<String, String> propertiesJPA = new HashMap<>();
 		propertiesJPA.put("javax.persistence.jdbc.url", propertyJdbcUrl);
@@ -92,7 +93,8 @@ public class BookstoreSwingApp implements Callable<Void> {
 						new BookstoreControllerSwingModule(
 						new BookstoreManagerJPAModule(emFactory)));
 				
-				BookstoreControllerImpl controller = injector.getInstance(BookstoreControllerImpl.class);
+				BookstoreControllerImpl controller = injector
+						.getInstance(BookstoreControllerImpl.class);
 				BookstoreSwingFrame frame = new BookstoreSwingFrame(
 						(AuthorSwingView)controller.getAuthorView(),
 						(BookSwingView)controller.getBookView());

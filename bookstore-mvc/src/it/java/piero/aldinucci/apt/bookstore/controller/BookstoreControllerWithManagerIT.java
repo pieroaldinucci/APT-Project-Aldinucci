@@ -42,6 +42,11 @@ import piero.aldinucci.apt.bookstore.view.ComposeBookView;
 
 public class BookstoreControllerWithManagerIT {
 	
+	private static final String FIXTURE_TITLE_2 = "another title";
+	private static final String FIXTURE_TITLE_1 = "title";
+	private static final String FIXTURE_NAME_1 = "name 1";
+	private static final String FIXTURE_NAME_2 = "name 2";
+
 	@Mock
 	TransactionManager transactionManager;
 	
@@ -86,8 +91,8 @@ public class BookstoreControllerWithManagerIT {
 	
 	@Test
 	public void test_newAuthor() {
-		Author authorToSave = new Author(null,"name 2",new HashSet<>()); 
-		Author savedAuthor = new Author(2L, "name 1", new HashSet<>());
+		Author authorToSave = new Author(null,FIXTURE_NAME_2,new HashSet<>()); 
+		Author savedAuthor = new Author(2L, FIXTURE_NAME_1, new HashSet<>());
 		when(authorRepository.save(isA(Author.class))).thenReturn(savedAuthor);
 		
 		controller.newAuthor(authorToSave);
@@ -99,9 +104,9 @@ public class BookstoreControllerWithManagerIT {
 	
 	@Test
 	public void test_newBook() {
-		Book bookToSave = new Book(null, "title", new HashSet<>());
-		Book savedBook = new Book(1L, "another title", new HashSet<>());
-		Author author = new Author(2L, "name 1", new HashSet<>());
+		Book bookToSave = new Book(null, FIXTURE_TITLE_1, new HashSet<>());
+		Book savedBook = new Book(1L, FIXTURE_TITLE_2, new HashSet<>());
+		Author author = new Author(2L, FIXTURE_NAME_1, new HashSet<>());
 		savedBook.getAuthors().add(author);
 		when(bookRepository.save(isA(Book.class))).thenReturn(savedBook);
 		
@@ -115,9 +120,9 @@ public class BookstoreControllerWithManagerIT {
 	
 	@Test
 	public void test_deleteAuthor() {
-		Author authorToDelete = new Author(2L,"name 3", new HashSet<>());
-		Author authorFound = new Author(2L,"name 1", new HashSet<>());
-		Book book = new Book(1L,"title",new HashSet<>());
+		Author authorToDelete = new Author(2L,FIXTURE_NAME_2, new HashSet<>());
+		Author authorFound = new Author(2L,FIXTURE_NAME_1, new HashSet<>());
+		Book book = new Book(1L,FIXTURE_TITLE_1,new HashSet<>());
 		book.getAuthors().add(authorToDelete);
 		authorFound.getBooks().add(book);
 		when(authorRepository.delete(anyLong())).thenReturn(Optional.of(authorFound));
@@ -132,9 +137,9 @@ public class BookstoreControllerWithManagerIT {
 	
 	@Test
 	public void test_deleteBook() {
-		Book bookToDelete = new Book(3L,"title 2", new HashSet<>());
-		Book  bookFound = new Book(3L,"title 1", new HashSet<>());
-		Author author = new Author(5L,"name",new HashSet<>());
+		Book bookToDelete = new Book(3L,FIXTURE_TITLE_1, new HashSet<>());
+		Book  bookFound = new Book(3L,FIXTURE_TITLE_2, new HashSet<>());
+		Author author = new Author(5L,FIXTURE_NAME_1,new HashSet<>());
 		author.getBooks().add(bookToDelete);
 		bookFound.getAuthors().add(author);
 		when(bookRepository.delete(anyLong())).thenReturn(Optional.of(bookFound));
