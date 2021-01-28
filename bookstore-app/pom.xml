@@ -24,6 +24,12 @@
 			<groupId>info.picocli</groupId>
 			<artifactId>picocli</artifactId>
 		</dependency>
+		<!-- The dependency alone is enough to activate the connection pooling.
+			 further configuration can be done in the persistence unit -->
+		<dependency>
+			<groupId>org.hibernate</groupId>
+			<artifactId>hibernate-c3p0</artifactId>
+		</dependency>
 	</dependencies>
 
 	<build>

@@ -7,8 +7,9 @@
 				pattern="%d{HH:mm:ss.SSS} [%t] %-5level %logger{36} - %msg%n" />
 		</Console>
 	</Appenders>
+	
 	<Loggers>
-		<Root level="error">
+		<Root level="warn">
 			<AppenderRef ref="Console-Appender" />
 		</Root>
 	</Loggers>

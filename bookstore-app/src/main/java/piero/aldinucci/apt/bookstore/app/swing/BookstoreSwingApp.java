@@ -81,7 +81,7 @@ public class BookstoreSwingApp implements Callable<Void> {
 		if (createDb)
 			propertiesJPA.put("javax.persistence.schema-generation.database.action", "create");
 		
-		return Persistence.createEntityManagerFactory("apt.project.bookstore", propertiesJPA);
+		return Persistence.createEntityManagerFactory("apt.project.bookstore.app", propertiesJPA);
 	}
 
 	@Override

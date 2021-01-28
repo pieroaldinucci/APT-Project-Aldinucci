@@ -120,6 +120,12 @@
 				<artifactId>picocli</artifactId>
 				<version>4.6.1</version>
 			</dependency>
+			<!-- Java library for Hibernate that manages database connections -->
+			<dependency>
+				<groupId>org.hibernate</groupId>
+				<artifactId>hibernate-c3p0</artifactId>
+				<version>5.4.27.Final</version>
+			</dependency>
 		</dependencies>
 	</dependencyManagement>
 

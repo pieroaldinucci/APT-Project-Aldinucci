@@ -56,7 +56,8 @@ public class BookstoreSwingAppE2E extends AssertJSwingJUnitTestCase{
 		propertiesJPA.put("javax.persistence.jdbc.user", FIXTURE_JDBC_USERNAME);
 		propertiesJPA.put("javax.persistence.jdbc.password", FIXTURE_JDBC_PASSWORD);
 		propertiesJPA.put("javax.persistence.schema-generation.database.action", "drop-and-create");
-		emFactory = Persistence.createEntityManagerFactory("apt.project.bookstore",propertiesJPA);
+		propertiesJPA.put("javax.persistence.jdbc.url","jdbc:postgresql://localhost:5432/projectAPTTestDb");
+		emFactory = Persistence.createEntityManagerFactory("apt.project.bookstore.app",propertiesJPA);
 		populateDatabase();
 		
 		application("piero.aldinucci.apt.bookstore.app.swing.BookstoreSwingApp").withArgs(
