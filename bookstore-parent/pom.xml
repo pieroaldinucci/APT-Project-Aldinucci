@@ -82,7 +82,8 @@
 			<dependency>
 				<groupId>org.postgresql</groupId>
 				<artifactId>postgresql</artifactId>
-				<!-- Version 42.2.18 can give errors of classes not found after installation -->
+				<!-- Version 42.2.18 will cause  errors on Java 8 on the final application
+					(can't find classes) -->
 				<version>42.2.14</version> 
 			</dependency>
 			<dependency>

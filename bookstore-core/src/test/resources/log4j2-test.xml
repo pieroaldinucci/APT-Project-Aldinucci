@@ -28,10 +28,12 @@
 			<AppenderRef ref="Console" />
 		</Logger>
 	-->
+	
+	<!-- This logger will print Hibernate statistics, but only if the
+		 generate_statistics property is set to true in the persistance unit -->
 		<Logger name="org.hibernate.stat" level="debug" additivity="false">
 			<AppenderRef ref="Console" />
 		</Logger>
-
 
 	</Loggers>
 </Configuration>
