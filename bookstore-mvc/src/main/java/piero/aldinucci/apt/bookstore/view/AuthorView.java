@@ -5,6 +5,8 @@ import java.util.List;
 import piero.aldinucci.apt.bookstore.model.Author;
 
 /**
+ * View component of the MVC architecture.
+ * It manages only Author class objects views.
  * 
  * @author Piero Aldinucci
  *

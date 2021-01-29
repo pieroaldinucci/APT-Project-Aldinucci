@@ -30,6 +30,7 @@ import piero.aldinucci.apt.bookstore.model.Book;
 import piero.aldinucci.apt.bookstore.view.ComposeBookView;
 
 /**
+ * Swing JDialong implementation of ComposeBookView
  * 
  * @author Piero Aldinucci
  *

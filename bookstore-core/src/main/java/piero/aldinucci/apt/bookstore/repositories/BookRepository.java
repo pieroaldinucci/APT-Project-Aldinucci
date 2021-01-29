@@ -6,7 +6,7 @@ import java.util.Optional;
 import piero.aldinucci.apt.bookstore.model.Book;
 
 /**
- * 
+ * Repository for Book class
  *
  */
 

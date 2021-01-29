@@ -8,7 +8,7 @@ import javax.persistence.EntityManager;
 import piero.aldinucci.apt.bookstore.model.Author;
 
 /**
- * 
+ * JPA specific implementation of AuthorRepository
  *
  */
 

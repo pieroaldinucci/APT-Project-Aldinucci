@@ -25,6 +25,7 @@ import piero.aldinucci.apt.bookstore.view.BookView;
 import java.awt.Color;
 
 /**
+ * Swing JPanel implementation of BookView
  * 
  * @author Piero Aldinucci
  *

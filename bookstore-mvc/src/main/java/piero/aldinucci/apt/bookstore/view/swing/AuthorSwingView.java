@@ -27,6 +27,7 @@ import com.google.inject.assistedinject.Assisted;
 import java.awt.Color;
 
 /**
+ * Swing JPanel implementation of AuthorView.
  * 
  * @author Piero Aldinucci
  *

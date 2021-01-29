@@ -1,7 +1,7 @@
 package piero.aldinucci.apt.bookstore.exceptions;
 
 /**
- * 
+ * Thrown by the service layer when a problem occur during transaction.
  */
 public class BookstorePersistenceException extends RuntimeException{
 	

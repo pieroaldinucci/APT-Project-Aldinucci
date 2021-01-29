@@ -5,6 +5,7 @@ import java.util.List;
 import piero.aldinucci.apt.bookstore.model.Author;
 
 /**
+ * View component in the MVC architecture.
  * This view is used to create new Book objects, using the available authors.
  * 
  * @author Piero Aldinucci

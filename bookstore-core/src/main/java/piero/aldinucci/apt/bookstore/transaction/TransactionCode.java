@@ -9,7 +9,7 @@ import piero.aldinucci.apt.bookstore.repositories.BookRepository;
  * 
  * @author Piero Aldinucci
  *
- * @param <R> The type of the first argument of TransactionCode
+ * @param <R> The type of the result of TransactionCode
  */
 
 @FunctionalInterface

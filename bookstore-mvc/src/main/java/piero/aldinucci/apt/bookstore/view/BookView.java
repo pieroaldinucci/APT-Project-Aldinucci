@@ -5,6 +5,8 @@ import java.util.List;
 import piero.aldinucci.apt.bookstore.model.Book;
 
 /**
+ * View component of the MVN architecture.
+ * It only manages Book objects view.
  * 
  * @author Piero Aldinucci
  *

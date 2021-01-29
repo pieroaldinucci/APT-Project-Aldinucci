@@ -9,6 +9,7 @@ import javax.swing.SwingConstants;
 import javax.swing.border.EmptyBorder;
 
 /**
+ * JFrame with 2 tabbed panels.
  * 
  * @author Piero Aldinucci
  *

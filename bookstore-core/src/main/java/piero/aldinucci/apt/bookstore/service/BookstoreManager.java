@@ -6,7 +6,8 @@ import piero.aldinucci.apt.bookstore.model.Author;
 import piero.aldinucci.apt.bookstore.model.Book;
 
 /**
- * This is the service layer.
+ * Service layer.
+ * Manages the access to the data layer.
  *
  */
 
@@ -17,16 +18,14 @@ public interface BookstoreManager {
 	 * 
 	 * @param author Author to add in the database, it's book collection must be
 	 *               empty
-	 * @return a copy of the Author, outside the persistence context, saved in the
-	 *         database.
+	 * @return a copy of the Author object saved in the database.
 	 */
 	public Author newAuthor(Author author);
 
 	/**
 	 * 
 	 * @param book Book to add in the database
-	 * @return a copy of the Book, outside the persistence context, saved in the
-	 *         database.
+	 * @return a copy of the Book object saved in the database.
 	 */
 	public Book newBook(Book book);
 

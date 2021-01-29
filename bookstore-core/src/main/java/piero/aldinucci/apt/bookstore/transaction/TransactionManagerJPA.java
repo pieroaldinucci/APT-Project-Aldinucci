@@ -12,6 +12,7 @@ import piero.aldinucci.apt.bookstore.repositories.BookRepository;
 import piero.aldinucci.apt.bookstore.repositories.factory.RepositoriesJPAFactory;
 
 /**
+ * JPA specific implementation of TransactionManager
  * 
  * @author Piero Aldinucci
  *
@@ -58,6 +59,11 @@ public class TransactionManagerJPA implements TransactionManager {
 		return result;
 	}
 
+	/**
+	 * To be used only for testing purposes.
+	 * 
+	 * @return instance of private EntityManager
+	 */
 	EntityManager getEntityManager() {
 		return entityManager;
 	}

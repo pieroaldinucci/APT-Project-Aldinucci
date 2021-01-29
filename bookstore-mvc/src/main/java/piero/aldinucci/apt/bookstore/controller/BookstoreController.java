@@ -4,6 +4,7 @@ import piero.aldinucci.apt.bookstore.model.Author;
 import piero.aldinucci.apt.bookstore.model.Book;
 
 /**
+ * Controller component of the MVC architecture.
  * 
  * @author Piero Aldinucci
  *
