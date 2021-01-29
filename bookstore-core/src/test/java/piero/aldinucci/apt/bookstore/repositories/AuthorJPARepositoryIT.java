@@ -28,7 +28,7 @@ public class AuthorJPARepositoryIT {
 	
 	@Before
 	public void setUp() {
-		emFactory = Persistence.createEntityManagerFactory("apt.project.bookstore.integrationTest");
+		emFactory = Persistence.createEntityManagerFactory("apt.project.bookstore.unitTest");
 		entityManager = emFactory.createEntityManager();
 		
 		repository = new AuthorJPARepository(entityManager);
