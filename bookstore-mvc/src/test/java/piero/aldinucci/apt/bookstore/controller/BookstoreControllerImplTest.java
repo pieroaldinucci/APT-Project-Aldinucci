@@ -105,6 +105,9 @@ public class BookstoreControllerImplTest {
 		verifyNoMoreInteractions(manager);
 	}
 	
+	/*
+	 * Every time we delete an Book we have to update the authors as well. 
+	 */
 	@Test
 	public void test_deleteBook_successful() {
 		Book book = new Book(1L, FIXTURE_TITLE_1, new HashSet<>());
@@ -194,7 +197,7 @@ public class BookstoreControllerImplTest {
 		verify(composeBookView).composeNewBook(authors);
 	}
 	
-	/* I do believe that is simpler and cleaner to just add tests for
+	/* I find it simpler and cleaner to just add tests for
 	 * getters rather than add specific exclusions and suppressions
 	 */
 	@Test

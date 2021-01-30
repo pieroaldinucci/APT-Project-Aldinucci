@@ -165,7 +165,8 @@ public class BookSwingView extends JPanel implements BookView {
 	 */
 	private String getDisplayString(Book book) {
 		return book.toString() + "; Authors: "
-				+ book.getAuthors().stream().map(Author::getName).collect(Collectors.joining(" - "));
+				+ book.getAuthors().stream().map(Author::getName)
+					.collect(Collectors.joining(" - "));
 	}
 
 	@Override

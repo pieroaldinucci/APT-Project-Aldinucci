@@ -91,7 +91,7 @@ public class BookstoreSwingApp implements Callable<Void> {
 				emFactory = getEntityManagerFactory();
 				Injector injector = Guice.createInjector(
 						new BookstoreControllerSwingModule(
-						new BookstoreManagerJPAModule(emFactory)));
+								new BookstoreManagerJPAModule(emFactory)));
 				
 				BookstoreControllerImpl controller = injector
 						.getInstance(BookstoreControllerImpl.class);
