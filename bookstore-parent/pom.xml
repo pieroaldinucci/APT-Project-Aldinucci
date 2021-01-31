@@ -15,8 +15,6 @@
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<maven.compiler.source>1.8</maven.compiler.source>
 		<maven.compiler.target>1.8</maven.compiler.target>
-		<!-- This property will be changed to true if Java 9 or more is detected. -->
-		<jdk9-or-more>false</jdk9-or-more>
 		<sonar.exclusions>**/model/*.java</sonar.exclusions>
 		<sonar.coverage.exclusions>
 			**/exceptions/*.*,
@@ -36,6 +34,10 @@
 		<postgres.test.username>testUser</postgres.test.username>
 		<postgres.test.password>password</postgres.test.password>
 		<postgres.test.container.port>5432</postgres.test.container.port>
+		
+		<!-- This property will be changed to true if Java 9 or more is detected. 
+			Only used for Sonarcloud, since it doesn't accept anything less that Java 11 -->
+		<jdk9-or-more>false</jdk9-or-more>
 	</properties>
 
 	<modules>
