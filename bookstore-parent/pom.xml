@@ -15,8 +15,7 @@
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<maven.compiler.source>1.8</maven.compiler.source>
 		<maven.compiler.target>1.8</maven.compiler.target>
-		<!-- This property will be changed to true if Java 9 or more is detected.
-			It's used to deactivate plugins that won't work with that Java version -->
+		<!-- This property will be changed to true if Java 9 or more is detected. -->
 		<jdk9-or-more>false</jdk9-or-more>
 		<sonar.exclusions>**/model/*.java</sonar.exclusions>
 		<sonar.coverage.exclusions>
@@ -36,6 +35,7 @@
 		
 		<postgres.test.username>testUser</postgres.test.username>
 		<postgres.test.password>password</postgres.test.password>
+		<postgres.test.container.port>5432</postgres.test.container.port>
 	</properties>
 
 	<modules>
@@ -211,7 +211,7 @@
 								<name>postgres:13.1</name>
 								<run>
 									<ports>
-										<port>5432:5432</port>
+										<port>${postgres.test.container.port}:5432</port>
 									</ports>
 									<env>
 										<POSTGRES_USER>${postgres.test.username}</POSTGRES_USER>
