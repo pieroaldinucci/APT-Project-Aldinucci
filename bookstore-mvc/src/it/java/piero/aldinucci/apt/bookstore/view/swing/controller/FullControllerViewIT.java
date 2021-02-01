@@ -90,7 +90,6 @@ public class FullControllerViewIT extends AssertJSwingJUnitTestCase{
 		allAuthorsAndBooksSetup();
 	}
 
-	
 	private void allAuthorsAndBooksSetup() {
 		Author author1 = new Author(1L, "Author 1", new HashSet<>());
 		Book book1 = new Book(11L, "Book 2", new HashSet<>());
@@ -105,9 +104,10 @@ public class FullControllerViewIT extends AssertJSwingJUnitTestCase{
 		});
 	}
 
+	
 	@Test
 	@GUITest
-	public void test_navigate_UI_panels() {
+	public void test_navigate_UI_components() {
 		window.tabbedPane().selectTab("Books");
 		
 		window.list("BookJList").requireItemCount(2);

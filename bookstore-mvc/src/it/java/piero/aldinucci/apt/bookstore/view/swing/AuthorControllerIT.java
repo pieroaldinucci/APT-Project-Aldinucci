@@ -53,7 +53,7 @@ public class AuthorControllerIT extends AssertJSwingJUnitTestCase{
 	private ComposeBookView composeBookView;
 		
 	private FrameFixture window;
-	private List<Author> authors;
+	private List<Author> fixtureAuthors;
 
 	private BookstoreControllerImpl controller;
 	
@@ -85,9 +85,9 @@ public class AuthorControllerIT extends AssertJSwingJUnitTestCase{
 		Author author2 = new Author(2L, FIXTURE_NAME_2, new HashSet<>());
 		Author author3 = new Author(3L, FIXTURE_NAME_3, new HashSet<>());
 
-		authors = Lists.list(author1,author2,author3);
+		fixtureAuthors = Lists.list(author1,author2,author3);
 		
-		when(manager.getAllAuthors()).thenReturn(authors);
+		when(manager.getAllAuthors()).thenReturn(fixtureAuthors);
 		when(manager.getAllBooks()).thenReturn(Lists.emptyList());
 	}
 	
@@ -97,7 +97,7 @@ public class AuthorControllerIT extends AssertJSwingJUnitTestCase{
 		GuiActionRunner.execute(() -> controller.allAuthors());
 		
 		assertThat(window.list().contents()).containsAll(
-				authors.stream().map(a -> a.toString()).collect(Collectors.toList()));
+				fixtureAuthors.stream().map(a -> a.toString()).collect(Collectors.toList()));
 	}
 	
 	@Test

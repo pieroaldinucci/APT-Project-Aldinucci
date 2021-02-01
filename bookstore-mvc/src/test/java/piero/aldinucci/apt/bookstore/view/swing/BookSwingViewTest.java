@@ -80,11 +80,12 @@ public class BookSwingViewTest extends AssertJSwingJUnitTestCase {
 	@GUITest
 	public void test_delete_button_should_be_enabled_only_when_book_is_selected() {
 		Book book1 = new Book(3L, FIXTURE_TITLE_1, new HashSet<>());
+		JListFixture bookList = bookPanel.list(BOOK_J_LIST);
+		
 		GuiActionRunner.execute(() -> bookView.getBookModelList().addElement(book1));
 
-		JListFixture bookList = bookPanel.list(BOOK_J_LIST);
-		bookList.selectItem(0);
-		bookList.requireSelection(0); // select can fail if the jlist is not visible due to small size
+		bookList.selectItem(0);			// select can fail if the jlist is not visible due to small size 
+		bookList.requireSelection(0);	// this verify that it was properly selected  
 		bookPanel.button(DELETE_BOOK_BUTTON).requireEnabled();
 		bookList.clearSelection();
 		bookPanel.button(DELETE_BOOK_BUTTON).requireDisabled();

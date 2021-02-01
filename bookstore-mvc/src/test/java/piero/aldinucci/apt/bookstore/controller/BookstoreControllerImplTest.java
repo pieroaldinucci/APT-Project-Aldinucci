@@ -106,7 +106,7 @@ public class BookstoreControllerImplTest {
 	}
 	
 	/*
-	 * Every time we delete an Book we have to update the authors as well. 
+	 * Every time we delete a Book we have to update the authors as well. 
 	 */
 	@Test
 	public void test_deleteBook_successful() {
@@ -197,9 +197,6 @@ public class BookstoreControllerImplTest {
 		verify(composeBookView).composeNewBook(authors);
 	}
 	
-	/* I find it simpler and cleaner to just add tests for
-	 * getters rather than add specific exclusions and suppressions
-	 */
 	@Test
 	public void test_getAuthorView() {
 		assertThat(controller.getAuthorView()).isSameAs(authorView);

@@ -61,7 +61,6 @@ public class TransactionManagerJPAWithFactoryIT {
 		Author savedAuthor = em.createQuery("from Author",Author.class).getSingleResult();
 		Book savedBook = em.createQuery("from Book", Book.class).getSingleResult();
 		em.close();
-		
 		assertThat(savedAuthor).usingRecursiveComparison().isEqualTo(author);
 		assertThat(savedBook).usingRecursiveComparison().isEqualTo(book);
 	}
@@ -79,7 +78,6 @@ public class TransactionManagerJPAWithFactoryIT {
 		EntityManager em = emFactory.createEntityManager();
 		List<Author> authors = em.createQuery("from Author",Author.class).getResultList();
 		em.close();
-		
 		assertThat(authors).isEmpty();
 	}
 	

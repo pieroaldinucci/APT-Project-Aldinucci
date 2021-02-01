@@ -67,7 +67,9 @@ public class BookstoreManagerImplTest {
 		Author returnedAuthor = new Author(3L, FIXTURE_NAME_1, new HashSet<>());
 		when(authorRepository.save(isA(Author.class))).thenReturn(returnedAuthor);
 
-		assertThat(bookstoreManager.newAuthor(author)).isSameAs(returnedAuthor);
+		Author newAuthor = bookstoreManager.newAuthor(author);
+		
+		assertThat(newAuthor).isSameAs(returnedAuthor);
 		verify(authorRepository).save(new Author(null, FIXTURE_NAME_1, new HashSet<>()));
 	}
 
@@ -77,8 +79,11 @@ public class BookstoreManagerImplTest {
 		Book book = new Book(null, FIXTURE_TITLE_1, new HashSet<>());
 		author.getBooks().add(book);
 
-		assertThatThrownBy(() -> bookstoreManager.newAuthor(author)).isInstanceOf(IllegalArgumentException.class)
+		assertThatThrownBy(() -> 
+			bookstoreManager.newAuthor(author))
+				.isInstanceOf(IllegalArgumentException.class)
 				.hasMessage("New authors should have an empty Book Set");
+		
 		verifyNoInteractions(transactionManager);
 	}
 
@@ -88,12 +93,14 @@ public class BookstoreManagerImplTest {
 		Book returnedBook = new Book(1L, FIXTURE_TITLE_1, new HashSet<>());
 		when(bookRepository.save(isA(Book.class))).thenReturn(returnedBook);
 
-		assertThat(bookstoreManager.newBook(book)).isSameAs(returnedBook);
+		Book newBook = bookstoreManager.newBook(book);
+		
+		assertThat(newBook).isSameAs(returnedBook);
 		verify(bookRepository).save(new Book(null, FIXTURE_TITLE_1, new HashSet<>()));
 	}
 
 	@Test
-	public void test_addBook_should_update_all_authors_in_its_Set() {
+	public void test_newBook_should_update_all_authors_in_its_Set() {
 		Book book = new Book(null, FIXTURE_TITLE_1, null);
 		Author author1 = new Author(1L, FIXTURE_NAME_1, new HashSet<>());
 		Author author2 = new Author(5L, FIXTURE_NAME_2, new HashSet<>());
@@ -102,8 +109,9 @@ public class BookstoreManagerImplTest {
 		returnedBook.getAuthors().add(author2);
 		when(bookRepository.save(isA(Book.class))).thenReturn(returnedBook);
 
-		assertThat(bookstoreManager.newBook(book)).isSameAs(returnedBook);
-
+		Book newBook = bookstoreManager.newBook(book);
+		
+		assertThat(newBook).isSameAs(returnedBook);
 		InOrder inOrder = inOrder(authorRepository, bookRepository);
 		inOrder.verify(bookRepository).save(book);
 		inOrder.verify(authorRepository).update(author1);
@@ -153,14 +161,6 @@ public class BookstoreManagerImplTest {
 		verifyNoInteractions(bookRepository);
 	}
 	
-	/**
-	 * Question: Is legit to spy on HashSet? It should not be
-	 * Then it's possible to check if the sets are being updated inOrder?
-	 * 
-	 * Using ArgumentCaptor can't be done because we'll get the
-	 * final state of the objects, and not the state they were in when
-	 * the method is called.
-	 */
 	@Test
 	public void test_delete_author_when_book_set_not_empty() {
 		Author author = new Author(1L, FIXTURE_NAME_1, new LinkedHashSet<>());
@@ -171,6 +171,7 @@ public class BookstoreManagerImplTest {
 		book1.getAuthors().add(author);
 		book2.getAuthors().add(author);
 		when(authorRepository.delete(anyLong())).thenReturn(Optional.of(author));
+		
 		bookstoreManager.deleteAuthor(1);
 		
 		InOrder inOrder = inOrder(authorRepository,bookRepository);

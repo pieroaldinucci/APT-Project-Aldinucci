@@ -83,13 +83,13 @@ public class TransactionManagerJPAIT {
 		inOrder.verify(authorRepository).save(authorCaptor.capture());
 		verifyNoMoreInteractions(authorRepository);
 		verifyNoMoreInteractions(bookRepository);
-		
 		assertThat(authorCaptor.getValue()).usingRecursiveComparison()
 			.isEqualTo(new Author(2L,FIXTURE_NAME_2,null));
 		assertThat(bookCaptor.getValue()).usingRecursiveComparison()
 			.isEqualTo(new Book(4L,FIXCTURE_TITLE_1,null));
 		assertThat(author).isSameAs(savedAuthor);
-		assertThat(transactionManager.getEntityManager().getTransaction().isActive()).isFalse();
+		assertThat(transactionManager.getEntityManager()
+			.getTransaction().isActive()).isFalse();
 		assertThat(transactionManager.getEntityManager().isOpen()).isFalse();
 	}
 	
@@ -106,7 +106,8 @@ public class TransactionManagerJPAIT {
 			.hasMessage("Error while executing transaction")
 			.getCause().isInstanceOf(PersistenceException.class);
 		
-		assertThat(transactionManager.getEntityManager().getTransaction().isActive()).isFalse();
+		assertThat(transactionManager.getEntityManager()
+			.getTransaction().isActive()).isFalse();
 		assertThat(transactionManager.getEntityManager().isOpen()).isFalse();
 	}
 	
@@ -122,7 +123,8 @@ public class TransactionManagerJPAIT {
 			});
 		}).isSameAs(runtimeException);
 		
-		assertThat(transactionManager.getEntityManager().getTransaction().isActive()).isFalse();
+		assertThat(transactionManager.getEntityManager()
+			.getTransaction().isActive()).isFalse();
 		assertThat(transactionManager.getEntityManager().isOpen()).isFalse();
 	}
 

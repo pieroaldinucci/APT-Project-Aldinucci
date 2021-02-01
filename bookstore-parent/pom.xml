@@ -92,7 +92,7 @@
 				<artifactId>picocli</artifactId>
 				<version>4.6.1</version>
 			</dependency>
-			<!-- Java library for Hibernate that manages database connections -->
+			<!-- Java library for Hibernate that manages database connection pool -->
 			<dependency>
 				<groupId>org.hibernate</groupId>
 				<artifactId>hibernate-c3p0</artifactId>

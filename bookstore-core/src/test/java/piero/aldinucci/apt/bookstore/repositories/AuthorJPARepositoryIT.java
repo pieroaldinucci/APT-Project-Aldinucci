@@ -1,7 +1,6 @@
 package piero.aldinucci.apt.bookstore.repositories;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatCode;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import java.util.HashSet;
@@ -17,11 +16,13 @@ import org.junit.Before;
 import org.junit.Test;
 
 import piero.aldinucci.apt.bookstore.model.Author;
+import piero.aldinucci.apt.bookstore.model.Book;
 
 public class AuthorJPARepositoryIT {
 
 	private static final String FIXTURE_NAME_1 = "test name 1";
 	private static final String FIXTURE_NAME_2 = "Test name 2";
+	private static final String FIXTURE_TITLE_1 = "Title 1";
 	private AuthorJPARepository repository;
 	private EntityManagerFactory emFactory;
 	private EntityManager entityManager;
@@ -63,7 +64,7 @@ public class AuthorJPARepositoryIT {
 	}
 	
 	@Test
-	public void test_findById_when_id_doesnt_exist_should_be_an_empty_Optional() {
+	public void test_findById_when_id_doesnt_exist_should_return_an_empty_Optional() {
 		Optional<Author> author = repository.findById(2L);
 		
 		assertThat(author).isEmpty();
@@ -91,8 +92,8 @@ public class AuthorJPARepositoryIT {
 		
 		assertThat(savedAuthor).isNotNull();
 		assertThat(entityManager.contains(savedAuthor)).isTrue();
-		Author persistedAuthor = em2.find(Author.class, savedAuthor.getId());
-		assertThat(persistedAuthor).usingRecursiveComparison().isEqualTo(savedAuthor);
+		assertThat(em2.find(Author.class, savedAuthor.getId()))
+			.usingRecursiveComparison().isEqualTo(savedAuthor);
 		assertThat(savedAuthor).isNotSameAs(authorToSave);
 		em2.close();
 	}
@@ -114,14 +115,15 @@ public class AuthorJPARepositoryIT {
 	public void test_update_author_with_existing_id() {
 		Author persistedAuthor = persistAuthor(FIXTURE_NAME_1);
 		Author modifiedAuthor = new Author(persistedAuthor.getId(), FIXTURE_NAME_2, new HashSet<>());
+		modifiedAuthor.getBooks().add(persistBook(FIXTURE_TITLE_1));
+		EntityManager em2 = emFactory.createEntityManager();
 		
 		entityManager.getTransaction().begin();
 		repository.update(modifiedAuthor);
 		entityManager.getTransaction().commit();
 		
-		EntityManager em2 = emFactory.createEntityManager();
-		Author found = em2.find(Author.class, persistedAuthor.getId());
-		assertThat(found).usingRecursiveComparison().isEqualTo(modifiedAuthor);
+		assertThat(em2.find(Author.class, persistedAuthor.getId()))
+			.usingRecursiveComparison().isEqualTo(modifiedAuthor);
 		assertThat(entityManager.contains(modifiedAuthor)).isFalse();
 		em2.close();
 	}
@@ -166,14 +168,12 @@ public class AuthorJPARepositoryIT {
 	}
 	
 	@Test
-	public void test_delete_author_when_not_present_should_return_empy_optional_and_not_cause_IllegalArgumenException() {
-		assertThatCode(() -> {
-			entityManager.getTransaction().begin();
-			Optional<Author> author = repository.delete(2L);
-			entityManager.getTransaction().commit();
-			
-			assertThat(author).isEmpty();
-		}).doesNotThrowAnyException();
+	public void test_delete_author_when_not_present_should_return_empy_optional() {
+		entityManager.getTransaction().begin();
+		Optional<Author> author = repository.delete(2L);
+		entityManager.getTransaction().commit();
+		
+		assertThat(author).isEmpty();
 	}
 
 	
@@ -187,4 +187,13 @@ public class AuthorJPARepositoryIT {
 		return author;
 	}
 	
+	private Book persistBook (String title) {
+		EntityManager em2 = emFactory.createEntityManager();
+		Book book = new Book(null, title, new HashSet<>());
+		em2.getTransaction().begin();
+		em2.persist(book);
+		em2.getTransaction().commit();
+		em2.close();
+		return book;
+	}
 }

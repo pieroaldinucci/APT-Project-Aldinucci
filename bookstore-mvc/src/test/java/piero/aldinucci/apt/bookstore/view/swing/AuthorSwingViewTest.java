@@ -113,7 +113,8 @@ public class AuthorSwingViewTest extends AssertJSwingJUnitTestCase {
 			authorView.getAuthorListModel().addElement(author2);
 		});
 
-		assertThat(authorPanel.list(AUTHOR_LIST).contents()).containsExactly(author1.toString(), author2.toString());
+		assertThat(authorPanel.list(AUTHOR_LIST).contents())
+			.containsExactly(author1.toString(), author2.toString());
 	}
 	
 	@Test
@@ -174,10 +175,11 @@ public class AuthorSwingViewTest extends AssertJSwingJUnitTestCase {
 	
 	@Test
 	public void test_clicking_add_button_should_delegate_to_controller() {
+		ArgumentCaptor<Author> author = ArgumentCaptor.forClass(Author.class);
+
 		authorPanel.textBox(NAME_TEXT_FIELD).enterText(FIXTURE_NAME_2);
 		authorPanel.button(ADD_AUTHOR_BUTTON).click();
 		
-		ArgumentCaptor<Author> author = ArgumentCaptor.forClass(Author.class);
 		verify(controller).newAuthor(author.capture());
 		assertThat(author.getValue()).usingRecursiveComparison()
 			.isEqualTo(new Author(null, FIXTURE_NAME_2, new HashSet<Book>()));
@@ -192,6 +194,7 @@ public class AuthorSwingViewTest extends AssertJSwingJUnitTestCase {
 			authorView.getAuthorListModel().addElement(testAuthor);
 			authorView.getAuthorListModel().addElement(testAuthor2);
 		});
+		
 		authorPanel.list(AUTHOR_LIST).selectItem(0);
 		authorPanel.button(DELETE_AUTHOR_BUTTON).click();
 		

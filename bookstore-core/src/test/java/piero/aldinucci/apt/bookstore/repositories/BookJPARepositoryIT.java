@@ -1,7 +1,6 @@
 package piero.aldinucci.apt.bookstore.repositories;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatCode;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import java.util.HashSet;
@@ -16,12 +15,14 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
+import piero.aldinucci.apt.bookstore.model.Author;
 import piero.aldinucci.apt.bookstore.model.Book;
 
 public class BookJPARepositoryIT {
 
 	private static final String FIXTURE_TITLE1 = "Title1";
 	private static final String FIXTURE_TITLE2 = "Title2";
+	private static final String FIXTURE_NAME1 = "Name1";
 	private BookJPARepository repository;
 	private EntityManagerFactory emFactory;
 	private EntityManager entityManager;
@@ -116,14 +117,15 @@ public class BookJPARepositoryIT {
 	public void test_update_book_with_existing_id() {
 		Book persistedBook = persistBook(FIXTURE_TITLE1);
 		Book modifiedBook = new Book(persistedBook.getId(), FIXTURE_TITLE2, new HashSet<>());
+		modifiedBook.getAuthors().add(persistAuthor(FIXTURE_NAME1));
 		
 		entityManager.getTransaction().begin();
 		repository.update(modifiedBook);
 		entityManager.getTransaction().commit();
 		
 		EntityManager em2 = emFactory.createEntityManager();
-		Book found = em2.find(Book.class, persistedBook.getId());
-		assertThat(found).usingRecursiveComparison().isEqualTo(modifiedBook);
+		assertThat(em2.find(Book.class, persistedBook.getId()))
+			.usingRecursiveComparison().isEqualTo(modifiedBook);
 		assertThat(entityManager.contains(modifiedBook)).isFalse();
 		em2.close();
 	}
@@ -168,13 +170,11 @@ public class BookJPARepositoryIT {
 	
 	@Test
 	public void test_delete_book_when_not_present_should_return_empty_optional_and_not_thrown_IllegalArgumentException() {
-		assertThatCode(() -> {
-			entityManager.getTransaction().begin();
-			Optional<Book> book = repository.delete(2L);
-			entityManager.getTransaction().commit();
-			
-			assertThat(book).isEmpty();
-		}).doesNotThrowAnyException();
+		entityManager.getTransaction().begin();
+		Optional<Book> book = repository.delete(2L);
+		entityManager.getTransaction().commit();
+		
+		assertThat(book).isEmpty();
 	}
 	
 	
@@ -186,6 +186,16 @@ public class BookJPARepositoryIT {
 		em2.getTransaction().commit();
 		em2.close();
 		return book;
+	}
+	
+	private Author persistAuthor (String name) {
+		EntityManager em2 = emFactory.createEntityManager();
+		Author author = new Author(null, name, new HashSet<>());
+		em2.getTransaction().begin();
+		em2.persist(author);
+		em2.getTransaction().commit();
+		em2.close();
+		return author;
 	}
 	
 }

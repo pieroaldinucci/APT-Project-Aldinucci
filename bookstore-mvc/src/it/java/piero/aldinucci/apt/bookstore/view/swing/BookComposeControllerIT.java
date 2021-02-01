@@ -54,8 +54,8 @@ public class BookComposeControllerIT extends AssertJSwingJUnitTestCase {
 
 	private FrameFixture window;
 	private DialogFixture dialog;
-	private List<Author> authors;
-	private List<Book> books;
+	private List<Author> fixtureAuthors;
+	private List<Book> fixtureBooks;
 
 	private BookstoreControllerImpl controller;
 
@@ -94,12 +94,13 @@ public class BookComposeControllerIT extends AssertJSwingJUnitTestCase {
 		book1.getAuthors().add(author1);
 		book2.getAuthors().add(author2);
 
-		authors = Arrays.asList(author1, author2);
-		books = Arrays.asList(book1, book2);
+		fixtureAuthors = Arrays.asList(author1, author2);
+		fixtureBooks = Arrays.asList(book1, book2);
 
-		when(manager.getAllAuthors()).thenReturn(authors);
-		when(manager.getAllBooks()).thenReturn(books);
+		when(manager.getAllAuthors()).thenReturn(fixtureAuthors);
+		when(manager.getAllBooks()).thenReturn(fixtureBooks);
 	}
+	
 
 	@Test
 	@GUITest
