@@ -33,4 +33,4 @@ cache:
       
 script:
    - git fetch --unshallow
-   - ./mvnw -f bookstore-parent/pom.xml clean verify -Pjacoco,e2e-test,mutation-test $MAVEN_ARGS
+   - mvn -f bookstore-parent/pom.xml clean verify -Pjacoco,e2e-test,mutation-test $MAVEN_ARGS
