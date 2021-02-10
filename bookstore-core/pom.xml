@@ -6,7 +6,7 @@
 	<parent>
 		<groupId>aldinucci.piero.apt.project</groupId>
 		<artifactId>bookstore-parent</artifactId>
-		<version>0.0.1-SNAPSHOT</version>
+		<version>0.0.2-SNAPSHOT</version>
 		<relativePath>../bookstore-parent</relativePath>
 	</parent>
 	<artifactId>bookstore-core</artifactId>

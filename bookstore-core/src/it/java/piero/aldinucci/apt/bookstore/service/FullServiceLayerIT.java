@@ -31,7 +31,7 @@ public class FullServiceLayerIT {
 
 	@Before
 	public void setUp() {
-		emFactory = Persistence.createEntityManagerFactory("apt.project.bookstore.integrationTest");
+		emFactory = Persistence.createEntityManagerFactory("apt.project.bookstore.test");
 
 		bookstoreManager = new BookstoreManagerImpl(
 				new TransactionManagerJPA(emFactory, new RepositoriesJPAFactoryImpl()));

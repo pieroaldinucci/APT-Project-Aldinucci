@@ -30,6 +30,7 @@
 			It's not needed if c3p0 is the only provider present.
 			 -->
 			<property name="hibernate.connection.provider_class" value="org.hibernate.c3p0.internal.C3P0ConnectionProvider"/>
+			<property name="hibernate.c3p0.acquireRetryAttempts" value="1"/>
 		</properties>
 
 	</persistence-unit>

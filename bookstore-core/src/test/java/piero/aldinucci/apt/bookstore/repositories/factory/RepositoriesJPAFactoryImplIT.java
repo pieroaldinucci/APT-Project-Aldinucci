@@ -24,7 +24,7 @@ public class RepositoriesJPAFactoryImplIT {
 	
 	@Before
 	public void setUp() {
-		emFactory = Persistence.createEntityManagerFactory("apt.project.bookstore.unitTest");
+		emFactory = Persistence.createEntityManagerFactory("apt.project.bookstore.test");
 		entityManager = emFactory.createEntityManager();
 
 		factory = new RepositoriesJPAFactoryImpl();

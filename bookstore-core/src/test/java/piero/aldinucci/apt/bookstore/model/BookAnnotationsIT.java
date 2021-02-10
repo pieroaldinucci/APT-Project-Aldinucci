@@ -18,7 +18,7 @@ public class BookAnnotationsIT {
 	
 	@Before
 	public void setUp() {
-		emFactory = Persistence.createEntityManagerFactory("apt.project.bookstore.unitTest");
+		emFactory = Persistence.createEntityManagerFactory("apt.project.bookstore.test");
 	}
 	
 	@After

@@ -29,7 +29,7 @@ public class BookJPARepositoryIT {
 	
 	@Before
 	public void setUp() {
-		emFactory = Persistence.createEntityManagerFactory("apt.project.bookstore.unitTest");
+		emFactory = Persistence.createEntityManagerFactory("apt.project.bookstore.test");
 		entityManager = emFactory.createEntityManager();
 		
 		repository = new BookJPARepository(entityManager);

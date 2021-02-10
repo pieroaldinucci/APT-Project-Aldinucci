@@ -54,7 +54,7 @@ public class TransactionManagerJPAIT {
 	public void setUp() {
 		openMocks(this);
 		
-		emFactory = Persistence.createEntityManagerFactory("apt.project.bookstore.unitTest");
+		emFactory = Persistence.createEntityManagerFactory("apt.project.bookstore.test");
 		transactionManager = new TransactionManagerJPA(emFactory,repositoriesFactory);
 		
 		when(repositoriesFactory.createAuthorRepository(any())).thenReturn(authorRepository);

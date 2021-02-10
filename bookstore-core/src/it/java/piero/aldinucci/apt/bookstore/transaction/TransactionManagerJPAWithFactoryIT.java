@@ -30,7 +30,7 @@ public class TransactionManagerJPAWithFactoryIT {
 
 	@Before
 	public void setUp() {
-		emFactory = Persistence.createEntityManagerFactory("apt.project.bookstore.integrationTest");
+		emFactory = Persistence.createEntityManagerFactory("apt.project.bookstore.test");
 		transactionManager = new TransactionManagerJPA(emFactory,new RepositoriesJPAFactoryImpl());
 	}
 	
