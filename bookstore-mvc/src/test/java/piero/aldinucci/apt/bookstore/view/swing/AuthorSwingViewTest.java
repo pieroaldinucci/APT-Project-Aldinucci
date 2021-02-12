@@ -1,6 +1,7 @@
 package piero.aldinucci.apt.bookstore.view.swing;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.awaitility.Awaitility.*;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.MockitoAnnotations.openMocks;
@@ -8,6 +9,7 @@ import static org.mockito.MockitoAnnotations.openMocks;
 import java.awt.Color;
 import java.util.Arrays;
 import java.util.HashSet;
+import java.util.concurrent.TimeUnit;
 
 import javax.swing.DefaultListModel;
 import javax.swing.JFrame;
@@ -33,6 +35,7 @@ import piero.aldinucci.apt.bookstore.model.Book;
 @RunWith(GUITestRunner.class)
 public class AuthorSwingViewTest extends AssertJSwingJUnitTestCase {
 
+	private static final int WAIT_TIME = 5;
 	private static final String FIXTURE_TITLE_1 = "A book";
 	private static final String FIXTURE_NAME_2 = "Name 2";
 	private static final String FIXTURE_NAME_1 = "Author 1";
@@ -123,13 +126,15 @@ public class AuthorSwingViewTest extends AssertJSwingJUnitTestCase {
 		Author author1 = new Author(1L, FIXTURE_NAME_1, new HashSet<Book>());
 		Author author2 = new Author(3L, FIXTURE_NAME_2, new HashSet<Book>());
 
-		GuiActionRunner.execute(() -> authorView.showAllAuthors(Arrays.asList(author1, author2)));
+		authorView.showAllAuthors(Arrays.asList(author1, author2));
 
-		assertThat(authorView.getAuthorListModel().toArray()).containsExactly(author1, author2);
+		await().atMost(WAIT_TIME,TimeUnit.SECONDS).untilAsserted(() -> 
+			assertThat(authorView.getAuthorListModel().toArray()).containsExactly(author1, author2));
 
-		GuiActionRunner.execute(() -> authorView.showAllAuthors(Arrays.asList(author2)));
+		authorView.showAllAuthors(Arrays.asList(author2));
 
-		assertThat(authorView.getAuthorListModel().toArray()).containsExactly(author2);
+		await().atMost(WAIT_TIME,TimeUnit.SECONDS).untilAsserted(() -> 
+			assertThat(authorView.getAuthorListModel().toArray()).containsExactly(author2));
 	}
 	
 	@Test
@@ -138,12 +143,14 @@ public class AuthorSwingViewTest extends AssertJSwingJUnitTestCase {
 		authorPanel.textBox().enterText(FIXTURE_NAME_1);
 		Author testAuthor = new Author(1L, FIXTURE_NAME_1, new HashSet<Book>());
 		
-		GuiActionRunner.execute(() -> authorView.authorAdded(testAuthor));
+		authorView.authorAdded(testAuthor);
 		
-		assertThat(authorView.getAuthorListModel().toArray()).containsExactly(testAuthor);
-		assertThat(authorPanel.label(AUTHOR_ERROR_LABEL).text()).isEmpty();
-		authorPanel.textBox().requireEmpty();
-		authorPanel.button(ADD_AUTHOR_BUTTON).requireDisabled();
+		await().atMost(WAIT_TIME,TimeUnit.SECONDS).untilAsserted(() -> {
+			assertThat(authorView.getAuthorListModel().toArray()).containsExactly(testAuthor);
+			assertThat(authorPanel.label(AUTHOR_ERROR_LABEL).text()).isEmpty();
+			authorPanel.textBox().requireEmpty();
+			authorPanel.button(ADD_AUTHOR_BUTTON).requireDisabled();
+		});
 	}
 	
 	@Test
@@ -156,10 +163,12 @@ public class AuthorSwingViewTest extends AssertJSwingJUnitTestCase {
 			authorView.getAuthorListModel().addElement(testAuthor2);			
 		});
 		
-		GuiActionRunner.execute(() -> authorView.authorRemoved(testAuthor));
+		authorView.authorRemoved(testAuthor);
 		
-		assertThat(authorView.getAuthorListModel().toArray()).containsExactly(testAuthor2);
-		assertThat(authorPanel.label(AUTHOR_ERROR_LABEL).text()).isEmpty();
+		await().atMost(WAIT_TIME,TimeUnit.SECONDS).untilAsserted(() -> {
+			assertThat(authorView.getAuthorListModel().toArray()).containsExactly(testAuthor2);
+			assertThat(authorPanel.label(AUTHOR_ERROR_LABEL).text()).isEmpty();
+		});
 	}
 	
 	@Test
@@ -168,9 +177,10 @@ public class AuthorSwingViewTest extends AssertJSwingJUnitTestCase {
 		Author testAuthor = new Author(2L, FIXTURE_NAME_1, new HashSet<Book>());
 		testAuthor.getBooks().add(new Book(3L, FIXTURE_TITLE_1, null));
 		
-		GuiActionRunner.execute(() -> authorView.showError("This is an Error Message!", testAuthor));
+		authorView.showError("This is an Error Message!", testAuthor);
 		
-		authorPanel.label(AUTHOR_ERROR_LABEL).requireText("This is an Error Message!: "+testAuthor);
+		await().atMost(WAIT_TIME,TimeUnit.SECONDS).untilAsserted(() -> 
+		authorPanel.label(AUTHOR_ERROR_LABEL).requireText("This is an Error Message!: "+testAuthor));
 	}
 	
 	@Test

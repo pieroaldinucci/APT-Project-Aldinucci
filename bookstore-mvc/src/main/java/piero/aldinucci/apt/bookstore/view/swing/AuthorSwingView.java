@@ -20,6 +20,7 @@ import javax.swing.JList;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import javax.swing.ListSelectionModel;
+import javax.swing.SwingUtilities;
 
 import com.google.inject.Inject;
 import com.google.inject.assistedinject.Assisted;
@@ -189,29 +190,34 @@ public class AuthorSwingView extends JPanel implements AuthorView {
 
 	@Override
 	public void showAllAuthors(List<Author> authors) {
-		authorListModel.clear();
-		authors.stream().forEach(a -> authorListModel.addElement(a));
-
+		SwingUtilities.invokeLater(() -> {
+			authorListModel.clear();
+			authors.stream().forEach(a -> authorListModel.addElement(a));
+		});
 	}
 
 	@Override
 	public void authorAdded(Author author) {
-		authorListModel.addElement(author);
-		clearErrorLabel();
-		nameTextField.setText("");
-		btnAddAuthor.setEnabled(false);
+		SwingUtilities.invokeLater(() -> {
+			authorListModel.addElement(author);
+			clearErrorLabel();
+			nameTextField.setText("");
+			btnAddAuthor.setEnabled(false);
+		});
 	}
 
 	@Override
 	public void authorRemoved(Author author) {
-		authorListModel.removeElement(author);
-		clearErrorLabel();
+		SwingUtilities.invokeLater(() -> {
+			authorListModel.removeElement(author);
+			clearErrorLabel();
+		});
 	}
 
 	@Override
 	public void showError(String message, Author author) {
-		errorLabel.setText(message + ": " + author);
-
+		SwingUtilities.invokeLater(() ->
+			errorLabel.setText(message + ": " + author));
 	}
 
 	/**

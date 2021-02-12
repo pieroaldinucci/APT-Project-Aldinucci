@@ -1,6 +1,7 @@
 package piero.aldinucci.apt.bookstore.view.swing;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.awaitility.Awaitility.*;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.ArgumentMatchers.isA;
 import static org.mockito.Mockito.doNothing;
@@ -13,6 +14,7 @@ import static org.mockito.MockitoAnnotations.openMocks;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 import java.util.regex.Pattern;
 
 import javax.swing.JFrame;
@@ -45,6 +47,7 @@ public class BookComposeControllerIT extends AssertJSwingJUnitTestCase {
 	private static final String FIXTURE_TITLE_NEW = "New Title";
 	private static final String FIXTURE_NAME_1 = "Name 1";
 	private static final String FIXTURE_NAME_2 = "Name 2";
+	private static final int WAIT_TIME = 5;
 
 	@Mock
 	private BookstoreManager manager;
@@ -105,17 +108,18 @@ public class BookComposeControllerIT extends AssertJSwingJUnitTestCase {
 	@Test
 	@GUITest
 	public void test_Book_list_contains_all_entries() {
-		GuiActionRunner.execute(() -> controller.allBooks());
+		controller.allBooks();
 		
-		assertThat(window.list().contents())
-			.anySatisfy(e ->  assertThat(e).contains(FIXTURE_TITLE_1,FIXTURE_NAME_1))
-			.anySatisfy(e ->  assertThat(e).contains(FIXTURE_TITLE_2,FIXTURE_NAME_2));
+		await().atMost(WAIT_TIME,TimeUnit.SECONDS).untilAsserted(() ->
+			assertThat(window.list().contents())
+				.anySatisfy(e ->  assertThat(e).contains(FIXTURE_TITLE_1,FIXTURE_NAME_1))
+				.anySatisfy(e ->  assertThat(e).contains(FIXTURE_TITLE_2,FIXTURE_NAME_2)));
 	}
 	
 	@Test
 	@GUITest
 	public void test_compose_Book_dialog_is_opened_and_closed_correctly() {
-		GuiActionRunner.execute(() -> controller.allBooks());
+		controller.allBooks();
 
 		dialog.requireNotVisible();
 
@@ -132,7 +136,7 @@ public class BookComposeControllerIT extends AssertJSwingJUnitTestCase {
 	@Test
 	@GUITest
 	public void test_compose_new_Book() {
-		GuiActionRunner.execute(() -> controller.allBooks());
+		controller.allBooks();
 		when(manager.newBook(isA(Book.class))).thenAnswer(invocation -> 
 			invocation.getArgument(0, Book.class));
 
@@ -143,27 +147,29 @@ public class BookComposeControllerIT extends AssertJSwingJUnitTestCase {
 		dialog.button(JButtonMatcher.withText("<")).click();
 		dialog.button(JButtonMatcher.withText("OK")).click();
 
-		assertThat(window.list().contents()).anySatisfy(b -> 
-			assertThat(b).contains(FIXTURE_TITLE_NEW,FIXTURE_NAME_2));
+		await().atMost(WAIT_TIME,TimeUnit.SECONDS).untilAsserted(() ->
+			assertThat(window.list().contents()).anySatisfy(b ->
+				assertThat(b).contains(FIXTURE_TITLE_NEW,FIXTURE_NAME_2)));
 	}
 
 	@Test
 	@GUITest
 	public void test_delete_book_success() {
 		doNothing().when(manager).deleteBook(anyLong());
-		GuiActionRunner.execute(() -> controller.allBooks());
+		controller.allBooks();
 
 		window.list().selectItem(Pattern.compile(".*"+FIXTURE_TITLE_2+".*"));
 		window.button(BTN_DELETE_BOOK).click();
 
-		assertThat(window.list().contents())
-			.noneMatch(s -> s.contains(FIXTURE_TITLE_2));
+		await().atMost(WAIT_TIME,TimeUnit.SECONDS).untilAsserted(() ->
+			assertThat(window.list().contents())
+				.noneMatch(s -> s.contains(FIXTURE_TITLE_2)));
 	}
 
 	@Test
 	@GUITest
 	public void test_delete_book_error() {
-		GuiActionRunner.execute(() -> controller.allBooks());
+		controller.allBooks();
 		doThrow(new BookstorePersistenceException()).when(manager).deleteBook(anyLong());
 		
 		assertThat(window.label(ERROR_LABEL_BOOK).text()).isBlank();
@@ -171,7 +177,7 @@ public class BookComposeControllerIT extends AssertJSwingJUnitTestCase {
 		window.list().selectItem(Pattern.compile(".*"+FIXTURE_TITLE_1+".*"));
 		window.button(BTN_DELETE_BOOK).click();
 
-		assertThat(window.label(ERROR_LABEL_BOOK).text()).contains(FIXTURE_TITLE_1);
+		await().atMost(WAIT_TIME,TimeUnit.SECONDS).untilAsserted(() ->
+			assertThat(window.label(ERROR_LABEL_BOOK).text()).contains(FIXTURE_TITLE_1));
 	}
-
 }

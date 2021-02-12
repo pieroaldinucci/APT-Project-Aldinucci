@@ -14,6 +14,7 @@ import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.ListSelectionModel;
+import javax.swing.SwingUtilities;
 
 import com.google.inject.Inject;
 import com.google.inject.assistedinject.Assisted;
@@ -171,25 +172,32 @@ public class BookSwingView extends JPanel implements BookView {
 
 	@Override
 	public void showAllBooks(List<Book> books) {
-		bookModelList.clear();
-		books.stream().forEach(b -> bookModelList.addElement(b));
+		SwingUtilities.invokeLater(() -> {
+			bookModelList.clear();
+			books.stream().forEach(b -> bookModelList.addElement(b));	
+		});
 	}
 
 	@Override
 	public void bookAdded(Book book) {
-		bookModelList.addElement(book);
-		clearErrorLabel();
+		SwingUtilities.invokeLater(() -> {
+			bookModelList.addElement(book);
+			clearErrorLabel();
+		});
 	}
 
 	@Override
 	public void bookRemoved(Book book) {
-		bookModelList.removeElement(book);
-		clearErrorLabel();
+		SwingUtilities.invokeLater(() -> {
+			bookModelList.removeElement(book);
+			clearErrorLabel();
+		});
 	}
 
 	@Override
 	public void showError(String message, Book book) {
-		errorLabel.setText(message + ": " + book);
+		SwingUtilities.invokeLater(() -> 
+			errorLabel.setText(message + ": " + book));
 	}
 
 	/**

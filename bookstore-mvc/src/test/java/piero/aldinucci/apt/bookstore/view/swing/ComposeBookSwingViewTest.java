@@ -1,12 +1,15 @@
 package piero.aldinucci.apt.bookstore.view.swing;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.awaitility.Awaitility.*;
+import static org.awaitility.Awaitility.await;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.MockitoAnnotations.openMocks;
 
 import java.util.Arrays;
 import java.util.HashSet;
+import java.util.concurrent.TimeUnit;
 
 import org.assertj.core.util.Lists;
 import org.assertj.swing.annotation.GUITest;
@@ -40,6 +43,7 @@ public class ComposeBookSwingViewTest extends AssertJSwingJUnitTestCase {
 	private static final String TITLE_TEXT_FIELD = "titleTextField";
 	private static final String AUTHOR_JLIST = "AvailableAuthors";
 	private static final String BOOK_AUTHOR_JLIST = "BookAuthors";
+	private static final int WAIT_TIME = 5;
 
 	private ComposeBookSwingView composeBookView;
 	private DialogFixture dialogFixture;
@@ -124,9 +128,10 @@ public class ComposeBookSwingViewTest extends AssertJSwingJUnitTestCase {
 		composeBookView.setVisible(false);
 		dialogFixture.requireNotVisible();
 		
-		GuiActionRunner.execute(() -> composeBookView.composeNewBook(Lists.emptyList()));
+		composeBookView.composeNewBook(Lists.emptyList());
 		
-		dialogFixture.requireVisible();
+		await().atMost(WAIT_TIME,TimeUnit.SECONDS).untilAsserted(() -> 
+			dialogFixture.requireVisible());
 	}
 	
 	@Test
@@ -140,13 +145,15 @@ public class ComposeBookSwingViewTest extends AssertJSwingJUnitTestCase {
 		Author author1 = new Author(2L, FIXTURE_NAME_1, null);
 		Author author2 = new Author(3L, FIXTURE_NAME_2, null);
 
-		GuiActionRunner.execute(() -> composeBookView.composeNewBook(Arrays.asList(author1, author2)));
+		composeBookView.composeNewBook(Arrays.asList(author1, author2));
 
-		assertThat(composeBookView.getModelBookAuthors().toArray()).isEmpty();
-		assertThat(composeBookView.getModelAvailableAuthors().toArray())
-			.containsExactly(author1, author2);
-		dialogFixture.textBox().requireEmpty();
-		dialogFixture.button(JButtonMatcher.withText("OK")).requireDisabled();
+		await().atMost(WAIT_TIME,TimeUnit.SECONDS).untilAsserted(() -> {
+			assertThat(composeBookView.getModelBookAuthors().toArray()).isEmpty();
+			assertThat(composeBookView.getModelAvailableAuthors().toArray())
+				.containsExactly(author1, author2);
+			dialogFixture.textBox().requireEmpty();
+			dialogFixture.button(JButtonMatcher.withText("OK")).requireDisabled();
+		});
 	}
 	
 	@Test

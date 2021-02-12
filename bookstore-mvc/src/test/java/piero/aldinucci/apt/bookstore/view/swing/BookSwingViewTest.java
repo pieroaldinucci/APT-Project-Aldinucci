@@ -1,6 +1,7 @@
 package piero.aldinucci.apt.bookstore.view.swing;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.awaitility.Awaitility.await;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.MockitoAnnotations.openMocks;
@@ -9,6 +10,7 @@ import java.awt.Color;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
+import java.util.concurrent.TimeUnit;
 
 import javax.swing.DefaultListModel;
 import javax.swing.JFrame;
@@ -31,6 +33,7 @@ import piero.aldinucci.apt.bookstore.model.Book;
 @RunWith(GUITestRunner.class)
 public class BookSwingViewTest extends AssertJSwingJUnitTestCase {
 
+	private static final int WAIT_TIME = 5;
 	private static final String FIXTURE_TITLE_3 = "third book";
 	private static final String FIXTURE_NAME_2 = "second author";
 	private static final String FIXTURE_NAME_1 = "first author";
@@ -121,11 +124,10 @@ public class BookSwingViewTest extends AssertJSwingJUnitTestCase {
 	public void test_showError() {
 		Book book = new Book(3L, FIXTURE_TITLE_1, new HashSet<Author>());
 		
-		GuiActionRunner.execute(() -> {
-			bookView.showError("A random error occured on", book);
-		});
+		bookView.showError("A random error occured on", book);
 		
-		bookPanel.label(ERROR_LABEL).requireText("A random error occured on: "+book);
+		await().atMost(WAIT_TIME,TimeUnit.SECONDS).untilAsserted(() -> 
+			bookPanel.label(ERROR_LABEL).requireText("A random error occured on: "+book));
 	}
 	
 	@Test
@@ -155,12 +157,12 @@ public class BookSwingViewTest extends AssertJSwingJUnitTestCase {
 		book.getAuthors().add(author);
 		author.getBooks().add(book);
 		
-		GuiActionRunner.execute(() -> {
-			bookView.bookAdded(book);
+		bookView.bookAdded(book);
+
+		await().atMost(WAIT_TIME,TimeUnit.SECONDS).untilAsserted(() -> {
+			assertThat(bookView.getBookModelList().toArray()).containsExactly(book);
+			bookPanel.label(ERROR_LABEL).requireText(" ");
 		});
-		
-		assertThat(bookView.getBookModelList().toArray()).containsExactly(book);
-		bookPanel.label(ERROR_LABEL).requireText(" ");
 	}
 	
 	@Test
@@ -169,15 +171,17 @@ public class BookSwingViewTest extends AssertJSwingJUnitTestCase {
 		Book book1 = new Book(2L, FIXTURE_TITLE_1, new HashSet<Author>());
 		Book book2 = new Book(5L, FIXTURE_TITLE_2, new HashSet<Author>());
 		
-		GuiActionRunner.execute(() -> bookView.showAllBooks(Arrays.asList(book1,book2)));
+		bookView.showAllBooks(Arrays.asList(book1,book2));
 		
-		assertThat(bookView.getBookModelList().toArray()).containsExactly(book1,book2);
+		await().atMost(WAIT_TIME,TimeUnit.SECONDS).untilAsserted(() -> 
+			assertThat(bookView.getBookModelList().toArray()).containsExactly(book1,book2));
 		
 		Book book3 = new Book(3L,FIXTURE_TITLE_3,new HashSet<Author>());
 		
-		GuiActionRunner.execute(() -> bookView.showAllBooks(Arrays.asList(book3,book2)));			
+		bookView.showAllBooks(Arrays.asList(book3,book2));			
 		
-		assertThat(bookView.getBookModelList().toArray()).containsExactly(book3,book2);
+		await().atMost(WAIT_TIME,TimeUnit.SECONDS).untilAsserted(() -> 
+			assertThat(bookView.getBookModelList().toArray()).containsExactly(book3,book2));
 	}
 	
 	@Test
@@ -191,10 +195,12 @@ public class BookSwingViewTest extends AssertJSwingJUnitTestCase {
 			model.addElement(book2);
 		});
 		
-		GuiActionRunner.execute(() -> bookView.bookRemoved(book1));
+		bookView.bookRemoved(book1);
 		
-		assertThat(model.toArray()).containsExactly(book2);
-		bookPanel.label(ERROR_LABEL).requireText(" ");
+		await().atMost(WAIT_TIME,TimeUnit.SECONDS).untilAsserted(() -> {
+			assertThat(model.toArray()).containsExactly(book2);
+			bookPanel.label(ERROR_LABEL).requireText(" ");
+		});
 	}
 	
 }

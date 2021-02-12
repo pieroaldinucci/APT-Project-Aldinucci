@@ -19,6 +19,7 @@ import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.ListSelectionModel;
+import javax.swing.SwingUtilities;
 import javax.swing.border.EmptyBorder;
 
 import com.google.inject.Inject;
@@ -301,12 +302,14 @@ public class ComposeBookSwingView extends JDialog implements ComposeBookView {
 
 	@Override
 	public void composeNewBook(List<Author> authors) {
-		textField.setText(null);
-		modelAvailableAuthors.clear();
-		modelBookAuthors.clear();
-		okButton.setEnabled(false);
-		authors.stream().forEach(a -> modelAvailableAuthors.addElement(a));
-		setVisible(true);
+		SwingUtilities.invokeLater(() -> {
+			textField.setText(null);
+			modelAvailableAuthors.clear();
+			modelBookAuthors.clear();
+			okButton.setEnabled(false);
+			authors.stream().forEach(a -> modelAvailableAuthors.addElement(a));
+			setVisible(true);
+		});
 	}
 
 }
