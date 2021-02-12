@@ -2,6 +2,9 @@ package piero.aldinucci.apt.bookstore.repositories.factory;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
@@ -24,7 +27,13 @@ public class RepositoriesJPAFactoryImplIT {
 	
 	@Before
 	public void setUp() {
-		emFactory = Persistence.createEntityManagerFactory("apt.project.bookstore.test");
+		String postgresUrl = "jdbc:postgresql://localhost:"
+				+System.getProperty("postgres.test.port","5432")
+				+"/projectAPTTestDb";
+		Map<String,String> properties = new HashMap<>();
+		properties.put("javax.persistence.jdbc.url",postgresUrl);
+		
+		emFactory = Persistence.createEntityManagerFactory("apt.project.bookstore.test",properties);
 		entityManager = emFactory.createEntityManager();
 
 		factory = new RepositoriesJPAFactoryImpl();

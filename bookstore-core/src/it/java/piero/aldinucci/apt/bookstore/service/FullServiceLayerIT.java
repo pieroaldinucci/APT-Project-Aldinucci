@@ -3,9 +3,11 @@ package piero.aldinucci.apt.bookstore.service;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
@@ -31,7 +33,13 @@ public class FullServiceLayerIT {
 
 	@Before
 	public void setUp() {
-		emFactory = Persistence.createEntityManagerFactory("apt.project.bookstore.test");
+		String postgresUrl = "jdbc:postgresql://localhost:"
+				+System.getProperty("postgres.test.port","5432")
+				+"/projectAPTTestDb";
+		Map<String,String> properties = new HashMap<>();
+		properties.put("javax.persistence.jdbc.url",postgresUrl);
+		
+		emFactory = Persistence.createEntityManagerFactory("apt.project.bookstore.test",properties);
 
 		bookstoreManager = new BookstoreManagerImpl(
 				new TransactionManagerJPA(emFactory, new RepositoriesJPAFactoryImpl()));

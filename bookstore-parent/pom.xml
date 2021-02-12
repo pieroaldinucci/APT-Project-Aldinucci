@@ -33,8 +33,7 @@
 		
 		<postgres.test.username>testUser</postgres.test.username>
 		<postgres.test.password>password</postgres.test.password>
-		<postgres.test.container.port>5432</postgres.test.container.port>
-		
+				
 		<!-- This property will be changed to true if Java 9 or more is detected. 
 			Only used for Sonarcloud, since it doesn't accept anything less that Java 11 -->
 		<jdk9-or-more>false</jdk9-or-more>
@@ -160,6 +159,18 @@
 									<source>src/it/java</source>
 									<source>src/e2e/java</source>
 								</sources>
+							</configuration>
+						</execution>
+						<execution>
+							<id>reserve-postgres-port</id>
+							<goals>
+								<goal>reserve-network-port</goal>
+							</goals>
+							<phase>process-resources</phase>
+							<configuration>
+								<portNames>
+									<portName>postgres.test.container.port</portName>
+								</portNames>
 							</configuration>
 						</execution>
 					</executions>
@@ -356,6 +367,11 @@
 									</configuration>
 								</execution>
 							</executions>
+							<configuration>
+								<systemPropertyVariables>
+									<postgres.test.port>${postgres.test.container.port}</postgres.test.port>
+								</systemPropertyVariables>
+							</configuration>
 						</plugin>
 					</plugins>
 				</pluginManagement>

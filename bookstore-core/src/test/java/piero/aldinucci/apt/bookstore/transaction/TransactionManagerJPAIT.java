@@ -11,6 +11,9 @@ import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.openMocks;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 import javax.persistence.PersistenceException;
@@ -54,7 +57,13 @@ public class TransactionManagerJPAIT {
 	public void setUp() {
 		openMocks(this);
 		
-		emFactory = Persistence.createEntityManagerFactory("apt.project.bookstore.test");
+		String postgresUrl = "jdbc:postgresql://localhost:"
+				+System.getProperty("postgres.test.port","5432")
+				+"/projectAPTTestDb";
+		Map<String,String> properties = new HashMap<>();
+		properties.put("javax.persistence.jdbc.url",postgresUrl);
+		
+		emFactory = Persistence.createEntityManagerFactory("apt.project.bookstore.test",properties);
 		transactionManager = new TransactionManagerJPA(emFactory,repositoriesFactory);
 		
 		when(repositoriesFactory.createAuthorRepository(any())).thenReturn(authorRepository);

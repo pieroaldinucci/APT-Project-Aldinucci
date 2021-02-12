@@ -3,7 +3,9 @@ package piero.aldinucci.apt.bookstore.model;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatCode;
 
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
@@ -18,7 +20,13 @@ public class BookAnnotationsIT {
 	
 	@Before
 	public void setUp() {
-		emFactory = Persistence.createEntityManagerFactory("apt.project.bookstore.test");
+		String postgresUrl = "jdbc:postgresql://localhost:"
+				+System.getProperty("postgres.test.port","5432")
+				+"/projectAPTTestDb";
+		Map<String,String> properties = new HashMap<>();
+		properties.put("javax.persistence.jdbc.url",postgresUrl);
+		
+		emFactory = Persistence.createEntityManagerFactory("apt.project.bookstore.test",properties);
 	}
 	
 	@After

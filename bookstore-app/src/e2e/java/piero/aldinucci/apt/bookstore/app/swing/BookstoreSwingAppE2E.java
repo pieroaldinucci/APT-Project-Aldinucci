@@ -7,6 +7,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.regex.Pattern;
 
 import javax.persistence.EntityManager;
@@ -52,11 +53,15 @@ public class BookstoreSwingAppE2E extends AssertJSwingJUnitTestCase{
 	
 	@Override
 	protected void onSetUp() throws Exception {
+		String postgresPort = System.getProperty("postgres.test.port","5432");
+		String postgresUrl = "jdbc:postgresql://localhost:"
+				+postgresPort+"/projectAPTTestDb";
+		
 		HashMap<String, String> propertiesJPA = new HashMap<>();
 		propertiesJPA.put("javax.persistence.jdbc.user", FIXTURE_JDBC_USERNAME);
 		propertiesJPA.put("javax.persistence.jdbc.password", FIXTURE_JDBC_PASSWORD);
 		propertiesJPA.put("javax.persistence.schema-generation.database.action", "drop-and-create");
-		propertiesJPA.put("javax.persistence.jdbc.url","jdbc:postgresql://localhost:5432/projectAPTTestDb");
+		propertiesJPA.put("javax.persistence.jdbc.url",postgresUrl);
 		emFactory = Persistence.createEntityManagerFactory("apt.project.bookstore.app",propertiesJPA);
 		populateDatabase();
 		
@@ -65,7 +70,7 @@ public class BookstoreSwingAppE2E extends AssertJSwingJUnitTestCase{
 				"-p="+FIXTURE_JDBC_PASSWORD,
 				"--postgres-host=localhost",
 				"--db-name=projectAPTTestDb",
-				"--postgres-port=5432").start();
+				"--postgres-port="+postgresPort).start();
 		
 		window = WindowFinder.findFrame(new GenericTypeMatcher<JFrame>(JFrame.class) {
 
