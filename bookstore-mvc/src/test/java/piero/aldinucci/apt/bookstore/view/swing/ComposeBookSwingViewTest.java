@@ -228,10 +228,12 @@ public class ComposeBookSwingViewTest extends AssertJSwingJUnitTestCase {
 		dialogFixture.list(AUTHOR_JLIST).selectItem(1);
 		dialogFixture.button(BUTTON_ADD_AUTHOR).click();
 
-		assertThat(composeBookView.getModelBookAuthors().toArray())
-			.containsExactlyInAnyOrder(author, author2);
-		assertThat(composeBookView.getModelAvailableAuthors().toArray())
-			.containsExactly(author3);
+		await().atMost(WAIT_TIME,TimeUnit.SECONDS).untilAsserted(() ->{
+			assertThat(composeBookView.getModelBookAuthors().toArray())
+				.containsExactlyInAnyOrder(author, author2);
+			assertThat(composeBookView.getModelAvailableAuthors().toArray())
+				.containsExactly(author3);
+		});
 	}
 
 	@Test
@@ -249,9 +251,11 @@ public class ComposeBookSwingViewTest extends AssertJSwingJUnitTestCase {
 		dialogFixture.list(BOOK_AUTHOR_JLIST).selectItem(0);
 		dialogFixture.button(BUTTON_REMOVE_AUTHOR).click();
 
-		assertThat(composeBookView.getModelBookAuthors().toArray()).containsExactly(author2);
-		assertThat(composeBookView.getModelAvailableAuthors().toArray())
-			.containsExactlyInAnyOrder(author, author3);
+		await().atMost(WAIT_TIME,TimeUnit.SECONDS).untilAsserted(() ->{
+			assertThat(composeBookView.getModelBookAuthors().toArray()).containsExactly(author2);
+			assertThat(composeBookView.getModelAvailableAuthors().toArray())
+				.containsExactlyInAnyOrder(author, author3);
+		});
 	}
 
 	@Test
@@ -270,7 +274,8 @@ public class ComposeBookSwingViewTest extends AssertJSwingJUnitTestCase {
 		dialogFixture.textBox(TITLE_TEXT_FIELD).enterText(FIXTURE_TITLE_1);
 		dialogFixture.button(JButtonMatcher.withText("OK")).click();
 
-		dialogFixture.requireNotVisible();
+		await().atMost(WAIT_TIME,TimeUnit.SECONDS).untilAsserted(() ->
+			dialogFixture.requireNotVisible());
 		ArgumentCaptor<Book> bookCaptor = ArgumentCaptor.forClass(Book.class);
 		verify(controller).newBook(bookCaptor.capture());
 		assertThat(bookCaptor.getValue()).usingRecursiveComparison()

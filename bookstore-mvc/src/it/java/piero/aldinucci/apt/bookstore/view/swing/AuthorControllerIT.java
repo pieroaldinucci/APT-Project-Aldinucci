@@ -1,7 +1,7 @@
 package piero.aldinucci.apt.bookstore.view.swing;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.awaitility.Awaitility.*;
+import static org.awaitility.Awaitility.await;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.ArgumentMatchers.isA;
 import static org.mockito.Mockito.doNothing;

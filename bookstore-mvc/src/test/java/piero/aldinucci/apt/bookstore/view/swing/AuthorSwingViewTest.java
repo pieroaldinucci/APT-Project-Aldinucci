@@ -95,9 +95,8 @@ public class AuthorSwingViewTest extends AssertJSwingJUnitTestCase {
 	@GUITest
 	public void test_delete_button_enabled_only_when_item_list_is_selected() {
 		DefaultListModel<Author> listModel = authorView.getAuthorListModel();
-		GuiActionRunner.execute(() -> {
-			listModel.addElement(new Author(1L, FIXTURE_NAME_1, new HashSet<Book>()));
-		});
+		GuiActionRunner.execute(() ->
+			listModel.addElement(new Author(1L, FIXTURE_NAME_1, new HashSet<Book>())));
 
 		authorPanel.list(AUTHOR_LIST).selectItem(0);
 		authorPanel.button(DELETE_AUTHOR_BUTTON).requireEnabled();
@@ -180,7 +179,7 @@ public class AuthorSwingViewTest extends AssertJSwingJUnitTestCase {
 		authorView.showError("This is an Error Message!", testAuthor);
 		
 		await().atMost(WAIT_TIME,TimeUnit.SECONDS).untilAsserted(() -> 
-		authorPanel.label(AUTHOR_ERROR_LABEL).requireText("This is an Error Message!: "+testAuthor));
+			authorPanel.label(AUTHOR_ERROR_LABEL).requireText("This is an Error Message!: "+testAuthor));
 	}
 	
 	@Test
@@ -190,9 +189,11 @@ public class AuthorSwingViewTest extends AssertJSwingJUnitTestCase {
 		authorPanel.textBox(NAME_TEXT_FIELD).enterText(FIXTURE_NAME_2);
 		authorPanel.button(ADD_AUTHOR_BUTTON).click();
 		
-		verify(controller).newAuthor(author.capture());
-		assertThat(author.getValue()).usingRecursiveComparison()
-			.isEqualTo(new Author(null, FIXTURE_NAME_2, new HashSet<Book>()));
+		await().atMost(WAIT_TIME,TimeUnit.SECONDS).untilAsserted(() ->{
+			verify(controller).newAuthor(author.capture());
+			assertThat(author.getValue()).usingRecursiveComparison()
+				.isEqualTo(new Author(null, FIXTURE_NAME_2, new HashSet<Book>()));
+		});
 		verifyNoMoreInteractions(controller);
 	}
 	
@@ -208,7 +209,8 @@ public class AuthorSwingViewTest extends AssertJSwingJUnitTestCase {
 		authorPanel.list(AUTHOR_LIST).selectItem(0);
 		authorPanel.button(DELETE_AUTHOR_BUTTON).click();
 		
-		verify(controller).deleteAuthor(testAuthor);
+		await().atMost(WAIT_TIME,TimeUnit.SECONDS).untilAsserted(() ->
+			verify(controller).deleteAuthor(testAuthor));
 		verifyNoMoreInteractions(controller);
 	}
 }

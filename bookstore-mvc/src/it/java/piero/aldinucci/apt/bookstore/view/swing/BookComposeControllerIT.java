@@ -1,7 +1,7 @@
 package piero.aldinucci.apt.bookstore.view.swing;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.awaitility.Awaitility.*;
+import static org.awaitility.Awaitility.await;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.ArgumentMatchers.isA;
 import static org.mockito.Mockito.doNothing;
@@ -128,8 +128,10 @@ public class BookComposeControllerIT extends AssertJSwingJUnitTestCase {
 		dialog.requireVisible();
 		dialog.button(JButtonMatcher.withText("Cancel")).click();
 
-		dialog.requireNotVisible();
-		window.list().requireItemCount(2);
+		await().atMost(WAIT_TIME,TimeUnit.SECONDS).untilAsserted(() ->{
+			dialog.requireNotVisible();
+			window.list().requireItemCount(2);
+		});
 		verify(manager, times(0)).newBook(isA(Book.class));
 	}
 
