@@ -7,15 +7,15 @@ matrix:
         env: MAVEN_ARGS="coveralls:report"
       # Sonarcloud ended support for Java 8, see
       # https://sonarcloud.io/documentation/appendices/end-of-support/ 
-      #- jdk: openjdk11
-      #  env: MAVEN_ARGS="sonar:sonar -Dsonar.projectKey=Predictabowl_APT-Project-Aldinucci"
+      - jdk: openjdk11
+        env: MAVEN_ARGS="sonar:sonar -Dsonar.projectKey=Predictabowl_APT-Project-Aldinucci"
 
 
 
-#addons:
-#   sonarcloud:
-#      organization: "predictabowl"
-#      token: $SONAR_TOKEN
+addons:
+   sonarcloud:
+      organization: "predictabowl"
+      token: $SONAR_TOKEN
 
 services:
    - docker
@@ -28,7 +28,7 @@ cache:
    directories:
       - .autoconf
       - $HOME/.m2
-#      - $HOME/.sonar/cache
+      - $HOME/.sonar/cache
       
       
 script:
