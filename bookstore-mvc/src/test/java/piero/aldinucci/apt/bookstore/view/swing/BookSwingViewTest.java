@@ -107,7 +107,8 @@ public class BookSwingViewTest extends AssertJSwingJUnitTestCase {
 		bookPanel.list(BOOK_J_LIST).selectItem(1);
 		bookPanel.button(DELETE_BOOK_BUTTON).click();
 
-		verify(controller).deleteBook(book2);
+		await().atMost(WAIT_TIME,TimeUnit.SECONDS).untilAsserted(() ->
+			verify(controller).deleteBook(book2));
 		verifyNoMoreInteractions(controller);
 	}
 
@@ -115,7 +116,8 @@ public class BookSwingViewTest extends AssertJSwingJUnitTestCase {
 	public void test_newBook_button_should_delegate_to_controller() {
 		bookPanel.button(NEW_BOOK_BUTTON).click();
 
-		verify(controller).composeBook();
+		await().atMost(WAIT_TIME,TimeUnit.SECONDS).untilAsserted(() ->
+			verify(controller).composeBook());
 		verifyNoMoreInteractions(controller);
 	}
 
