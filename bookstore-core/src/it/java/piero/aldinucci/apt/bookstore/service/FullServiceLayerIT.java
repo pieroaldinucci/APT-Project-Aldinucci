@@ -48,14 +48,14 @@ public class FullServiceLayerIT {
 	public void test_getAll_authors() {
 		List<Author> authors = bookstoreManager.getAllAuthors();
 
-		assertThat(authors).usingRecursiveFieldByFieldElementComparator().isEqualTo(authors);
+		assertThat(authors).usingFieldByFieldElementComparator().isEqualTo(fixtureAuthors);
 	}
 
 	@Test
 	public void test_getAll_books() {
 		List<Book> books = bookstoreManager.getAllBooks();
 
-		assertThat(books).usingRecursiveFieldByFieldElementComparator().isEqualTo(books);
+		assertThat(books).usingFieldByFieldElementComparator().isEqualTo(fixtureBooks);
 	}
 
 	@Test

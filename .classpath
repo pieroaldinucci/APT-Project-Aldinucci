@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="src" path=".mvn/wrapper"/>
+	<classpathentry kind="src" path="bookstore-app/src/e2e/java"/>
+	<classpathentry kind="src" path="bookstore-app/src/main/java"/>
+	<classpathentry kind="src" path="bookstore-core/src/it/java"/>
+	<classpathentry kind="src" path="bookstore-core/src/main/java"/>
+	<classpathentry kind="src" path="bookstore-core/src/test/java"/>
+	<classpathentry kind="src" path="bookstore-mvc/src/it/java"/>
+	<classpathentry kind="src" path="bookstore-mvc/src/main/java"/>
+	<classpathentry kind="src" path="bookstore-mvc/src/test/java"/>
+	<classpathentry kind="output" path="bin"/>
+</classpath>
