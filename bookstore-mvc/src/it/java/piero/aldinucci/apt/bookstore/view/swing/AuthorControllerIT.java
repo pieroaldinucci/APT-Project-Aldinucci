@@ -1,6 +1,7 @@
 package piero.aldinucci.apt.bookstore.view.swing;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.awaitility.Awaitility.await;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.ArgumentMatchers.isA;
 import static org.mockito.Mockito.doNothing;
@@ -10,6 +11,7 @@ import static org.mockito.MockitoAnnotations.openMocks;
 
 import java.util.HashSet;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
@@ -42,6 +44,7 @@ public class AuthorControllerIT extends AssertJSwingJUnitTestCase{
 	private static final String FIXTURE_NAME_1 = "name 1";
 	private static final String FIXTURE_NAME_2 = "name 2";
 	private static final String FIXTURE_NAME_3 = "name 3";
+	private static final int WAIT_TIME = 5;
 
 	@Mock
 	private BookstoreManager manager;
@@ -94,42 +97,46 @@ public class AuthorControllerIT extends AssertJSwingJUnitTestCase{
 	@Test
 	@GUITest
 	public void test_all_authors() {
-		GuiActionRunner.execute(() -> controller.allAuthors());
+		controller.allAuthors();
 		
-		assertThat(window.list().contents()).containsAll(
-				fixtureAuthors.stream().map(a -> a.toString()).collect(Collectors.toList()));
+		await().atMost(WAIT_TIME,TimeUnit.SECONDS).untilAsserted(() -> 
+			assertThat(window.list().contents()).containsAll(
+				fixtureAuthors.stream().map(a -> a.toString()).collect(Collectors.toList()))
+		);
 	}
 	
 	@Test
 	@GUITest
 	public void test_add_new_Author() {
-		GuiActionRunner.execute(() -> controller.allAuthors());
+		controller.allAuthors();
 		when(manager.newAuthor(isA(Author.class))).thenAnswer(invocation ->
 			invocation.getArgument(0, Author.class));
 		
 		window.textBox().enterText("new Author");
 		window.button(JButtonMatcher.withText("Add")).click();
 		
-		assertThat(window.list().contents()).anyMatch(s -> s.contains("new Author"));
+		await().atMost(WAIT_TIME,TimeUnit.SECONDS).untilAsserted(() ->
+			assertThat(window.list().contents()).anyMatch(s -> s.contains("new Author")));
 	}
 
 	@Test
 	@GUITest
 	public void test_delete_author_success() {
 		doNothing().when(manager).deleteAuthor(anyLong());
-		GuiActionRunner.execute(() -> controller.allAuthors());
+		controller.allAuthors();
 
 		window.list().selectItem(Pattern.compile(".*"+FIXTURE_NAME_1+".*"));
 		window.button(BTN_DELETE_AUTHOR).click();
 		
-		assertThat(window.list().requireItemCount(2).contents())
-			.noneMatch(s -> s.contains(FIXTURE_NAME_1));
+		await().atMost(WAIT_TIME,TimeUnit.SECONDS).untilAsserted(() ->
+			assertThat(window.list().requireItemCount(2).contents())
+				.noneMatch(s -> s.contains(FIXTURE_NAME_1)));
 	}
 	
 	@Test
 	@GUITest
 	public void test_delete_author_error() {
-		GuiActionRunner.execute(() -> controller.allAuthors());
+		controller.allAuthors();
 		doThrow(new BookstorePersistenceException()).when(manager).deleteAuthor(anyLong());
 
 		assertThat(window.label(ERROR_LABEL_AUTHOR).text()).isBlank();
@@ -137,8 +144,9 @@ public class AuthorControllerIT extends AssertJSwingJUnitTestCase{
 		window.list().selectItem(Pattern.compile(".*"+FIXTURE_NAME_2+".*"));
 		window.button(BTN_DELETE_AUTHOR).click();
 		
-		assertThat(window.label(ERROR_LABEL_AUTHOR).text())
-			.contains(FIXTURE_NAME_2);
+		await().atMost(WAIT_TIME,TimeUnit.SECONDS).untilAsserted(() ->
+			assertThat(window.label(ERROR_LABEL_AUTHOR).text())
+				.contains(FIXTURE_NAME_2));
 	}
 	
 }
