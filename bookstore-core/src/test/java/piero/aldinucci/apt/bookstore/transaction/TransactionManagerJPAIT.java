@@ -11,6 +11,7 @@ import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.openMocks;
 
+import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 import javax.persistence.PersistenceException;
@@ -20,6 +21,7 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
+import org.mockito.Captor;
 import org.mockito.InOrder;
 import org.mockito.Mock;
 
@@ -34,8 +36,8 @@ import piero.aldinucci.apt.bookstore.repositories.factory.RepositoriesJPAFactory
 public class TransactionManagerJPAIT {
 
 
-	private static final String FIXCTURE_TITLE_1 = "title 1";
-	private static final String FIXCTURE_NAME_1 = "test name";
+	private static final String FIXTURE_TITLE_1 = "title 1";
+	private static final String FIXTURE_NAME_1 = "test name";
 	private static final String FIXTURE_NAME_2 = "name 2";
 
 	@Mock
@@ -47,6 +49,9 @@ public class TransactionManagerJPAIT {
 	@Mock
 	private BookRepository bookRepository;
 	
+	@Captor
+	private ArgumentCaptor<EntityManager> emCaptor;
+	
 	private TransactionManagerJPA transactionManager;
 	private EntityManagerFactory emFactory;
 
@@ -57,7 +62,8 @@ public class TransactionManagerJPAIT {
 		emFactory = Persistence.createEntityManagerFactory("apt.project.bookstore.test");
 		transactionManager = new TransactionManagerJPA(emFactory,repositoriesFactory);
 		
-		when(repositoriesFactory.createAuthorRepository(any())).thenReturn(authorRepository);
+		when(repositoriesFactory.createAuthorRepository(emCaptor.capture()))
+			.thenReturn(authorRepository);
 		when(repositoriesFactory.createBookRepository(any())).thenReturn(bookRepository);
 	}
 	
@@ -70,11 +76,11 @@ public class TransactionManagerJPAIT {
 	public void test_call_to_transactioncode() {
 		ArgumentCaptor<Author> authorCaptor = ArgumentCaptor.forClass(Author.class);
 		ArgumentCaptor<Book> bookCaptor = ArgumentCaptor.forClass(Book.class);
-		Author author = new Author (3L,FIXCTURE_NAME_1,null); 
+		Author author = new Author (3L,FIXTURE_NAME_1,null); 
 		when(authorRepository.save(isA(Author.class))).thenReturn(author);
 		
 		Author savedAuthor = transactionManager.doInTransaction((authorR,bookR) -> {
-			bookR.update(new Book(4L,FIXCTURE_TITLE_1,null));
+			bookR.update(new Book(4L,FIXTURE_TITLE_1,null));
 			return authorR.save(new Author(2L,FIXTURE_NAME_2,null));
 		});
 				
@@ -86,11 +92,11 @@ public class TransactionManagerJPAIT {
 		assertThat(authorCaptor.getValue()).usingRecursiveComparison()
 			.isEqualTo(new Author(2L,FIXTURE_NAME_2,null));
 		assertThat(bookCaptor.getValue()).usingRecursiveComparison()
-			.isEqualTo(new Book(4L,FIXCTURE_TITLE_1,null));
+			.isEqualTo(new Book(4L,FIXTURE_TITLE_1,null));
 		assertThat(author).isSameAs(savedAuthor);
-		assertThat(transactionManager.getEntityManager()
+		assertThat(emCaptor.getValue()
 			.getTransaction().isActive()).isFalse();
-		assertThat(transactionManager.getEntityManager().isOpen()).isFalse();
+		assertThat(emCaptor.getValue().isOpen()).isFalse();
 	}
 	
 	@Test
@@ -106,9 +112,9 @@ public class TransactionManagerJPAIT {
 			.hasMessage("Error while executing transaction")
 			.getCause().isInstanceOf(PersistenceException.class);
 		
-		assertThat(transactionManager.getEntityManager()
+		assertThat(emCaptor.getValue()
 			.getTransaction().isActive()).isFalse();
-		assertThat(transactionManager.getEntityManager().isOpen()).isFalse();
+		assertThat(emCaptor.getValue().isOpen()).isFalse();
 	}
 	
 	@Test
@@ -123,9 +129,9 @@ public class TransactionManagerJPAIT {
 			});
 		}).isSameAs(runtimeException);
 		
-		assertThat(transactionManager.getEntityManager()
+		assertThat(emCaptor.getValue()
 			.getTransaction().isActive()).isFalse();
-		assertThat(transactionManager.getEntityManager().isOpen()).isFalse();
+		assertThat(emCaptor.getValue().isOpen()).isFalse();
 	}
 
 }
