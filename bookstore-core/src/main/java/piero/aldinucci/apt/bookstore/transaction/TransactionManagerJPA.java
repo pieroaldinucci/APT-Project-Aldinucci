@@ -21,7 +21,6 @@ public class TransactionManagerJPA implements TransactionManager {
 
 	private EntityManagerFactory emFactory;
 	private RepositoriesJPAFactory repositoryFactory;
-	private EntityManager entityManager;
 
 	/**
 	 * 
@@ -37,12 +36,12 @@ public class TransactionManagerJPA implements TransactionManager {
 
 	@Override
 	public <R> R doInTransaction(TransactionCode<R> code) {
-
+		EntityManager entityManager = emFactory.createEntityManager();
+		AuthorRepository authorRepository = repositoryFactory.createAuthorRepository(entityManager);
+		BookRepository bookRepository = repositoryFactory.createBookRepository(entityManager);
+		
 		R result = null;
 		try {
-			entityManager = emFactory.createEntityManager();
-			AuthorRepository authorRepository = repositoryFactory.createAuthorRepository(entityManager);
-			BookRepository bookRepository = repositoryFactory.createBookRepository(entityManager);
 			entityManager.getTransaction().begin();
 			result = code.apply(authorRepository, bookRepository);
 			entityManager.getTransaction().commit();
@@ -58,14 +57,4 @@ public class TransactionManagerJPA implements TransactionManager {
 
 		return result;
 	}
-
-	/**
-	 * To be used only for testing purposes.
-	 * 
-	 * @return instance of private EntityManager
-	 */
-	EntityManager getEntityManager() {
-		return entityManager;
-	}
-
 }
