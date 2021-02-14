@@ -3,6 +3,7 @@ package piero.aldinucci.apt.bookstore.app.guice.modules;
 import com.google.inject.AbstractModule;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
+import com.google.inject.Module;
 import com.google.inject.Provides;
 import com.google.inject.assistedinject.FactoryModuleBuilder;
 
@@ -25,13 +26,13 @@ import piero.aldinucci.apt.bookstore.view.swing.ComposeBookSwingView;
  */
 public class BookstoreControllerSwingModule extends AbstractModule{
 	
-	private AbstractModule serviceLayerModule;
+	private Module serviceLayerModule;
 
 	/**
 	 * 
 	 * @param serviceLayerModule a module that can create an instance of BookStoreManager
 	 */
-	public BookstoreControllerSwingModule(AbstractModule serviceLayerModule) {
+	public BookstoreControllerSwingModule(Module serviceLayerModule) {
 		super();
 		this.serviceLayerModule = serviceLayerModule;
 	}
