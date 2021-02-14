@@ -29,6 +29,14 @@
 			<groupId>org.hibernate</groupId>
 			<artifactId>hibernate-c3p0</artifactId>
 		</dependency>
+		<dependency>
+			<groupId>io.cucumber</groupId>
+			<artifactId>cucumber-java</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>io.cucumber</groupId>
+			<artifactId>cucumber-junit</artifactId>
+		</dependency>
 	</dependencies>
 
 	<build>
@@ -113,6 +121,60 @@
 									<argument>-u=${postgres.test.username}</argument>
 									<argument>-p=${postgres.test.password}</argument>
 								</arguments>
+							</configuration>
+						</execution>
+					</executions>
+				</plugin>
+				
+				<plugin>
+					<groupId>org.codehaus.mojo</groupId>
+					<artifactId>build-helper-maven-plugin</artifactId>
+					<executions>
+						<execution>
+							<id>add-bdd-test-source</id>
+							<phase>generate-test-sources</phase>
+							<goals>
+								<goal>add-test-source</goal>
+							</goals>
+							<configuration>
+								<sources>
+									<source>src/bdd/java</source>
+								</sources>
+							</configuration>
+						</execution>
+						<execution>
+							<id>add-bdd-test-resources</id>
+							<phase>generate-test-resources</phase>
+							<goals>
+								<goal>add-test-resource</goal>
+							</goals>
+							<configuration>
+								<resources>
+									<resource>
+										<directory>src/bdd/resources</directory>
+									</resource>
+								</resources>
+							</configuration>
+						</execution>
+					</executions>
+				</plugin>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-failsafe-plugin</artifactId>
+					<executions>
+						<execution>
+							<id>bdd-tests</id>
+							<goals>
+								<goal>integration-test</goal>
+								<goal>verify</goal>
+							</goals>
+							<configuration>
+								<excludes>
+									<exclude>**/*IT.java</exclude>
+								</excludes>
+								<includes>
+									<include>**/*BDD.java</include>
+								</includes>
 							</configuration>
 						</execution>
 					</executions>

@@ -7,6 +7,10 @@
 	<version>0.0.2-SNAPSHOT</version>
 	<packaging>pom</packaging>
 
+	<properties>
+		<cucumber.version>6.9.1</cucumber.version>
+	</properties>
+
 	<dependencyManagement>
 		<dependencies>
 			<dependency>
@@ -55,6 +59,16 @@
 				<artifactId>awaitility</artifactId>
 				<version>4.0.3</version>
 				<scope>test</scope>
+			</dependency>
+			<dependency>
+				<groupId>io.cucumber</groupId>
+				<artifactId>cucumber-junit</artifactId>
+				<version>${cucumber.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>io.cucumber</groupId>
+				<artifactId>cucumber-java</artifactId>
+				<version>${cucumber.version}</version>
 			</dependency>
 		</dependencies>
 	</dependencyManagement>
