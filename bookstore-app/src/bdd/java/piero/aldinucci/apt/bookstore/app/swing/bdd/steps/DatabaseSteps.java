@@ -59,11 +59,15 @@ public class DatabaseSteps {
 		EntityManager em = emFactory.createEntityManager();
 	    em.getTransaction().begin();
 	    Book book = new Book(null, FIXTURE_TITLE_1, new HashSet<>());
-	    book.getAuthors().add(em.find(Author.class, 1L));
 	    em.persist(book);
+	    Author author = em.find(Author.class, 1L);
+	    book.getAuthors().add(author);
+	    author.getBooks().add(book);
 	    book = new Book(null, FIXTURE_TITLE_2, new HashSet<>());
-	    book.getAuthors().add(em.find(Author.class, 2L));
 	    em.persist(book);
+	    author = em.find(Author.class, 2L);
+	    book.getAuthors().add(author);
+	    author.getBooks().add(book);
 	    em.getTransaction().commit();
 	    em.close();
 	}
