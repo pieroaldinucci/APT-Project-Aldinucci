@@ -31,7 +31,7 @@ import piero.aldinucci.apt.bookstore.repositories.AuthorRepository;
 import piero.aldinucci.apt.bookstore.repositories.BookRepository;
 import piero.aldinucci.apt.bookstore.repositories.factory.RepositoriesJPAFactory;
 
-public class TransactionManagerJPAIT2 {
+public class TransactionManagerJPA2IT {
 
 	private static final String FIXTURE_TITLE_1 = "title 1";
 	private static final String FIXTURE_NAME_1 = "test name";
