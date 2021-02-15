@@ -2,8 +2,7 @@ Feature: Bookstore View High Level
   Specification of the behaviour of the Bookstore View
 
   Background: 
-    Given The database contains a few authors
-    And The database contains a few books wrote by those authors
+    Given The database contains a few authors and books
     And The application starts
 
   Scenario: Add a new author

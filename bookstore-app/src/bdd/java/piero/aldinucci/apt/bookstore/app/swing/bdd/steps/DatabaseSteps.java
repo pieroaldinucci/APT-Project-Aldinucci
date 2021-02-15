@@ -48,36 +48,24 @@ public class DatabaseSteps {
 		em.close();
 	}
 	
-	@Given("The database contains a few authors")
-	public void the_database_contains_a_few_authors() {
-	    persistAuthor(FIXTURE_NAME_1);
-	    persistAuthor(FIXTURE_NAME_2);
-	}
-	
-	@Given("The database contains a few books wrote by those authors")
-	public void the_database_contains_a_few_books_wrote_by_those_authors() {
+	@Given("The database contains a few authors and books")
+	public void the_database_contains_a_few_authors_and_books() {
 		EntityManager em = emFactory.createEntityManager();
 	    em.getTransaction().begin();
+	    Author author = new Author(null,FIXTURE_NAME_1,new HashSet<>());
 	    Book book = new Book(null, FIXTURE_TITLE_1, new HashSet<>());
+	    em.persist(author);
 	    em.persist(book);
-	    Author author = em.find(Author.class, 1L);
 	    book.getAuthors().add(author);
 	    author.getBooks().add(book);
+	    author = new Author(null,FIXTURE_NAME_2,new HashSet<>());
 	    book = new Book(null, FIXTURE_TITLE_2, new HashSet<>());
+	    em.persist(author);
 	    em.persist(book);
-	    author = em.find(Author.class, 2L);
 	    book.getAuthors().add(author);
 	    author.getBooks().add(book);
 	    em.getTransaction().commit();
 	    em.close();
 	}
-	
-	private void persistAuthor(String name) {
-		EntityManager em = emFactory.createEntityManager();
-	    em.getTransaction().begin();
-	    em.persist(new Author(null, name, new HashSet<>()));
-	    em.getTransaction().commit();
-	    em.close();
-	}	
-	
+		
 }
