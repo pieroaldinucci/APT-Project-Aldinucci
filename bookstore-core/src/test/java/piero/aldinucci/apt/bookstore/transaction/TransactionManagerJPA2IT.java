@@ -35,7 +35,6 @@ public class TransactionManagerJPA2IT {
 
 	private static final String FIXTURE_TITLE_1 = "title 1";
 	private static final String FIXTURE_NAME_1 = "test name";
-	private static final String FIXTURE_NAME_2 = "name 2";
 
 	@Mock
 	private RepositoriesJPAFactory repositoriesFactory;
@@ -49,7 +48,7 @@ public class TransactionManagerJPA2IT {
 	@Captor
 	private ArgumentCaptor<EntityManager> emCaptor;
 
-	private TransactionManagerJPA2 transactionManager;
+	private TransactionManagerJPA transactionManager;
 	private EntityManagerFactory emFactory;
 
 	@Before
@@ -57,7 +56,7 @@ public class TransactionManagerJPA2IT {
 		openMocks(this);
 
 		emFactory = Persistence.createEntityManagerFactory("apt.project.bookstore.test");
-		transactionManager = new TransactionManagerJPA2(emFactory, repositoriesFactory);
+		transactionManager = new TransactionManagerJPA(emFactory, repositoriesFactory);
 		
 		when(repositoriesFactory.createAuthorRepository(emCaptor.capture())).thenReturn(authorRepository);
 		when(repositoriesFactory.createBookRepository(emCaptor.capture())).thenReturn(bookRepository);

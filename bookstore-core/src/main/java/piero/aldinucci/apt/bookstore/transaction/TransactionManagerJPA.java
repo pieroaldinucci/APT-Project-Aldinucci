@@ -12,15 +12,16 @@ import piero.aldinucci.apt.bookstore.repositories.BookRepository;
 import piero.aldinucci.apt.bookstore.repositories.factory.RepositoriesJPAFactory;
 
 /**
- * JPA specific implementation of TransactionManager
+ * Second version of JPA specific TransactionManager implementation Made with
+ * TDD without any step skip.
  * 
  * @author Piero Aldinucci
  *
  */
 public class TransactionManagerJPA implements TransactionManager {
 
+	private RepositoriesJPAFactory repositoriesFactory;
 	private EntityManagerFactory emFactory;
-	private RepositoriesJPAFactory repositoryFactory;
 
 	/**
 	 * 
@@ -31,30 +32,31 @@ public class TransactionManagerJPA implements TransactionManager {
 	@Inject
 	public TransactionManagerJPA(EntityManagerFactory emFactory, RepositoriesJPAFactory repositoriesFactory) {
 		this.emFactory = emFactory;
-		this.repositoryFactory = repositoriesFactory;
+		this.repositoriesFactory = repositoriesFactory;
+
 	}
 
 	@Override
 	public <R> R doInTransaction(TransactionCode<R> code) {
-		EntityManager entityManager = emFactory.createEntityManager();
-		AuthorRepository authorRepository = repositoryFactory.createAuthorRepository(entityManager);
-		BookRepository bookRepository = repositoryFactory.createBookRepository(entityManager);
-		
+		EntityManager em = emFactory.createEntityManager();
+		AuthorRepository authorRepository = repositoriesFactory.createAuthorRepository(em);
+		BookRepository bookRepository = repositoriesFactory.createBookRepository(em);
+
 		R result = null;
 		try {
-			entityManager.getTransaction().begin();
+			em.getTransaction().begin();
 			result = code.apply(authorRepository, bookRepository);
-			entityManager.getTransaction().commit();
+			em.getTransaction().commit();
 		} catch (PersistenceException e) {
-			entityManager.getTransaction().rollback();
-			throw new BookstorePersistenceException("Error while executing transaction", e);
+			em.getTransaction().rollback();
+			throw new BookstorePersistenceException("Error while executin transaction", e);
 		} catch (Exception e) {
-			entityManager.getTransaction().rollback();
+			em.getTransaction().rollback();
 			throw e;
 		} finally {
-			entityManager.close();
+			em.close();
 		}
-
 		return result;
 	}
+
 }
