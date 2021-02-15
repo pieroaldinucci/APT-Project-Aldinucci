@@ -1,6 +1,7 @@
 package piero.aldinucci.apt.bookstore.view.swing;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.AdditionalAnswers.answer;
 import static org.awaitility.Awaitility.await;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.ArgumentMatchers.isA;
@@ -27,6 +28,7 @@ import org.assertj.swing.junit.testcase.AssertJSwingJUnitTestCase;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
+import org.mockito.stubbing.Answer1;
 
 import piero.aldinucci.apt.bookstore.controller.BookstoreControllerImpl;
 import piero.aldinucci.apt.bookstore.exceptions.BookstorePersistenceException;
@@ -109,8 +111,8 @@ public class AuthorControllerIT extends AssertJSwingJUnitTestCase{
 	@GUITest
 	public void test_add_new_Author() {
 		controller.allAuthors();
-		when(manager.newAuthor(isA(Author.class))).thenAnswer(invocation ->
-			invocation.getArgument(0, Author.class));
+		when(manager.newAuthor(isA(Author.class)))
+			.thenAnswer(answer((Author a) -> a));
 		
 		window.textBox().enterText("new Author");
 		window.button(JButtonMatcher.withText("Add")).click();

@@ -2,6 +2,7 @@ package piero.aldinucci.apt.bookstore.view.swing;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.awaitility.Awaitility.await;
+import static org.mockito.AdditionalAnswers.answer;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.ArgumentMatchers.isA;
 import static org.mockito.Mockito.doNothing;
@@ -139,8 +140,7 @@ public class BookComposeControllerIT extends AssertJSwingJUnitTestCase {
 	@GUITest
 	public void test_compose_new_Book() {
 		controller.allBooks();
-		when(manager.newBook(isA(Book.class))).thenAnswer(invocation -> 
-			invocation.getArgument(0, Book.class));
+		when(manager.newBook(isA(Book.class))).thenAnswer(answer((Book b) -> b));
 
 		window.button(JButtonMatcher.withText("New")).click();
 		dialog.textBox("titleTextField").enterText(FIXTURE_TITLE_NEW);
